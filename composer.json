@@ -1,0 +1,37 @@
+{
+    "name": "gentle/edith",
+    "description": "湛拓翼搭快速开发框架",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Gentle\\Edith\\": "src/"
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Gentle Tech",
+            "email": "gentle@3ii.cn"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "~9|~10",
+        "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "~2.3"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gentle\\Edith\\EdithServiceProvider"
+            ],
+            "aliases": {
+                "Edith": "Gentle\\Edith\\Facades\\Edith"
+            }
+        }
+    },
+    "minimum-stability": "dev"
+}

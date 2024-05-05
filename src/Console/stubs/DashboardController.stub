@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Edith\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Gentle\Edith\Card;
+use Gentle\Edith\Container;
+use Gentle\Edith\Models\EdithActionLog;
+use Gentle\Edith\Models\EdithAdmin;
+use Gentle\Edith\Models\EdithAttachment;
+use Gentle\Edith\Show;
+use Gentle\Edith\Widgets\Statistic;
+
+class DashboardController extends Controller
+{
+    /**
+     * 控制台 仪表盘面板
+     * @param Container $container
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Container $container)
+    {
+        $body[] = $this->statistic();
+
+        $shows[] = $this->systemInfo();
+
+        $body[] = (new Card)
+            ->style(['marginTop'=>'8px'])
+            ->ghost()
+            ->gutter(8)
+            ->content($shows);
+
+        return edith_success('获取成功！','',$container->title('仪表盘')->body($body));
+    }
+
+    /**
+     * 统计卡牌
+     * @return Card
+     */
+    protected function statistic()
+    {
+        $adminid = Auth::guard('manage')->id();
+        if($adminid != 1){
+            $adminCount = EdithAdmin::where('pid',$adminid)->orWhere('id',$adminid)->where('status',1)->count();
+        }else{
+            $adminCount = EdithAdmin::where('status',1)->where('deleted_at',null)->count();
+        }
+        $statistic1 = Statistic::make()
+            ->title('管理员数')
+            ->precision(0)
+            ->valueStyle(['color' => '#3f8600'])
+            ->value($adminCount);
+
+        $cards[] = Card::make()->style(['padding'=>'10px'])->colSpan(6)->content($statistic1);
+
+        if($adminid != 1){
+            $logCount = NewlyActionLog::where('obj_id',$adminid)->count();
+        }else{
+            $logCount = NewlyActionLog::count();
+        }
+
+        $statistic2 = Statistic::make()
+            ->title('日志数量')
+            ->precision(0)
+            ->valueStyle(['color' => '#999999'])
+            ->value($logCount);
+
+        $cards[] = Card::make()->style(['padding'=>'10px'])->colSpan(6)->content($statistic2);
+
+        if($adminid != 1){
+            $pictureCount = NewlyAttachment::where('obj_id',$adminid)->count();
+        }else{
+            $pictureCount = NewlyAttachment::count();
+        }
+        $statistic3 = Statistic::make()
+            ->title('附件数量')
+            ->precision(0)->valueStyle(['color' => '#cf1322'])
+            ->value($pictureCount);
+
+        $cards[] = Card::make()->style(['padding'=>'10px'])->colSpan(6)->content($statistic3);
+
+        return Card::make()
+            ->ghost()
+            ->gutter(8)
+            ->content($cards);
+    }
+
+    /**
+     * 系统信息
+     * @return Card
+     */
+    protected function systemInfo()
+    {
+        $show = Show::make()->title('系统信息');
+        $show->field(config('newly.name','Newly'))->value(env('NEWLY_VERSION','V1.0.0'));
+
+        $show->field('服务器操作系统')->value(PHP_OS);
+
+        $show->field('Laravel版本')->value(app()::VERSION);
+        $show->field('运行环境')->value(substr($_SERVER['SERVER_SOFTWARE'],0,50));
+
+        $version = config('database.default') === 'sqlite' ? "sqlite_version()":"version()";
+        $show->field('MYSQL版本')->value(DB::select("select ".$version)[0]->$version);
+        $show->field('上传限制')->value(ini_get('upload_max_filesize'));
+        $show->field('Opcache')->value(ini_get('opcache.enable') !== false ? '已开启Opcache缓存加速' : '未开启Opcache缓存加速');
+        $show->field('Swoole')->value('未开启Swoole加速');
+
+        return Card::make()
+            ->colSpan(12)
+            ->content($show);
+    }
+
+    /**
+     * 升级信息
+     *
+     * @param  void
+     * @return array
+     */
+    protected function upgrade()
+    {
+        $upgrade = Upgrade::make('检查更新',backend_url('api/admin/upgrade/index'));
+
+        $upgrade->step('下载文件',backend_url('api/admin/upgrade/download'))->percent(20)->tip('正在下载软件包...');
+        $upgrade->step('解压文件',backend_url('api/admin/upgrade/extract'))->percent(20)->tip('正在解压软件包...');
+        $upgrade->step('更新程序',backend_url('api/admin/upgrade/updateFile'))->percent(20)->tip('正在更新程序...');
+        $upgrade->step('更新数据库',backend_url('api/admin/upgrade/updateDatabase'))->percent(20)->tip('正在更新数据库...');
+        $upgrade->step('清除缓存',backend_url('api/admin/upgrade/clearCache'))->percent(10)->tip('正在清理缓存...');
+        $upgrade->step('升级完成',backend_url('api/admin/upgrade/finish'))->percent(10)->tip('请稍后，马上完成更新...');
+
+        return $upgrade;
+    }
+}

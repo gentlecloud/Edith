@@ -1,0 +1,18 @@
+<?php
+
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+/***
+ * NewlyAdmin 管理入口
+ */
+Route::group([
+    'namespace' => 'Gentle\\Newly\\Http\\Controllers'
+], function ($router) {
+    $router->get('manage/', 'NewlyController@index')->name('manage/');
+    $router->get('manage/index', 'NewlyController@index')->name('manage/index');
+});
