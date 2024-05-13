@@ -25,7 +25,7 @@ class InputRichText extends FormItem
      * 默认图片上传保存地址
      * @var string
      */
-    protected string $receiver = '/api/attachment/upload?return=tinymce';
+    protected string $receiver = '/api/attachments/upload?return=tinymce';
 
     /**
      * 框的大小

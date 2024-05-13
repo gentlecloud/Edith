@@ -26,6 +26,12 @@ class Drawer extends AmisRenderer
     protected string $type = 'drawer';
 
     /**
+     * 通过拖拽改变 Drawer 大小
+     * @var bool
+     */
+    protected bool $resizable = true;
+
+    /**
      * 指定 drawer 大小
      * @param string $size xs、sm、md、lg、xl、full
      * @return $this

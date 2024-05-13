@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static EdithPlatformInterface platform()        Edith Platform
  * @method static string routerPrefix()                    Edith Router prefix
  * @method static void routes()
+ * @method static string version()
  */
 class Edith extends Facade
 {

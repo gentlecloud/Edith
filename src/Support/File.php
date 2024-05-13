@@ -214,6 +214,6 @@ class File
         if (!is_string($content)) {
             $content = json_encode($content);
         }
-        return file_put_contents($path, "\r\n" . date('Y-m-d H:i:s') . $content, FILE_APPEND);
+        return file_put_contents($path, "\r\n" . date('Y-m-d H:i:s') . ': ' . $content, FILE_APPEND);
     }
 }

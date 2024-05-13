@@ -4,7 +4,7 @@ namespace Gentle\Edith\Components\Contracts;
 use JsonSerializable;
 
 /**
- * @method static RendererInterface component(string $component)        翼搭 UI 渲染 Component
+ * @method static RendererInterface renderer(string $renderer)        翼搭 UI 渲染 Component
  * @method static RendererInterface type(string $type)                  设置当前页面类型
  * @method RendererInterface className(string $className)        配置外层 dom 类名
  * @method RendererInterface body($body)                         当前页面内容

@@ -1,9 +1,9 @@
 <?php
 namespace App\Edith\Controllers;
 
-use \Gentle\Edith\Http\Controllers\AuthController as BaseAuthController;
+use Gentle\Edith\Http\Controllers\AuthController as BaseController;
 
-class AuthController extends BaseAuthController
+class AuthController extends BaseController
 {
 
 }

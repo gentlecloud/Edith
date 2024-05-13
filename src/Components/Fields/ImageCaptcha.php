@@ -11,5 +11,5 @@ class ImageCaptcha extends Field
     /**
      * @var string
      */
-    public string $component = 'image-captcha';
+    public string $renderer = 'image-captcha';
 }

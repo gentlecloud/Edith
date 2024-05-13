@@ -33,7 +33,7 @@ class ProForm extends Renderer
      * Amis 渲染类型
      * @var string
      */
-    protected string $type = 'pro-form';
+    protected string $renderer = 'pro-form';
 
     /**
      * 表单列
@@ -251,11 +251,9 @@ class ProForm extends Renderer
      */
     public function initApi($id = null): ProForm
     {
-        if (!isset($this->api)) {
-            $api = $this->makeActionApi($id);
-            $this->onAction()->redirect($this->redirect ?? null)->api($api);
-            $this->set('name', $this->uniqid); // class_basename(get_called_class())
-        }
+        $api = $this->makeActionApi($id);
+        $this->onAction()->redirect($this->redirect ?? null)->api($api);
+        $this->set('name', $this->uniqid); // class_basename(get_called_class())
         return $this;
     }
 
@@ -265,15 +263,16 @@ class ProForm extends Renderer
      */
     public function render(): array
     {
-        $this->initApi();
-        if ($this->component == 'tabs-form') {
+        if (!isset($this->api)) {
+            $this->initApi();
+        }
+        if ($this->renderer == 'tabs-form') {
             foreach ($this->tabs as $tab) {
                 foreach ($tab->children as $column) {
                     $this->extracted($column);
                 }
-//
             }
-            $this->component = 'pro-form';
+            $this->renderer = 'pro-form';
             $this->columns->push((new Tabs())->items($this->tabs));
             unset($this->tabs);
         } else {
@@ -281,7 +280,6 @@ class ProForm extends Renderer
                 $this->extracted($column);
             }
         }
-
         return (new Service())->body(parent::render())->data($this->initialValues)->render();
     }
 
@@ -297,22 +295,29 @@ class ProForm extends Renderer
         if (!isset($this->initialValues[$dataIndex]) && isset($column->initialValue)) {
             $this->initialValues[$dataIndex] = $column->initialValue;
         }
-        if (isset($column->valueType) || isset($column->component)) {
-            $valueType = $column->valueType ?? $column->component;
+        if (isset($column->valueType) || isset($column->renderer)) {
+            $valueType = $column->valueType ?? $column->renderer;
             if (isset($this->initialValues[$dataIndex]) && in_array($valueType, ['radio', 'tree'])) {
                 $this->initialValues[$dataIndex] = strval($this->initialValues[$dataIndex]);
             }
             if (isset($this->initialValues[$dataIndex]) && $valueType == 'switch') {
                 $this->initialValues[$dataIndex] = $this->initialValues[$dataIndex] == 1 || $this->initialValues[$dataIndex] == 'open';
             }
-            if (isset($this->initialValues[$dataIndex]) && in_array($valueType, ['upload', 'uploader'])) {
+            if (!empty($this->initialValues[$dataIndex]) && in_array($valueType, ['upload', 'uploader'])) {
                 $value = [];
                 if (is_string($this->initialValues[$dataIndex])) {
-                    $value[] = get_attachment($this->initialValues[$dataIndex], 'all');
+                    if ($attachment = get_attachment($this->initialValues[$dataIndex], 'all'))
+                        $value[] = $attachment;
                 } else {
                     foreach ($this->initialValues[$dataIndex] as $row) {
+                        if (!$row) {
+                            continue;
+                        }
                         if (is_string($row)) {
-                            $value[] = get_attachment($row, 'all');
+                            $attachment = get_attachment($row, 'all');
+                            if ($attachment) {
+                                $value[] = $attachment;
+                            }
                         } else {
                             $value[] = $row;
                         }

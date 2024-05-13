@@ -33,6 +33,6 @@ class OnAction extends BaseRenderer
     public function api(?array $api = null): OnAction
     {
         $this->set('actionType', 'ajax');
-        return $this->set('OnAction', $api);
+        return $this->set('api', $api);
     }
 }

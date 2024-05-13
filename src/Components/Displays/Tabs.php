@@ -27,7 +27,7 @@ class Tabs extends Renderer
      * Edith component
      * @var string
      */
-    protected string $component = 'tabs';
+    protected string $renderer = 'tabs';
 
     /**
      * 标签居中展示
@@ -48,17 +48,12 @@ class Tabs extends Renderer
      */
     protected string $tabPosition = 'top';
 
+
     /**
      * 选项卡
      * @var Collection|null
      */
     protected ?Collection $items;
-
-    /**
-     * ProCard 属性透传
-     * @var Collection|null
-     */
-    protected ?Collection $cardProps;
 
     /**
      * construct Tabs
@@ -67,7 +62,6 @@ class Tabs extends Renderer
     {
         parent::__construct();
         $this->items = new Collection();
-        $this->cardProps = new Collection();
     }
 
     /**
@@ -90,7 +84,7 @@ class Tabs extends Renderer
      */
     public function type(string $type): Tabs
     {
-        if (!in_array($type, ['line', 'card','editable-card'])) {
+        if (!in_array($type, ['line', 'card', 'editable-card'])) {
             throw new \Exception("Tabs only supports setting 'line', 'card', 'editable card'");
         }
         $this->type = $type;
@@ -138,16 +132,5 @@ class Tabs extends Renderer
         return tap(new TabPane($key, $label), function ($value) {
             $this->items->push($value);
         });
-    }
-
-    /**
-     * @param string $name
-     * @param $value
-     * @return $this
-     */
-    public function cardProps(string $name, $value): Tabs
-    {
-        $this->cardProps->put($name, $value);
-        return $this;
     }
 }

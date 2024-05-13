@@ -31,6 +31,7 @@ use Illuminate\Support\Collection;
  * @method $this autoFillHeight($autoFillHeight)                                            内容区域自适应高度 boolean 丨 {height: number}
  * @method $this prefixRow(array $prefixRow)                                                顶部总结行 参考： https://aisuda.bce.baidu.com/amis/zh-CN/components/table#%E6%80%BB%E7%BB%93%E8%A1%8C
  * @method $this affixRow(array $affixRow)                                                  底部总结行 参考： https://aisuda.bce.baidu.com/amis/zh-CN/components/table#%E6%80%BB%E7%BB%93%E8%A1%8C
+ * @method $this itemCheckableOn(string $itemCheckableOn)
  * @author Chico
  * @copyright Xiamen Gentle Technology Co., Ltd
  */
@@ -90,8 +91,9 @@ class Crud extends AmisRenderer
     {
         parent::__construct();
         !is_null($title) && $this->set('title', $title);
-        if (is_null($api)) {
-            $this->set('api', url()->current() . '?action=datasource');
+        if (is_null($api))
+        {
+            $this->set('api', url()->current() . '?_action=datasource');
         } else {
             $this->set('api', $api);
         }
@@ -372,7 +374,7 @@ class Crud extends AmisRenderer
      * @param array|Collection $columns
      * @return $this
      */
-    public function columns($columns): Crud
+    public function columns(array|Collection $columns): Crud
     {
         if ($columns instanceof Collection) {
             $this->columns = $columns;
@@ -412,7 +414,7 @@ class Crud extends AmisRenderer
      * @param array|Collection|null $buttons 操作按钮
      * @return Operation
      */
-    public function operation($buttons = null): Operation
+    public function operation(array|Collection|null $buttons = null): Operation
     {
         return tap(new Operation($buttons), function ($value) {
             $this->columns->push($value);

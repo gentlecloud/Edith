@@ -7,7 +7,7 @@ use Gentle\Edith\Models\EdithAuthToken;
 class Auth implements EdithAuthInterface
 {
     /**
-     * 管理员登录Rsa Token
+     * 当前登录 Token
      * @var string|null
      */
     protected ?string $token;
@@ -17,12 +17,6 @@ class Auth implements EdithAuthInterface
      * @var int|null
      */
     protected ?int $id = null;
-
-    /**
-     * 继承上级赋权
-     * @var int|null
-     */
-    protected ?int $pid = null;
 
     /**
      * 当前管理平台
@@ -92,15 +86,6 @@ class Auth implements EdithAuthInterface
     }
 
     /**
-     * 获取继承赋权上级管理员ID
-     * @return int|null
-     */
-    public function pid(): ?int
-    {
-        return $this->pid;
-    }
-
-    /**
      * 获取当前管理平台
      * @return int
      */
@@ -117,7 +102,6 @@ class Auth implements EdithAuthInterface
     public function setUser(array $info): Auth
     {
         $this->id = $info['id'] ?? 0;
-        $this->pid = $info['pid'] ?? null;
         $this->platformId = $info['platform_id'] ?? 0;
         $this->info = $info;
         return $this;

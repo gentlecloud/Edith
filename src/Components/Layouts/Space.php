@@ -26,7 +26,7 @@ class Space extends Renderer
      * Edith 渲染部件
      * @var string 
      */
-    protected string $component = 'space';
+    protected string $renderer = 'space';
 
     /**
      * 是否自动换行，仅在 horizontal 时有效

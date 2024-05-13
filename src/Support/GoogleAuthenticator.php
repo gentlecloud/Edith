@@ -106,7 +106,7 @@ class GoogleAuthenticator
         $height = !empty($params['height']) && (int) $params['height'] > 0 ? (int) $params['height'] : 200;
         $level = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== false ? $params['level'] : 'M';
 
-        $urlencoded = urlencode('otpauth://totp/'.$name.'?secret='.$secret.'');
+        $urlencoded = urlencode('otpauth://totp/'.$name.'?secret=') . $secret;
         if (isset($title)) {
             $urlencoded .= urlencode('&issuer='.urlencode($title));
         }

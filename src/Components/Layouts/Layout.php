@@ -25,6 +25,7 @@ use Gentle\Edith\Components\Renderer;
  * @method $this accountApi(string $accountApi)                      Layout 个人设置 API
  * @method $this token(array $token)                                 Pro Token 自定义设置
  * @method $this debug(bool $debug)                                  开启调试模式
+ * @method $this redirect(string $redirect)                          定义重定向页面路径
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  * @copyright Xiamen Gentle Technology Co., Ltd
  */
@@ -40,7 +41,7 @@ class Layout extends Renderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $component = 'layout';
+    protected string $renderer = 'layout';
 
     /**
      * layout 的菜单模式, side：右侧导航，top：顶部导航
@@ -106,6 +107,12 @@ class Layout extends Renderer
      * @var string
      */
     protected string $accountApi = 'account/settings';
+
+    /**
+     * 重定向加载页面
+     * @var string
+     */
+    protected string $redirect = '/dashboard/index';
 
     /**
      * 调试模式

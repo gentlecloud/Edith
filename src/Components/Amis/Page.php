@@ -8,7 +8,7 @@ namespace Gentle\Edith\Components\Amis;
  * @method $this subTitle(string $subTitle)                               页面副标题
  * @method $this remark(string $remark)                                   标题附近会出现一个提示图标，鼠标放上去会提示该内容。
  * @method $this bodyClassName(string $bodyClassName)                     Body dom 类名
- * @method $this aside(array $aside)                                      往页面的边栏区域加内容
+ * @method $this aside(array|object $aside)                                      往页面的边栏区域加内容
  * @method $this asideMinWidth(int $asideMinWidth)                        边栏最小宽度
  * @method $this asideMaxWidth(int $asideMaxWidth)                        边栏最大宽度
  * @method $this asideClassName(string $asideClassName)                   Aside dom 类名

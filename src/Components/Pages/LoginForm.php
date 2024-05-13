@@ -51,6 +51,6 @@ class LoginForm extends Renderer
             $mode = 'loginForm';
         }
         $this->type = strtolower(preg_replace('/(?<=[a-z])([A-Z])/', '-$1', $mode));
-        $this->set('loginApi', url()->current());
+        $this->set('loginApi', config('edith.auth.redirect_to', url()->current()));
     }
 }

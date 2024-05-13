@@ -17,6 +17,11 @@ class AuthLoginAfter
     public Authenticatable $user;
 
     /**
+     * @var array|null 
+     */
+    public ?array $result = [];
+
+    /**
      * 构造方法
      * AuthLoginBefore constructor.
      * @param Authenticatable $user
@@ -24,5 +29,16 @@ class AuthLoginAfter
     public function __construct(Authenticatable $user)
     {
         $this->user = $user;
+        $this->result = [
+            'id' => $user['id'],
+            'username' => $user['username'],
+            'nickname' => $user['nickname'],
+            'email' => $user['email'],
+            'avatar' => $user['avatar'],
+            'status' => $user['status'],
+            'lasted_at' => $user['lasted_at'],
+            'created_at' => $user['created_at'],
+            'token' => $user->createToken()
+        ];
     }
 }

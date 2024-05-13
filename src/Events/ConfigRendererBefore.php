@@ -11,6 +11,11 @@ class ConfigRendererBefore
     public Collection $custom;
 
     /**
+     * @var array
+     */
+    public array $initialValues = [];
+
+    /**
      * construct
      */
     public function __construct()

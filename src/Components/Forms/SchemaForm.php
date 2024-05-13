@@ -1,6 +1,7 @@
 <?php
 namespace Gentle\Edith\Components\Forms;
 
+use Gentle\Edith\Components\Amis\Action\Button;
 use Gentle\Edith\Components\Fields\Uploader;
 use Gentle\Edith\Exceptions\RendererException;
 
@@ -10,8 +11,6 @@ use Gentle\Edith\Exceptions\RendererException;
  * 参考文档： https://procomponents.ant.design/components/schema-form#proformlayouttype
  * @method $this steps(array $steps)                                      layoutType=steps中的分步表单配置，需要配置 columns 为数组使用  StepFormProps[]
  * @method $this title(string $title)                                     modal 和 drawer 表单可设置标题
- * @method $this label(string $label)                                     modal 和 drawer 表单按钮名称
- * @method $this labelLevel(string $level)                                modal 和 drawer 表单按钮类型 link or button
  * @method Column text(string $dataIndex, ?string $title = null)          图片表单 FormItem
  * @method Column password(string $dataIndex, ?string $title = null)      生成表单 FormItem.Password
  * @method Uploader uploader(string $dataIndex, ?string $title = null)    生成表单 FormItem.uploader 图片上传组件
@@ -28,7 +27,7 @@ class SchemaForm extends ProForm
     /**
      * @var string
      */
-    protected string $component = 'schema-form';
+    protected string $renderer = 'schema-form';
 
     /**
      * @var string
@@ -37,9 +36,9 @@ class SchemaForm extends ProForm
 
     /**
      * modal drawer 表单按钮类型
-     * @var string
+     * @var
      */
-    protected string $labelLevel = 'link';
+    protected $button;
 
     /**
      * @var array|string[]
@@ -65,6 +64,12 @@ class SchemaForm extends ProForm
         'money',
         'segmented'
     ];
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->button = (new Button())->type('button')->level('link')->label('提交')->block()->actionType("custom");
+    }
 
     /**
      * 使用的表单布局模式
@@ -117,6 +122,28 @@ class SchemaForm extends ProForm
     public function hidden(?string $dataIndex = 'id', ?string $title = null): SchemaForm
     {
         $this->columns->push((new Column($dataIndex, $title))->hidden());
+        return $this;
+    }
+
+    /**
+     * modal 和 drawer 表单按钮类型 link or button
+     * @param $level
+     * @return $this
+     */
+    public function labelLevel($level = 'link')
+    {
+        $this->button['type'] = $level;
+        return $this;
+    }
+
+    /**
+     * modal 和 drawer 表单按钮名称
+     * @param string $label
+     * @return $this
+     */
+    public function label(string $label)
+    {
+        $this->button['label'] = $label;
         return $this;
     }
 

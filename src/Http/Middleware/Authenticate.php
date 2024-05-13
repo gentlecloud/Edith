@@ -24,7 +24,7 @@ class Authenticate
         }
         $retHeader = [
             "Access-Control-Expose-Headers" => "X-Redirect-Engine",
-            "X-Redirect-Engine" => "edith/auth/login"
+            "X-Redirect-Engine" => config('edith.auth.redirect_to')
         ];
         // 得到认证凭据
         $authorization = $request->header('Authorization');
@@ -47,25 +47,23 @@ class Authenticate
             abort(401, 'Token has expired.', $retHeader);
         }
 
-        $admin = EdithAdmin::with('platforms')->where('id', $info['id'])->first();
+        $admin = EdithAdmin::where('id', $info['id'])->first();
         if (!$admin || $admin['status'] != 1) {
             abort(401, 'The account does not exist or has been disabled.', $retHeader);
         }
 
-        if ($admin['id'] != config('edith.auth.admin_id', 1) && !$this->shouldUserPassThrough($request, $admin)) {
-            abort(401, 'Not permission.', $retHeader);
-        }
-        
-        if (!empty($info['platform_id'])) {
-//            if ($admin['platform_id'] != $info['platform_id'] || $admin['id'] != config('edith.auth.admin_id', 1)) {
-//                abort(401, "Not permission.", $retHeader);
-//            }
-            app('edith.platform')->setId($info['platform_id'])->setInfo(EdithPlatform::findOrFail($info['platform_id']));
+        if (!$admin->isSuperAdministrator() && !$this->shouldUserPassThrough($request, $admin)) {
+            if ($request->isMethod('get')) {
+                return engine(['type' => 'result', 'status' => 401, 'statusText' => 'Not permission.', 'errMessage' => '无访问权限']);
+            } else {
+                unset($retHeader['X-Redirect-Engine']);
+                abort(401, 'Not permission.', $retHeader);
+            }
         }
 
         app('edith.auth')
             ->setToken($token)
-            ->setUser(array_merge($info, ['pid' => $admin['pid']]));
+            ->setUser($info);
 
         app('auth')->guard('manage')->setUser($admin);
 
@@ -103,7 +101,7 @@ class Authenticate
      */
     protected function shouldUserPassThrough(Request $request, EdithAdmin $admin) : bool
     {
-        $semis = array_merge(config('edith.auth.semi_permissions',[]), []);
+        $semis = array_merge(config('edith.auth.semi_permissions', []), []);
         return collect($semis)
             ->contains(function ($semi) use ($request, $admin) {
                 if ($semi !== '/') {

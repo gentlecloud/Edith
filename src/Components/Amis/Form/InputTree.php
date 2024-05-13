@@ -39,6 +39,18 @@ class InputTree extends FormItem
     protected string $type = 'tree';
 
     /**
+     * 是否提取值
+     * @var bool
+     */
+    protected bool $extractValue = true;
+
+    /**
+     * 是否拼接值，拼接后 array 将拼接 string
+     * @var bool
+     */
+    protected bool $joinValues = false;
+
+    /**
      * 是否多选
      * @param bool $multiple
      * @default false
@@ -253,5 +265,15 @@ class InputTree extends FormItem
     public function enableDefaultIcon(bool $enableDefaultIcon = true): InputTree
     {
         return $this->set('enableDefaultIcon', $enableDefaultIcon);
+    }
+
+    /**
+     * 默认高度会有个 maxHeight，即超过一定高度就会内部滚动，如果希望自动增长请设置此属性
+     * @param bool $heightAuto
+     * @return InputTree
+     */
+    public function heightAuto(bool $heightAuto = true): InputTree
+    {
+        return $this->set('heightAuto', $heightAuto);
     }
 }

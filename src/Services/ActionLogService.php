@@ -1,6 +1,7 @@
 <?php
 namespace Gentle\Edith\Services;
 
+use Gentle\Edith\Exceptions\ServiceException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,9 +15,10 @@ class ActionLogService extends ModelService
 
     /**
      * @return Builder
+     * @throws ServiceException
      */
     public function query(): Builder
     {
-        return $this->model::query()->with('admin');
+        return parent::query()->with('admin');
     }
 }

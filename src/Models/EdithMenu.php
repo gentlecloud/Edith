@@ -32,7 +32,7 @@ class EdithMenu extends Model
      */
     public function routes()
     {
-        return $this->hasMany(self::class, 'pid', 'id')->where('status', 1)->select('pid', 'name', 'path', 'layout', 'status')->distinct();
+        return $this->hasMany(self::class, 'parent_id', 'id')->where('status', 1)->select('parent_id', 'name', 'path', 'layout', 'status')->distinct();
     }
 
     /**
@@ -41,6 +41,6 @@ class EdithMenu extends Model
      */
     public function children()
     {
-        return $this->hasMany(self::class, 'pid', 'id');
+        return $this->hasMany(self::class, 'parent_id', 'id');
     }
 }

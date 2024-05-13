@@ -36,12 +36,6 @@ interface EdithAuthInterface
     public function id(): ?int;
 
     /**
-     * 获取当前管理员上级
-     * @return int|null
-     */
-    public function pid(): ?int;
-
-    /**
      * 获取当前管理员绑定租户平台ID
      * @return int
      */

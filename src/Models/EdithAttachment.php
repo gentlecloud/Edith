@@ -22,6 +22,7 @@ class EdithAttachment extends Model
         'width',
         'height',
         'ext',
+        'mime',
         'path',
         'md5',
         'driver',

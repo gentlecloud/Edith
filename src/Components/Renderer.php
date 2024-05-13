@@ -7,12 +7,13 @@ use Gentle\Edith\Components\Traits\RendererAttribute;
 /**
  * Edith Renderer
  * 翼搭前端 UI 渲染组件
- * @method static $this component(string $component)        翼搭 UI 渲染 Component
- * @method static $this type(string $type)                  设置当前页面类型
- * @method $this className(string $className)               配置外层 dom 类名
- * @method $this body($body)                                当前页面内容
- * @method $this id(string $id)                             自定义名称
- * @method $this style(array $style)                        自定义样式
+ * @method static $this renderer(string $renderer)        翼搭 UI 渲染 Component
+ * @method static $this type(string $type)                设置当前页面类型
+ * @method $this className(string $className)             配置外层 dom 类名
+ * @method $this body($body)                              当前页面内容
+ * @method $this id(string $id)                           自定义名称
+ * @method $this style(array $style)                      自定义样式
+ * @method $this md(int $md)                              Grid 响应式 通过 md 设置屏幕中等宽度（768px）情况下的分栏
  * @author Chico
  * @copyright Xiamen Gentle Technology Co., Ltd
  */
@@ -24,7 +25,7 @@ abstract class Renderer implements RendererInterface
      * 翼搭前端 UI 使用部件
      * @var string
      */
-    protected string $component = 'edith';
+    protected string $renderer = 'edith';
 
     /**
      * 页面类型
@@ -100,14 +101,12 @@ abstract class Renderer implements RendererInterface
     public function render(): array
     {
         $renderer = get_object_vars($this);
-        if (!in_array($this->component, ['edith', 'amis'])) {
-            // component 不为 edith 或 amis 时，则使用翼搭定制 UI 渲染
-            unset($renderer['component']);
+        if (!in_array($this->renderer, ['edith', 'amis'])) {
+            // renderer 不为 edith 或 amis 时，则使用翼搭定制 UI 渲染
             return [
                 'type' => 'edith', // 自定义 Amis 渲染类型为 Edith Custom SDK
-                'component' => $this->component,
                 'name' => $renderer['name'] ?? null,
-                'renderer' => $renderer // amis 与 ant.design 存在部分字段重叠，则将 Ant 页面参数放入 Body 调用
+                'body' => $renderer // amis 与 ant.design 存在部分字段重叠，则将 Ant 页面参数放入 Body 调用
             ];
         }
         return $renderer;

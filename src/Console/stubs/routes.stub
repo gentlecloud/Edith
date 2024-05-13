@@ -1,0 +1,5 @@
+<?php
+
+Route::get('edith/init', 'App\Edith\Controllers\EdithController@init')->name('api/edith/init');
+
+\Gentle\Edith\Facades\Edith::routes();

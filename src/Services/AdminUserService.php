@@ -1,6 +1,9 @@
 <?php
 namespace Gentle\Edith\Services;
 
+use Gentle\Edith\Exceptions\ServiceException;
+use Gentle\Edith\Models\EdithRole;
+use Gentle\Edith\Models\EdithRoleUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,38 +18,95 @@ class AdminUserService extends ModelService
     /**
      * @var array|string[]
      */
-    protected array $guard = ['log', 'google_qrcode'];
+    protected array $guard = ['log', 'google_qrcode', 'confirm', 'role_ids'];
+
+    /**
+     * @var string 
+     */
+    protected string $orderBy = 'asc';
 
     /**
      * @return Builder
-     * @throws \Exception
+     * @throws ServiceException
      */
     public function query(): Builder
     {
-        if (!$this->model) {
-            throw new \Exception('The current service layer is not configured with a model.');
-        }
-        return $this->model::query()->where('type', 'admin');
+        return parent::query()->when(request()->input('lasted_at'), function ($query) {
+            $query->whereBetween('lasted_at', $this->handleSearchTime('lasted_at'));
+        });
     }
 
     /**
-     * @param int|null $id
-     * @return mixed
-     * @throws \Exception
+     * @return array
+     * @throws ServiceException
      */
-    public function get(?int $id = null)
+    public function builder(): array
     {
-        return $this->query()->withOut('log')->findOrFail($id ?: \request()->input('id'))->append('google_qrcode')->toArray();
+        $query = $this->query();
+
+        $paginate = $query->paginate(\request()->input('perPage', 20));
+        return ['items' => $paginate->makeVisible(['google_secret'])->toArray(), 'total' => $paginate->total()];
+    }
+
+    /**
+     * @param $data
+     * @param $id
+     * @return void
+     */
+    protected function saving(&$data, $id = null)
+    {
+        if (empty($data['password'])) {
+            if (empty($id)) {
+                $data['password'] = 123456;
+            } else {
+                unset($data['password']);
+            }
+        }
+    }
+
+    /**
+     * @param $data
+     * @param $id
+     * @return mixed
+     * @throws ServiceException
+     */
+    protected function saved($data, $id = null)
+    {
+        if (isset($data['role_ids'])) {
+            EdithRoleUser::where('user_id', $id)->delete();
+            $ids = is_array($data['role_ids']) ? $data['role_ids'] : explode(',', $data['role_ids']);
+            foreach ($ids as $roleId) {
+                if (EdithRole::where('id', $roleId)->doesntExist()) {
+                    continue;
+                }
+                EdithRoleUser::create([
+                    'role_id' => $roleId,
+                    'user_id' => $id
+                ]);
+            }
+        }
     }
 
     /**
      * @param $id
      * @return mixed
-     * @throws \Exception
+     * @throws ServiceException
+     */
+    public function get($id = null)
+    {
+        $info = $this->getModel()->withOut('log')->findOrFail($id ?: \request()->input('id'))->append('google_qrcode')->toArray();
+        $info['role_ids'] = EdithRoleUser::where('user_id', $id)->pluck('role_id');
+        return $info;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws ServiceException
      */
     public function destroy($id)
     {
-        if ($id == 1) {
+        if (is_array($id) && in_array(1, $id) || $id == 1) {
             throw new \Exception("超级管理员不允许删除！");
         }
         return parent::destroy($id);

@@ -8,7 +8,8 @@ use Gentle\Edith\Components\Renderer;
  * 文档： https://procomponents.ant.design/components/page-container
  * @method $this title(string $title)                                 一级标题
  * @method $this subTitle(string $subTitle)                           二级标题
- * @method $this extraContent(array $extraContent)                    额外内容区，位于 content 的右侧
+ * @method $this extraContent($extraContent)                          额外内容区，位于 content 的右侧
+ * @method $this extra($extra)                                        操作区
  * @method $this content(array $content)                              内容区
  * @method $this tabList(array $tabList)                              tab 标题列表  [{key: string, tab: ReactNode}]
  * @method $this tabActiveKey(string $tabActiveKey)                   当前高亮的 tab 项
@@ -34,7 +35,7 @@ class PageContainer extends Renderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $component = 'edith';
+    protected string $renderer = 'edith';
 
     /**
      * construct PageContainer

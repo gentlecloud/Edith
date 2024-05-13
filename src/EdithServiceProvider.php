@@ -5,6 +5,7 @@ use Gentle\Edith\Contracts\EdithAuthInterface;
 use Gentle\Edith\Contracts\EdithPlatformInterface;
 use Gentle\Edith\Core\Auth;
 use Gentle\Edith\Core\Platform;
+use Gentle\Edith\Support\Database\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -33,8 +34,7 @@ class EdithServiceProvider extends ServiceProvider
      */
     protected array $routeMiddleware = [
         'edith.auth' => Http\Middleware\Authenticate::class,
-        'edith.log' => Http\Middleware\LogOperation::class,
-        'edith.platform' => Http\Middleware\Platform::class
+        'edith.log' => Http\Middleware\LogOperation::class
     ];
 
     /**
@@ -43,7 +43,6 @@ class EdithServiceProvider extends ServiceProvider
      */
     protected array $middlewareGroups = [
         'edith' => [
-            'edith.platform',
             'edith.auth',
             'edith.log'
         ]
@@ -62,7 +61,9 @@ class EdithServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        if (env('APP_DEBUG') == true) {
+            Helper::listen();
+        }
     }
 
     /**
@@ -80,7 +81,6 @@ class EdithServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerRouteMiddleware();
         // 湛拓（Edith）相关服务注册
-        $this->registerModules();
         $this->registerServices();
         // 注册 翼搭（Edith）框架 相关服务任务
         $this->commands($this->commands);
@@ -96,7 +96,7 @@ class EdithServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([__DIR__.'/../config' => config_path()], 'edith-config');
             $this->publishes([__DIR__.'/../database/migrations' => database_path('migrations')], 'edith-migrations');
-//            $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'edith-resources-lang');
+            $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'edith-resources-lang');
             $this->publishes([__DIR__.'/../resources/views' => resource_path('views/admin')], 'edith-resources-views');
         }
     }
@@ -151,20 +151,6 @@ class EdithServiceProvider extends ServiceProvider
         $this->app->bind(EdithAuthInterface::class, function() {
             return new Auth;
         });
-        // 租户平台
-        $this->app->singleton('edith.platform', EdithPlatformInterface::class);
-        $this->app->bind(EdithPlatforminterface::class, function() {
-            return new Platform;
-        });
-    }
-
-    /**
-     * Register all modules.
-     */
-    protected function registerModules()
-    {
-        // 注册模块服务
-//        Edith::classLoader()->addPsr4(config('edith.modules.namespace', 'Modules') . '\\', $this->app->config['edith.modules.path'] ?? 'modules');
     }
 
     /**
@@ -172,7 +158,7 @@ class EdithServiceProvider extends ServiceProvider
      * 设置HTTPS
      */
     protected function setHttps(){
-        if (env('APP_SSL', false) !== false) {
+        if (env('WEB_SITE_SSL', false) !== false) {
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);
         }

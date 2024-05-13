@@ -1,6 +1,7 @@
 <?php
 namespace Gentle\Edith\Services;
 
+use Gentle\Edith\Exceptions\ServiceException;
 use Illuminate\Database\Eloquent\Model;
 
 class MenuService extends ModelService
@@ -12,27 +13,31 @@ class MenuService extends ModelService
     protected ?string $modelName = 'Gentle\Edith\Models\EdithMenu';
 
     /**
+     * @var string
+     */
+    protected string $orderBy = 'asc';
+
+    /**
      * @return array
+     * @throws ServiceException
      */
     public function builder(): array
     {
-        $query = $this->query()->with('children')->where('pid', 0)->orderBy('sort', 'asc');
-        if ($orderBy = \request()->input('orderBy')) {
-            $query->orderBy($orderBy, request()->input('orderDir', 'asc'));
-        }
+        $query = $this->query()->with('children')->where('parent_id', 0)->orderBy('sort', 'asc')->when(\request()->input('orderBy'), function ($query) {
+            $query->orderBy(\request()->input('orderBy'), request()->input('orderDir', 'asc'));
+        });
         return $query->get()->toArray();
     }
 
     /**
      * @param $id
-     * @return mixed
-     * @throws \Exception
+     * @return void
+     * @throws ServiceException
      */
-    public function destroy($id)
+    protected function deleting($id)
     {
-        if ($this->getModel()->where('pid', $id)->exists()) {
-            throw new \Exception('当前菜单存在子菜单，无法删除！');
+        if ($this->getModel()->where('parent_id', $id)->exists()) {
+            throw new ServiceException('当前菜单存在子菜单，无法删除！');
         }
-        return parent::destroy($id);
     }
 }

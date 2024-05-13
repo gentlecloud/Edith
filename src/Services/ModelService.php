@@ -1,9 +1,14 @@
 <?php
 namespace Gentle\Edith\Services;
 
+use Gentle\Edith\Exceptions\ServiceException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * 模型服务层
+ */
 class ModelService
 {
     /**
@@ -59,12 +64,12 @@ class ModelService
 
     /**
      * @return Model
-     * @throws \Exception
+     * @throws ServiceException
      */
     public function getModel(): Model
     {
         if (!$this->model) {
-            throw new \Exception('The current service layer is not configured with a model.');
+            throw new ServiceException('The current service layer is not configured with a model.');
         }
         return $this->model;
     }
@@ -90,69 +95,96 @@ class ModelService
 
     /**
      * @return Builder
-     * @throws \Exception
+     * @throws ServiceException
      */
     public function query(): Builder
     {
         if (!$this->model) {
-            throw new \Exception('The current service layer is not configured with a model.');
+            throw new ServiceException('The current service layer is not configured with a model.');
         }
-        return $this->model::query();
-    }
-
-    /**
-     * @return array
-     */
-    public function builder(): array
-    {
-        $query = $this->query();
+        $query = $this->model::query();
         if ($orderBy = \request()->input('orderBy')) {
             $query->orderBy($orderBy, \request()->input('orderDir', 'asc'));
         } else {
             $query->orderBy('id', $this->orderBy ?: 'desc');
         }
+        return $query->when(\request()->input('created_at'), function ($query) {
+            $time = $this->handleSearchTime();
+            $query->whereBetween('created_at', $time);
+        })->when(\request()->input('updated_at'), function ($query) {
+            $time = $this->handleSearchTime('updated_at');
+            $query->whereBetween('updated_at', $time);
+        })->when(\request()->input('deleted_at'), function ($query) {
+            $time = $this->handleSearchTime('deleted_at');
+            $query->whereBetween('deleted_at', $time);
+        });
+    }
+
+    /**
+     * @return array
+     * @throws ServiceException
+     */
+    public function builder(): array
+    {
+        $query = $this->query();
+
         $paginate = $query->paginate(\request()->input('perPage', 20));
         return ['items' => $paginate->items(), 'total' => $paginate->total()];
     }
 
     /**
-     * @param int|null $id
+     * @param $id
      * @return mixed
+     * @throws ServiceException
      */
-    public function get(?int $id = null)
+    public function get($id = null)
     {
-        return $this->query()->findOrFail($id ?: \request()->input('id'))->toArray();
+        return $this->getModel()->findOrFail($id ?: \request()->input('id'));
     }
 
     /**
      * 保存
-     * @param array $data
+     * @param $data
      * @return mixed
+     * @throws ServiceException
      */
-    public function store(array $data)
+    public function store($data)
     {
-        return $this->getModel()->create($this->fillData($data));
+        $result = null;
+        DB::transaction(function () use (&$result, $data) {
+            $this->saving($data);
+            $result = $this->getModel()->create($this->fillData($data));
+            $this->saved($data, $result->id);
+        }, 3);
+        return $result;
     }
 
     /**
      * 默认模型更新
-     * @param array $data
+     * @param $data
      * @param $id
      * @return mixed
+     * @throws ServiceException
      */
-    public function update(array $data, $id)
+    public function update($data, $id)
     {
-        $model = $this->getModel()->findOrFail($id);
-        foreach ($this->fillData($data) as $key => $value) {
-            $model->setAttribute($key, $value);
-        }
-        return $model->save();
+        DB::transaction(function () use (&$result, $data, $id) {
+            $model = $this->getModel()->findOrFail($id);
+            $this->saving($data, $id);
+            foreach ($this->fillData($data) as $key => $value) {
+                $model->setAttribute($key, $value);
+            }
+            $result = $model->save();
+            $this->saved($data, $id);
+        }, 3);
+        return $result;
     }
 
     /**
      * 拖拽排序保存
      * @param array $rows
      * @return void
+     * @throws ServiceException
      */
     public function saveOrder(array $rows)
     {
@@ -177,13 +209,56 @@ class ModelService
      * 默认模型删除
      * @param $id
      * @return mixed
+     * @throws ServiceException
      */
     public function destroy($id)
     {
-        if (str_contains($id, ',')) {
-            $id = explode(',', $id);
-        }
-        return $this->getModel()->destroy($id);
+        $this->deleting($id);
+        $result = $this->getModel()->destroy($id);
+        $this->deleted($id);
+        return $result;
+    }
+
+    /**
+     * 保存前置操作 保存钩子 包含新增和更新
+     * @param $data
+     * @param $id
+     * @return void
+     */
+    protected function saving(&$data, $id = null)
+    {
+
+    }
+
+    /**
+     * 保存后置操作 保存钩子 包含新增和更新
+     * @param array $data
+     * @param $id
+     * @return void
+     */
+    protected function saved($data, $id = null)
+    {
+
+    }
+
+    /**
+     * 删除前置操作 删除钩子
+     * @param $id
+     * @return void
+     */
+    protected function deleting($id)
+    {
+
+    }
+
+    /**
+     * 删除后置操作 删除钩子
+     * @param $id
+     * @return void
+     */
+    protected function deleted($id)
+    {
+
     }
 
     /**

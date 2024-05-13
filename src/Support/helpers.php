@@ -62,17 +62,18 @@ if (!function_exists('failed')) {
  * @author Gentle Edith <gentle@3ii.cn>
  */
 if (!function_exists('edith_config')) {
-    function edith_config($name , $default = '') {
+    function edith_config($name, $default = '') {
         $value = \Illuminate\Support\Facades\Cache::get($name);
         if (!empty($value) && env('APP_DEBUG') !== true) {
             return $value;
         }
 
-        $value = \Gentle\Edith\Models\EdithConfig::where('name',$name)->value('value');
-        if(empty($value)) {
+        $value = \Gentle\Edith\Models\EdithConfig::where('name', $name)->value('value');
+        if (empty($value)) {
             $value = $default;
+        } else {
+            \Illuminate\Support\Facades\Cache::put($name, $value);
         }
-        \Illuminate\Support\Facades\Cache::put($name, $value);
         return $value;
     }
 }
@@ -143,10 +144,10 @@ if(!function_exists('get_attachment')) {
             return $id;
         } else if(strpos($id, 'public') !== false) {
             $path = Storage::url($id);
-            return env('APP_SSL',false) !== false ? secure_asset($path) : asset($path);
+            return env('WEB_SITE_SSL',false) !== false ? secure_asset($path) : asset($path);
         }
 
-        if (is_object($id) || !intval($id) && !is_not_json($id)) {
+        if (is_object($id) || !intval($id) && is_json($id)) {
             $json = json_decode($id,true);
             if ($field == 'path' && isset($json['url']) && url()->isValidUrl($json['url'])) {
                 return $json['url'];
@@ -154,8 +155,7 @@ if(!function_exists('get_attachment')) {
                 return $json;
             }
         }
-
-        $picture = \Gentle\Edith\Models\EdithAttachment::where('id',$id)->select('id','name','path')->first();
+        $picture = \Gentle\Edith\Models\EdithAttachment::where('id', $id)->orWhere('path', $id)->select('id', 'name', 'path')->first();
 
         // 图片存在
         if ($picture) {
@@ -165,7 +165,7 @@ if(!function_exists('get_attachment')) {
                         $url = $picture['path'];
                     } else {
                         $path = Storage::url($picture['path']);
-                        $url = env('APP_SSL',false) !== false ? secure_asset($path) : asset($path);
+                        $url = env('WEB_SITE_SSL', false) !== false ? secure_asset($path) : asset($path);
                     }
                     $result = $url;
                     break;
@@ -177,7 +177,7 @@ if(!function_exists('get_attachment')) {
                         $url = $picture['path'];
                     } else {
                         $path = Storage::url($picture['path']);
-                        $url = env('APP_SSL', false) !== false ? secure_asset($path) : asset($path);
+                        $url = env('WEB_SITE_SSL', false) !== false ? secure_asset($path) : asset($path);
                     }
                     $picture['url'] = $url;
                     $result = $picture;
@@ -258,15 +258,22 @@ if (!function_exists('modify_env')) {
     {
         $envPath = base_path() . DIRECTORY_SEPARATOR . '.env';
         $contentArray = collect(file($envPath, FILE_IGNORE_NEW_LINES));
-        $contentArray->transform(function ($item) use ($data){
+
+        $fieldArray = [];
+        $contentArray->transform(function ($item) use ($data, &$fieldArray) {
             foreach ($data as $key => $value){
                 if (Str::contains($item, $key)){
+                    $fieldArray[] = $key;
                     return $key . '=' . $value;
                 }
             }
-
             return $item;
         });
+        foreach ($data as $key => $value){
+            if (!in_array($key, $fieldArray)){
+                $contentArray->push($key . '=' . $value);
+            }
+        }
         $content = implode("\n", $contentArray->toArray());
         \File::put($envPath, $content);
     }

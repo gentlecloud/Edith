@@ -71,11 +71,12 @@ class Grid extends AmisRenderer
 
     /**
      * 添加列
+     * @param object|array $body
      * @return GridColumn
      */
-    public function column(): GridColumn
+    public function column(array|object $body): GridColumn
     {
-        return tap(new GridColumn(), function ($value) {
+        return tap((new GridColumn())->body($body), function ($value) {
             $this->columns->push($value);
         });
     }

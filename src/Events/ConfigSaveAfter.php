@@ -1,7 +1,7 @@
 <?php
 namespace Gentle\Edith\Events;
 
-class ConfigSaveBefore
+class ConfigSaveAfter
 {
     /**
      * @var array

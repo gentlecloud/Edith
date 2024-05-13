@@ -29,7 +29,7 @@ class EdithAdmin extends Model implements AuthenticatableContract, HasEdithToken
      * @var string[]
      */
     protected $hidden = [
-        'password', 'remember_token', 'api_token', 'google_secret'
+        'password', 'remember_token', 'google_secret'
     ];
 
     protected $appends = [];
@@ -58,14 +58,6 @@ class EdithAdmin extends Model implements AuthenticatableContract, HasEdithToken
      */
     public function getGoogleQrcodeAttribute() {
         return empty($this->google_secret) ? null : (new GoogleAuthenticator)->getQRCodeGoogleUrl($this->google_secret);
-    }
-
-    /**
-     * @return hasMany
-     */
-    public function platforms()
-    {
-        return $this->hasMany(EdithPlatform::class, 'admin_id');
     }
 
     /**

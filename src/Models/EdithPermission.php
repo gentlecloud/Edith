@@ -14,9 +14,9 @@ class EdithPermission extends Model
      * @var array
      */
     protected $fillable = [
-        'menu',
-        'uri',
-        'methods'
+        'menu_id',
+        'name',
+        'uri'
     ];
 
     /**
@@ -27,4 +27,17 @@ class EdithPermission extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
+
+    /**
+     * @var string[]
+     */
+    protected $appends = ['menu_name'];
+
+    /**
+     * @return string
+     */
+    public function getMenuNameAttribute()
+    {
+        return EdithMenu::query()->where('id', $this->menu_id)->value('name') ?: '-';
+    }
 }

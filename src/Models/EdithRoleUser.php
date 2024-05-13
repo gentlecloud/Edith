@@ -31,8 +31,8 @@ class EdithRoleUser extends Model
      * 获取用户所有权限
      * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
      */
-    public function permissions(): BelongsToMany
+    public function permissions()
     {
-        return $this->belongsToMany(EdithPermission::class,EdithRolePermission::class,'role_id','permission_id');
+        return $this->belongsToMany(EdithPermission::class, EdithRolePermission::class, 'role_id', 'permission_id');
     }
 }

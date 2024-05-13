@@ -3,6 +3,7 @@ namespace Gentle\Edith\Components\Traits;
 
 use Gentle\Edith\Components\Amis\Action\Action;
 use Gentle\Edith\Components\Amis\Action\AjaxAction;
+use Gentle\Edith\Components\Amis\Action\Button;
 use Gentle\Edith\Components\Amis\Action\Dialog;
 use Gentle\Edith\Components\Amis\Action\Drawer;
 use Gentle\Edith\Components\Amis\Form\Form;
@@ -12,14 +13,15 @@ use Illuminate\Support\Str;
 trait RowActions
 {
     /**
-     * @param string $type 按钮类型
+     * @param array|object $controls 表单字段
      * @param string $mode 窗口类型
+     * @param string $type 按钮类型
      * @return $this
      * @throws RendererException
      */
-    public function rowOnlyEditAction(string $type = 'link', string $mode = 'link')
+    public function rowOnlyEditAction(array|object $controls = [], string $mode = 'modal', string $type = 'link')
     {
-        $this->buttons->push($this->rowEditAction($type, $mode));
+        $this->buttons->push($this->rowEditAction($controls, $mode, $type));
         return $this;
     }
 
@@ -35,54 +37,58 @@ trait RowActions
     }
 
     /**
-     * @param string $type 按钮类型 link、primary、secondary、info、success、warning、danger、light、dark、default
+     * @param array|object $controls 表单字段
      * @param string $mode 窗口模式 modal | drawer | link
-     * @param array|null $fields 表单字段
+     * @param string $type 按钮类型 link、primary、secondary、info、success、warning、danger、light、dark、default
      * @return $this
      * @throws RendererException
      */
-    public function rowOnlyEditDestroyAction(string $type = 'link', string $mode = 'link', ?array $fields = [])
+    public function rowOnlyEditDestroyAction(array|object $controls = [], string $mode = 'modal', string $type = 'link')
     {
-        $this->buttons->push($this->rowEditAction($type, $mode, $fields));
+        $this->buttons->push($this->rowEditAction($controls, $mode, $type));
         $this->buttons->push($this->rowDestroyAction($type));
         return $this;
     }
 
     /**
      * 基础行操作 详情, 编辑 , 删除
-     * @param string $type 按钮类型 link、primary、secondary、info、success、warning、danger、light、dark、default
+     * @param array|object $controls 表单字段
      * @param string $mode 窗口模式 modal | drawer | link
-     * @param array|null $fields 表单字段
+     * @param string $type 按钮类型 link、primary、secondary、info、success、warning、danger、light、dark、default
      * @return $this
      * @throws RendererException
      */
-    public function rowBasicActions(string $type = 'link', string $mode = 'link', ?array $fields = [])
+    public function rowBasicActions(array|object $controls = [], string $mode = 'modal', string $type = 'link')
     {
-        $this->buttons->push($this->rowEditAction($type, $mode, $fields));
+        $this->buttons->push($this->rowEditAction($controls, $mode, $type));
         $this->buttons->push($this->rowDestroyAction($type));
         return $this;
     }
 
     /**
-     * @param string $type 按钮类型 link、primary、secondary、info、success、warning、danger、light、dark、default
+     * @param array|object $controls 表单字段
      * @param string $mode 窗口模式 modal | drawer | link
-     * @param array|null $fields 表单字段
-     * @return Action
+     * @param string $type 按钮类型 link、primary、secondary、info、success、warning、danger、light、dark、default
+     * @return object
      * @throws RendererException
      */
-    protected function rowEditAction(string $type = 'link', string $mode = 'link', ?array $fields = [])
+    protected function rowEditAction(array|object $controls = [], string $mode = 'modal', string $type = 'link')
     {
-        $action = (new Action)->label('编辑')->level($type);
-        $prefix = Str::replaceFirst('api/', '', \request()->route()->getPrefix());
-        $routeName = explode('.', \request()->route()->getName())[0];
-        $url = "{$prefix}/{$routeName}" . '/${id}/edit';
-
-
+        if (is_object($controls) && !($controls instanceof Form)) {
+            return $controls;
+        }
+        $action = (new Button)->label('编辑')->level($type);
+        $url = \request()->route()->uri() . '/${id}/edit';
         if ($mode == 'link') {
             $component = $action->actionType('url')->url($url);
         } else {
-            $api = \request()->route()->getPrefix() . "/{$routeName}/" . '${id}';
-            $form = (new Form())->api("put:$api")->controls($fields);
+            $api = \request()->route()->uri() . '/${id}';
+            if ($controls instanceof Form) {
+                $form = $controls;
+            } else {
+                $form = (new Form)->controls($controls);
+            }
+            $form->api("put:$api");
             switch ($mode) {
                 case 'm':
                 case 'modal':

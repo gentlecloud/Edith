@@ -3,6 +3,7 @@ namespace Gentle\Edith\Support;
 
 use Gentle\Edith\Components\Amis\Page;
 use Gentle\Edith\Components\Pages\PageContainer;
+use Gentle\Edith\Support\Database\Helper;
 
 /**
  * Edith Response
@@ -12,22 +13,27 @@ class Response
 {
     /**
      * 渲染翼搭 UI Json
-     * @param array|object|string $body
+     * @param array|object|string|null $body
      * @param string|bool|null $pageBody 内容是否自动包裹 Page
      * @return mixed
      */
-    public static function render($body = null, $pageBody = true)
+    public static function render(array|object|string|null $body = null, string|bool|null $pageBody = true)
     {
-        if (is_string($pageBody)) {
-            $body = new PageContainer($pageBody, $body);
-        } else if ($pageBody) {
+        if ($pageBody && !($body instanceof Page)) {
             $body = (new Page)->body($body);
         }
-        return response()->json([
+        if (is_string($pageBody)) {
+            $body = new PageContainer($pageBody, $body);
+        }
+        $data = [
             'data' => $body,
             'status' => 0,
             'msg' => 'renderer.'
-        ]);
+        ];
+        if (env('APP_DEBUG') == true) {
+            $data['_sql'] = Helper::records();
+        }
+        return response()->json($data);
     }
 
     /**
@@ -98,6 +104,10 @@ class Response
             $content['errorCode'] = $errCode;
             $content['errorMessage'] = $msg;
             $content['data'] = null;
+        }
+
+        if (env('APP_DEBUG') == true) {
+            $content['_sql'] = Helper::records();
         }
 
         return response()->json($content, $statusCode)->withHeaders($headers ?: []);

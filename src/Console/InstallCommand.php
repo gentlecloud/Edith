@@ -2,10 +2,10 @@
 namespace Gentle\Edith\Console;
 
 use Gentle\Edith\Models\Seeders\EdithSeeder;
+use Gentle\Edith\Models\EdithAdmin;
+use Gentle\Edith\Support\File;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Gentle\Edith\Models\EdithAdmin;
-use Gentle\Edith\Support\FileUtils;
 
 class InstallCommand extends Command
 {
@@ -14,7 +14,7 @@ class InstallCommand extends Command
      * The console command name.
      * @var string
      */
-    protected $signature = 'edith:install {username=admin} {password=123456} {email=edith@newly.cc}';
+    protected $signature = 'edith:install {username=admin} {password=123456} {email=edith@3ii.cn}';
 
     /**
      * The console command description.
@@ -45,7 +45,7 @@ class InstallCommand extends Command
 
         modify_env(['EDITH_INSTALL' => true]);
         modify_env(['EDITH_VERSION' => self::version]);
-        FileUtils::writeLog(base_path('install.lock'), 'Gentle_Edith install: ok');
+        File::writeLog(base_path('install.lock'), 'Gentle_Edith install: ok');
     }
 
     /**
@@ -56,7 +56,7 @@ class InstallCommand extends Command
     public function initDatabase()
     {
 
-        if(env('EDITH_INSTALL') === true){
+        if (env('EDITH_INSTALL') === true){
             $this->call('migrate:fresh --seed');
         } else {
             $this->call('migrate');
@@ -83,11 +83,10 @@ class InstallCommand extends Command
         }
 
         $this->makeDir('/');
-        $this->line('<info>Manage directory was created:</info> '.str_replace(base_path(), '', $this->directory));
+        $this->line('<info>Edith directory was created:</info> '.str_replace(base_path(), '', $this->directory));
 
         $this->createDashboardController();
         $this->createAdminController();
-        $this->createUpgradeController();
         $this->createRoutesFile();
     }
 
@@ -98,11 +97,11 @@ class InstallCommand extends Command
      */
     public function createDashboardController()
     {
-        $controller = $this->directory . '/DashboardController.php';
-        $contents = $this->getStub('DashboardController');
+        $controller = $this->directory . '/EdithController.php';
+        $contents = $this->getStub('EdithController');
 
         $this->laravel['files']->put($controller,$contents);
-        $this->line('<info>DashboardController file was created:</info> '.str_replace(base_path(), '', $controller));
+        $this->line('<info>EdithController file was created:</info> '.str_replace(base_path(), '', $controller));
     }
 
     /**
@@ -124,28 +123,13 @@ class InstallCommand extends Command
         $this->line('<info>AdminController and AuthController file was created:</info> '.str_replace(base_path(), '', $controller));
     }
 
-
-    /**
-     * Create UpgradeController.
-     *
-     * @return void
-     */
-    public function createUpgradeController()
-    {
-        $controller = $this->directory . '/UpgradeController.php';
-        $contents = $this->getStub('UpgradeController');
-
-        $this->laravel['files']->put($controller,$contents);
-        $this->line('<info>UpgradeController file was created:</info> '.str_replace(base_path(), '', $controller));
-    }
-
     /**
      * Create routes file.
      * @return void
      */
     protected function createRoutesFile()
     {
-        $file = base_path() . '/routes/web.php';
+        $file = base_path() . '/routes/edith.php';
         $contents = $this->getStub('routes');
 
         $this->laravel['files']->put($file, $contents);
@@ -183,7 +167,7 @@ class InstallCommand extends Command
         $email = $this->argument('email');
         // 管理员
         EdithAdmin::create([
-            'username' => $username,'nickname' => '超级管理员','email' => $email,'phone' => '10086','sex' => 1,'password' => bcrypt($password)
+            'username' => $username,'nickname' => '超级管理员', 'email' => $email, 'phone' => '10086', 'password' => $password
         ]);
     }
 }

@@ -2,6 +2,7 @@
 namespace Gentle\Edith\Http\Controllers;
 
 use Gentle\Edith\Components\Amis\Crud;
+use Gentle\Edith\Components\Amis\Form\InputDatetimeRange;
 use Gentle\Edith\Exceptions\RendererException;
 use Illuminate\Http\Request;
 
@@ -30,11 +31,15 @@ class ActionLogController extends Controller
         $crud->column('method', '请求方式')->width(80)->sortable();
         $crud->column('url', '行为链接')->copyable();
         $crud->column('ip', 'IP')->copyable()->sortable();
-        $crud->column('region', '定位')->copyable();
+        $crud->column('region', '属地')->copyable();
         $crud->column('created_at', '发生时间');
 
         $crud->operation()->rowOnlyDestroyAction();
         $crud->onlyBulkDeleteAction();
+
+        $crud->filter([
+            (new InputDatetimeRange('created_at', '发生时间'))
+        ]);
 
         return $crud;
     }

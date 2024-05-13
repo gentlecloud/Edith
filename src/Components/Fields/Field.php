@@ -44,7 +44,7 @@ class Field extends Renderer
      * @var array|string[]
      */
     protected array $methods = [
-        'component',
+        'renderer',
         'name',
         'title',
         'label',
@@ -71,14 +71,15 @@ class Field extends Renderer
         'captcha',
         'engine',
         'help',
-        'extra'
+        'extra',
+        'id'
     ];
 
     /**
      * 翼搭 UI 渲染组件
      * @var string
      */
-    public string $component = 'text';
+    public string $renderer = 'text';
 
     /**
      * 使用引擎，默认使用 Ant Design，若为 Amis 则使用 Amis 规则生成表单校验, Label等..
@@ -286,18 +287,32 @@ class Field extends Renderer
         return $this->set('engine', $engine);
     }
 
-    public function upload(string $type = 'image', int $max = 1, $api = null)
+    /**
+     * 附件上传
+     * @param string $type
+     * @param int $max
+     * @param $api
+     * @return $this
+     */
+    public function upload(string $type = 'image/*', int $max = 1, $api = null)
     {
-        $this->set('action', $api ?: url('api/attachment/upload'));
-        if ($type == 'image') {
-            $this->fieldProps->put('name', 'file');
-            $this->fieldProps->put('listType', 'picture-card');
-            $this->fieldProps->put('accept', 'image/*');
-        }
+        $this->set('action', $api ?: url('api/attachments/upload'));
         $this->set('max', $max);
+        $this->set('accept', $type);
         $this->set('multiple', $max > 1);
-        $this->component = 'uploader';
+        $this->renderer = 'uploader';
         return $this;
+    }
+
+    /**
+     * 上传多选数量
+     * @param int $number
+     * @return Field
+     */
+    public function multiple(int $number = 1): Field
+    {
+        $this->set('max', $number);
+        return $this->set('multiple', $number > 1);
     }
 
     /**
@@ -329,7 +344,8 @@ class Field extends Renderer
             'renderer' => $renderer,
             'name' => $renderer['name'],
             'label' => $this->engine === 'ant' ? null : $renderer['label'],
-            'visibleOn' => $renderer['visibleOn'] ?? null
+            'visibleOn' => $renderer['visibleOn'] ?? null,
+            'id' => $this->id ?? 'input-captcha'
         ];
     }
 }

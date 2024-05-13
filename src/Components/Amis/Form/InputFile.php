@@ -42,7 +42,7 @@ class InputFile extends FormItem
     public function __construct(?string $name = null, ?string $label = null)
     {
         parent::__construct($name, $label);
-        $this->receiver('api/attachment/upload');
+        $this->receiver('api/attachments/upload');
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 namespace Gentle\Edith\Components\Forms;
 
-use Gentle\Edith\Components\Tabs\TabPane;
+use Gentle\Edith\Components\Displays\TabPane;
 use Gentle\Edith\Components\Tabs\Tabs;
 use Illuminate\Support\Collection;
 
@@ -10,7 +10,7 @@ class TabsForm extends ProForm
     /**
      * @var string
      */
-    protected string $component = 'tabs-form';
+    protected string $renderer = 'tabs-form';
 
     /**
      * 子标签页

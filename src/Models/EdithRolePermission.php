@@ -29,10 +29,9 @@ class EdithRolePermission extends Model
 
     /**
      * the Role has and belongs to many permission.
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function permissions() : HasMany
+    public function permissions()
     {
-        return $this->hasMany(EdithPermission::class,'id','permission_id');
+        return $this->hasMany(EdithPermission::class, 'id', 'permission_id');
     }
 }

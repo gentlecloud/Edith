@@ -14,6 +14,7 @@ use Gentle\Edith\Events\ConfigRendererBefore;
 use Gentle\Edith\Exceptions\RendererException;
 use Gentle\Edith\Models\EdithConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SystemController extends Controller
 {
@@ -40,8 +41,8 @@ class SystemController extends Controller
         $crud->column('name', '字段')->copyable();
         $crud->column('remark', '备注')->quickEdit();
 
-        $crud->operation()->rowOnlyEditDestroyAction('link', 'modal', $this->controls());
-        $crud->onlyBulkDeleteAction()->basicHeaderToolbar('modal', '创建配置', $this->controls());
+        $crud->operation()->rowOnlyEditDestroyAction($this->controls());
+        $crud->onlyBulkDeleteAction()->basicHeaderToolbar($this->controls(), 'modal', '创建配置');
 
         $this->title = '配置项';
         return $crud->quickSaveApi();
@@ -55,6 +56,7 @@ class SystemController extends Controller
     {
         $options = [
             'text' => '输入框',
+            'digit' => '数字输入框',
             'textarea' => '文本域',
             'picture' => '图片',
             'file' => '文件',
@@ -78,7 +80,7 @@ class SystemController extends Controller
      */
     public function website()
     {
-        $tab = (new TabsForm)->api('api/system/save');
+        $tab = (new TabsForm)->api('api/system/website/store');
 
         $event = new ConfigRendererBefore();
         event($event);
@@ -94,16 +96,14 @@ class SystemController extends Controller
         }
 
         $groups = array_merge($groups, $event->custom->toArray());
-        foreach ($groups as $key => $group) {
-            $tab->tab($key ?: '配置', $this->distForm($group));
+        foreach ($groups as $label => $group) {
+            $tab->tab($label ?: '配置', $this->distForm($group));
         }
 
-        $after = new ConfigRendererAfter();
-        event($after);
         $page = (new ProCard)
             ->title('网站设置')
             ->extra((new Action('刷新'))->refresh())
-            ->body($tab->initialValues($after->initialValues));
+            ->body($tab->initialValues($event->initialValues));
         return engine($page);
     }
 
@@ -112,16 +112,18 @@ class SystemController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function save(Request $request)
+    public function store(Request $request)
     {
         $data = $request->post();
         $envs = [];
         try {
             foreach ($data as $key => $value) {
-                if (in_array($key, ['APP_DEBUG', 'SSL_OPEN'])) {
-                    $envs[$key] = $value ? 'true' : 'false';
-                }
                 EdithConfig::where('name', $key)->update(['value' => $value]);
+                if (in_array($key, ['APP_DEBUG', 'WEB_SITE_SSL', 'EDITH_DEV'])) {
+                    $envs[$key] = is_bool($value) ? ($value ? 'true' : 'false') : $value;
+                } else {
+                    Cache::put($key, $value);
+                }
             }
             if (count($envs)) {
                 modify_env($envs);
@@ -147,7 +149,7 @@ class SystemController extends Controller
             }
             switch ($item['type']) {
                 case 'textarea':
-                    $items[] = Field::component('textarea')
+                    $items[] = Field::renderer('textarea')
                         ->label($item['title'] ?? $item['name'])
                         ->name($item['name'])
                         ->initialValue($item['value'] ?? null)
@@ -157,7 +159,7 @@ class SystemController extends Controller
                         ->help($item['remark']);
                     break;
                 case 'switch':
-                    $items[] = Field::component('switch')
+                    $items[] = Field::renderer('switch')
                         ->label($item['title'] ?? $item['name'])
                         ->name($item['name'])
                         ->initialValue($item['value'] == '1')
@@ -184,10 +186,11 @@ class SystemController extends Controller
 //                })->width(600);
                     break;
                 case 'hidden':
-                    $items[] = Field::component('hidden')->name($item['name']);
+                    $items[] = Field::renderer('hidden')->name($item['name'])->placeholder("请输入")->initialValue($item['value']);
                     break;
                 default:
                     $items[] = (new Field($item['name'], $item['title'] ?? $item['name']))
+                        ->renderer($item['type'])
                         ->initialValue($item['value'] ?? null)
                         ->placeholder("请输入" . ($item['title'] ?? ''))
                         ->width(600)

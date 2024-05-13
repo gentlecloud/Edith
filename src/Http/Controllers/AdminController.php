@@ -5,9 +5,18 @@ use Gentle\Edith\Components\Amis\Action\Button;
 use Gentle\Edith\Components\Amis\Crud;
 use Gentle\Edith\Components\Amis\Form\Form;
 use Gentle\Edith\Components\Amis\Form\FormItem;
+use Gentle\Edith\Components\Amis\Form\Hidden;
 use Gentle\Edith\Components\Amis\Form\InputDate;
 use Gentle\Edith\Components\Amis\Form\InputDatetimeRange;
+use Gentle\Edith\Components\Amis\Form\InputImage;
+use Gentle\Edith\Components\Amis\Form\InputPassword;
+use Gentle\Edith\Components\Amis\Form\InputStatic;
+use Gentle\Edith\Components\Amis\Form\InputSwitch;
+use Gentle\Edith\Components\Amis\Form\InputUploader;
+use Gentle\Edith\Components\Amis\Form\Select;
+use Gentle\Edith\Components\Amis\Show\Qrcode;
 use Gentle\Edith\Components\Forms\SchemaForm;
+use Gentle\Edith\Models\EdithRole;
 use Gentle\Edith\Support\GoogleAuthenticator;
 
 class AdminController extends Controller
@@ -34,10 +43,8 @@ class AdminController extends Controller
         $crud->column('id', 'ID')->sortable();
         $crud->column('avatar', '头像')->type('avatar')->src('${avatar}');
         $crud->column('username', '用户名')->sortable()->copyable();
-        $crud->column('nickname', '昵称');
+        $crud->column('nickname', '昵称')->quickEdit();
         $crud->column('phone', '手机号')->copyable();
-        $crud->column('email', '邮箱')->copyable();
-        $crud->column('sex', '性别')->map(['1' => '男', '2' => '女', '0' => '未知']);
         $crud->column('lasted_at', '最后登录时间')->type('datetime');
         $crud->column('log.lasted_ip', '最后登录IP');
         $crud->column('status', '状态')->map(['1' => '正常', '0' => '禁用'])->quickEdit([
@@ -48,7 +55,7 @@ class AdminController extends Controller
             'saveImmediately' => true
         ])->quickEditEnabledOn('${id !== 1}');
 
-        $crud->operation()->rowOnlyEditAction()->button('删除', function(Button $button) {
+        $crud->operation()->rowOnlyEditAction($crud->makeForm($this->controls(), 'api/auth/admin/${id}?_action=datasource'), 'drawer')->button('删除', function(Button $button) {
             $button->api('delete:' . url()->current() . '/${id}')
                 ->actionType('ajax')
                 ->level('link')
@@ -62,8 +69,30 @@ class AdminController extends Controller
             new InputDatetimeRange('lasted_at', '登录时间'),
             new InputDatetimeRange('created_at', '创建时间')
         ]);
-        $crud->onlyBulkDeleteAction()->basicHeaderToolbar($this->form())->quickSaveItemApi();
+        $crud->onlyBulkDeleteAction()->basicHeaderToolbar($this->controls(), 'drawer', '创建管理员')->quickSaveItemApi()->itemCheckableOn('${id !== 1}');
         return $crud;
+    }
+
+    public function controls()
+    {
+        $google = new GoogleAuthenticator;
+        $secret = $google->createSecret();
+        $qrcode = $google->getQRCodeGoogleUrl('${google_secret}');
+
+        $roles = EdithRole::select('id as value', 'name as label')->get()->toArray();
+        return [
+            (new Select('role_ids', '角色'))->options($roles)->multiple()->searchable()->clearable()->visibleOn('${id !== 1}'),
+            (new FormItem('username', '账号'))->required(),
+            (new InputUploader('avatar', '头像'))->description('只支持jpg、png格式文件'),
+            (new FormItem('nickname', '昵称'))->required(),
+            (new FormItem('phone', '手机号'))->required(),
+            (new InputPassword('password', '密码'))->description('留空默认为：123456'),
+            (new FormItem('email', '邮箱')),
+            (new InputSwitch('google_open', '谷歌验证'))->onText('启用')->offText('禁用')->value(0)->trueValue(1)->falseValue(0),
+            (new Hidden('google_secret'))->value($secret),
+            (new InputStatic('google_qrcode'))->value($qrcode)->type('static-image')->visibleOn('${google_open === 1}'),
+            (new InputSwitch('status', '状态'))->onText('正常')->offText('禁用')->value(1)->trueValue(1)->falseValue(0)->visibleOn('${id !== 1}')
+        ];
     }
 
     /**
@@ -74,11 +103,12 @@ class AdminController extends Controller
      */
     public function form($id = null)
     {
-        $form = (new SchemaForm)->layoutType('DrawerForm')->labelCol(['span' => 4]);
-//        $form->onAction()->api([
-//            'method' => 'PUT',
-//            'url' => url('api/auth/admin/2')
-//        ]);
+        $form = (new SchemaForm)
+            ->initApi($id)
+            ->title($id ? '编辑管理员' : '创建管理员')
+            ->labelCol(['span' => 4])
+            ->layoutType('DrawerForm');
+
 
         if (is_null($id)) {
             $google = new GoogleAuthenticator;

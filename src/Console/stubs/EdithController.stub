@@ -1,0 +1,9 @@
+<?php
+namespace App\Edith\Controllers;
+
+use Gentle\Edith\Http\Controllers\EdithController as BaseController;
+
+class EdithController extends Controller
+{
+
+}

@@ -26,6 +26,7 @@ use Illuminate\Support\Collection;
  * @method $this url(string $url)                                  操作跳转链接
  * @method $this api(string $api)                                  后端 API 接口
  * @method $this content(string $content)                          复制文本。可用 ${xxx} 取值。
+ * @method $this countDownTpl(string $tpl)                         倒计时模板。可用 ${timeLeft} 取值。
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  */
 class Action extends AmisRenderer
@@ -62,7 +63,7 @@ class Action extends AmisRenderer
      */
     public function actionType(string $actionType, $args = null): Action
     {
-        if (!in_array($actionType, ['refresh', 'reload', 'ajax', 'toast', 'link', 'url', 'drawer', 'dialog', 'confirm', 'cancel', 'prev', 'next', 'copy', 'close', 'goBack', 'goPage', 'custom', 'submit', 'clear-and-submit'])) {
+        if (!in_array($actionType, ['refresh', 'reload', 'ajax', 'toast', 'link', 'url', 'drawer', 'dialog', 'confirm', 'cancel', 'prev', 'next', 'copy', 'close', 'goBack', 'goPage', 'custom', 'submit', 'clear-and-submit', 'reset-and-submit'])) {
             throw new RendererException("Unsupported operation method: {$actionType}");
         }
 
@@ -217,6 +218,29 @@ class Action extends AmisRenderer
             ]);
         }
         return $this;
+    }
+
+    /**
+     * 发送验证码倒计时
+     * @param int $seconds
+     * @return Action
+     */
+    public function countDown(int $seconds): Action
+    {
+        $this->set('countDownTpl', '${timeLeft} 秒后重发');
+        return $this->set('countDown', $seconds);
+    }
+
+    /**
+     * @param string|array $click
+     * @return $this
+     */
+    public function onClick(string|array $click): Action
+    {
+        if (is_string($click)) {
+            $click = ['actionType' => 'custom', 'script' => $click];
+        }
+        return $this->onEvent($click);
     }
 
     /**

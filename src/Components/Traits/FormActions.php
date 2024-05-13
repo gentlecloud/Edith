@@ -34,7 +34,8 @@ trait FormActions
             $api['url'] = Str::replaceLast('/create', '', url()->current());
         } else {
             $api['method'] = 'PUT';
-            $api['url'] = Str::replaceLast('/edit', '', url()->current());
+            $api['url'] = Str::replaceLast('/edit', '', url()->current()) . '/' . $id;
+//            $this->set('initApi', $api['url']);
         }
         $api['data'] = '${values}';
         return $api;

@@ -33,7 +33,7 @@ class ProCard extends Renderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $component = 'card';
+    protected string $renderer = 'card';
 
     /**
      * 是否有边框

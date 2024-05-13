@@ -31,8 +31,8 @@ class EdithRoleMenu extends Model
      * the Role has and belongs to many menus.
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function menus(): HasMany
+    public function menus()
     {
-        return $this->hasMany(EdithMenu::class,'id','menu_id');
+        return $this->hasMany(EdithMenu::class, 'id', 'menu_id');
     }
 }

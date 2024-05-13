@@ -1,5 +1,4 @@
 <?php
-
 namespace Gentle\Edith\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +13,7 @@ class EdithAttachmentChannel extends Model
      * @var string[]
      */
     protected $fillable = [
-        'store_id',
+        'platform_id',
         'channel_type',
         'access_id',
         'access_secret',

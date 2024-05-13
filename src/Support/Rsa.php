@@ -4,13 +4,6 @@ namespace Gentle\Edith\Support;
 class Rsa
 {
     /**
-     * 默认切割长度
-     */
-    const RSA_ENCRYPT_BLOCK_SIZE = 117;
-
-    const RSA_DECRYPT_BLOCK_SIZE = 128;
-
-    /**
      * 支付宝公钥
      * @var string
      */
@@ -49,12 +42,12 @@ class Rsa
     public function setCert(?string $publicKey = null, ?string $privateKey = null): Rsa
     {
         if (!is_null($publicKey)) {
-            strpos($publicKey, 'BEGIN PUBLIC KEY') === false && $publicKey = "-----BEGIN PUBLIC KEY-----\n" . $publicKey . "\n-----END PUBLIC KEY-----";
+            !str_contains($publicKey, 'BEGIN PUBLIC KEY') && $publicKey = "-----BEGIN PUBLIC KEY-----\n" . $publicKey . "\n-----END PUBLIC KEY-----";
             $this->public_key = $publicKey;
         }
 
         if (!is_null($privateKey)) {
-            strpos($privateKey, 'BEGIN PRIVATE KEY') === false && $privateKey = "-----BEGIN PRIVATE KEY-----\n" . $privateKey . "\n-----END PRIVATE KEY-----";
+            !str_contains($privateKey, 'BEGIN PRIVATE KEY') && $privateKey = "-----BEGIN PRIVATE KEY-----\n" . $privateKey . "\n-----END PRIVATE KEY-----";
             $this->private_key = $privateKey;
         }
         return $this;
@@ -116,5 +109,30 @@ class Rsa
     {
         $signature = base64_decode($signString);
         return (bool) openssl_verify($dataString, $signature, $this->public_key);
+    }
+
+    /**
+     * 生成公钥和私钥
+     * @param int $bits
+     * @return array
+     * @throws \Exception
+     */
+    public function generate(int $bits = 2048): array
+    {
+        $config = array(
+            "digest_alg" => "sha512",
+            "private_key_bits" => $bits, //字节数  512 1024 2048  4096 等
+            "private_key_type" => OPENSSL_KEYTYPE_RSA // 加密类型
+        );
+        $res = openssl_pkey_new($config);
+        if (!$res) {
+            throw new \Exception('生成失败.');
+        }
+        openssl_pkey_export($res, $private_key);
+        $public_key = openssl_pkey_get_details($res);
+        return [
+            'public_key' => $public_key["key"],
+            'private_key' => $private_key
+        ];
     }
 }

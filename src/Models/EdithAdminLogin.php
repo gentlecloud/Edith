@@ -8,7 +8,7 @@ class EdithAdminLogin extends Model
 {
     use DateTimeFormatter;
 
-    protected $fillable = ['admin_id','province','city','ip_info','lasted_ip','lasted_at'];   //允许批量赋值的字段
+    protected $fillable = ['admin_id', 'province', 'city', 'ip_info', 'lasted_ip', 'lasted_at'];   //允许批量赋值的字段
 
     /**
      * 时间序列化

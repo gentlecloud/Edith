@@ -7,9 +7,12 @@ use Gentle\Edith\Components\Amis\Form\Form;
 use Gentle\Edith\Components\Amis\Form\FormItem;
 use Gentle\Edith\Components\Amis\Form\InputPassword;
 use Gentle\Edith\Components\Amis\Form\InputSwitch;
+use Gentle\Edith\Components\Amis\Form\InputUploader;
 use Gentle\Edith\Components\Pages\PageContainer;
 use Gentle\Edith\Components\Pages\ProCard;
 use Gentle\Edith\Exceptions\RendererException;
+use Gentle\Edith\Models\EdithAdmin;
+use Gentle\Edith\Services\AdminUserService;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -20,10 +23,9 @@ class AccountController extends Controller
     protected ?string $title = '基础配置';
 
     /**
-     * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\ConfigService";
+    protected ?string $serviceName = AdminUserService::class;
 
     /**
      * 系统配置
@@ -32,9 +34,12 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth('manage')->user()->makeHidden(['google_secret', 'google_qrcode'])->toArray();
+        $user = auth('manage')->user()->makeHidden(['google_secret', 'google_qrcode', 'lasted_at', 'created_at', 'updated_at'])->toArray();
+
+        unset($user['log'], $user['platforms']);
         $form = (new Form)->title('资料编辑')->controls([
-            (new FormItem('username', '用户名'))->disabled(),
+            (new FormItem('username', '用户名'))->required(),
+            (new InputUploader('avatar', '头像'))->accept('image/*')->description('支持 jpg、jpeg、png 格式'),
             (new Divider),
             (new FieldSet('基本资料'))->body([
                 (new FormItem('nickname', '昵称'))->placeholder('请输入昵称')->required(),
@@ -62,8 +67,15 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->only(['id', 'nickname', 'phone', 'email', 'password', 'confirm']);
-
+        $data = $request->only(['nickname', 'phone', 'email', 'password', 'confirm']);
+        if ((!empty($data['password']) || !empty($data['confirm'])) && (empty($data['confirm']) || $data['password'] !== $data['confirm'])) {
+            return error('两次输入的密码不一致！');
+        }
+        try {
+            $this->service()->update($data, auth('manage')->id());
+        } catch (\Exception $e) {
+            return error($e->getMessage());
+        }
         return success('保存成功.');
     }
 }

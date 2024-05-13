@@ -12,7 +12,7 @@ class Iconfont extends Renderer
      * 翼搭 UI 渲染组件
      * @var string
      */
-    protected string $component = 'iconfont';
+    protected string $renderer = 'iconfont';
 
     /**
      * Ant Iconfont 图标

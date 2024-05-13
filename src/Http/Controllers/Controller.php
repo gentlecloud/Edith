@@ -7,6 +7,7 @@ use Gentle\Edith\Exceptions\RendererException;
 use Gentle\Edith\Exceptions\ServiceException;
 use Gentle\Edith\Traits\Datasource;
 use Gentle\Edith\Traits\FormValidator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +32,7 @@ class Controller extends BaseController
     public function index(Request $request)
     {
         $body = null;
-        if ($method = $request->input('action')) {
+        if ($method = $request->input('_action')) {
             if (!method_exists($this, $method)) {
                 return error('当前控制器不存在该操作行为');
             }
@@ -41,7 +42,7 @@ class Controller extends BaseController
         } else if (method_exists($this, 'crud')) {
             $body = $this->crud(new Crud);
         }
-        return engine($body, $this->title . '列表');
+        return engine($body, $this->title);
     }
 
     /**
@@ -93,19 +94,18 @@ class Controller extends BaseController
         try {
             switch ($id) {
                 case 'quickSave':
-                    if ($request->input('ids')) {
+                    if (isset($data['rowsDiff']) || isset($data['rows'])) {
+                        $rows = $data['rowsDiff'] ?? $data['rows'];
+                        foreach ($rows as $row) {
+                            $this->service()->update($row, $row['id']);
+                        }
+                    } else if ($request->input('ids')) {
                         $ids = explode(",", urldecode($request->input('ids')));
                         foreach ($ids as $id) {
                             $this->service()->update($data, $id);
                         }
                     } else {
-                        if (!isset($data['rows']) && !isset($data['rowsDiff'])) {
-                            throw new \Exception('参数错误.', -10022);
-                        }
-                        $rows = $data['rowsDiff'] ?? $data['rows'];
-                        foreach ($rows as $row) {
-                            $this->service()->update($row, $row['id']);
-                        }
+                        throw new \Exception('参数错误.', -10022);
                     }
                     break;
                 case 'saveOrder':
@@ -127,12 +127,16 @@ class Controller extends BaseController
 
     /**
      * 详情页面
+     * @param Request $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws ServiceException
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-
+        if ($request->input('_action') == 'datasource') {
+            return success('fetch succeed.', $this->service()->get($id));
+        }
         return engine();
     }
 
@@ -144,6 +148,9 @@ class Controller extends BaseController
     public function destroy($id)
     {
         try {
+            if (str_contains($id, ',')) {
+                $id = explode(',', $id);
+            }
             $this->service()->destroy($id);
         } catch (\Exception $e) {
             return error($e->getMessage());

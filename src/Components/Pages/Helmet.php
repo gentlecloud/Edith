@@ -13,7 +13,7 @@ class Helmet extends Renderer
      * 翼搭 UI 渲染 Component
      * @var string
      */
-    protected string $component = 'helmet';
+    protected string $renderer = 'helmet';
 
     /**
      * Amis 渲染类型
