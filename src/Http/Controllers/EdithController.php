@@ -45,7 +45,7 @@ abstract class EdithController extends Controller
                     new Image('https://newly.oss-cn-shanghai.aliyuncs.com/images/GENTLE_LOGO.jpeg'),
                     (new Wrapper)->body(config('edith.name', '翼搭（Edith）'))->className('text-2xl font-bold'),
                     (new Flex())->className('m-3')->items([
-                        (new Link())->body('Github')->icon('fa-brands fa-github')->className('mx-5')->href('https://www.gentle.org.cn')->htmlTarget('_blank'),
+                        (new Link())->body('Github')->icon('fa-brands fa-github')->className('mx-5')->href('https://github.com/gentlecloud/Edith')->htmlTarget('_blank'),
                         (new Link())->body('湛拓科技')->className('mx-5')->href('https://www.gentle.org.cn')->htmlTarget('_blank'),
                         (new Link())->body('翼搭官网')->className('mx-5')->href('https://www.3ii.cn')->htmlTarget('_blank'),
                     ])
