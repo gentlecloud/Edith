@@ -99,14 +99,15 @@ return new class extends Migration {
             $table->string('name')->comment('菜单名称');
             $table->string('guard_name')->comment('菜单组')->default('basic');
             $table->string('icon')->nullable()->comment('菜单图标');
-            $table->string('type')->default('default')->comment('default:内置routers,engine:引擎页,blank:外链');
+            $table->string('target')->default('default')->comment('default:内置routers,engine:引擎页,blank:外链');
             $table->boolean('layout')->default(1)->comment('是否嵌套Layout');
             $table->integer('parent_id')->default(0)->comment('上级菜单ID');
             $table->integer('sort')->default(0)->comment('排序');
-            $table->string('path')->nullable()->comment('路径');
+            $table->string('path')->nullable()->comment('路径')->unique();
             $table->string('module')->default('default')->comment('default:控制台/模块,system:控制台菜单,其他模块名称');
             $table->boolean('status')->default(1)->comment('状态');
             $table->boolean('is_dev')->default(0)->comment('状态');
+            $table->unique(['guard_name', 'name']);
             $table->timestamps();
         });
 
