@@ -1,10 +1,8 @@
 <?php
-namespace Gentle\Edith;
+namespace Edith\Admin;
 
 use Edith\Admin\Contracts\EdithAuthInterface;
-use Edith\Admin\Contracts\EdithPlatformInterface;
 use Edith\Admin\Core\Auth;
-use Edith\Admin\Core\Platform;
 use Edith\Admin\Support\Database\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
@@ -24,8 +22,7 @@ class EdithAdminServiceProvider extends ServiceProvider
      */
     protected array $commands = [
         Console\InstallCommand::class,
-        Console\PublishCommand::class,
-//        Console\UpdateCommand::class,
+        Console\PublishCommand::class
     ];
 
     /**
