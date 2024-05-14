@@ -1,7 +1,6 @@
 {
     "name": "edith/admin",
-    "description": "湛拓翼搭快速开发框架",
-    "type": "library",
+    "description": "翼搭快速开发框架，一个基于Laravel、Amis整合Ant的快速后台框架。",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -16,6 +15,13 @@
             "name": "Gentle Tech",
             "email": "gentle@3ii.cn"
         }
+    ],
+    "keywords": [
+        "laravel",
+        "edith",
+        "edith-admin",
+        "admin",
+        "amis"
     ],
     "require": {
         "php": "^8.0",
