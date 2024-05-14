@@ -23,7 +23,7 @@ return [
     'auth' => [
         'guards' => [
             'manage' => [
-                'driver'   => 'sanctum',
+                'driver'   => 'session',
                 'provider' => 'manage',
             ],
         ],

@@ -85,7 +85,7 @@ abstract class AuthController extends Controller
                     ->visibleOn('${ mode === "authenticator" }')
             ]);
         }
-        $tabs->tab('account', '账号密码登录')->children($loginForm);
+        $tabs->item('账号密码登录', 'account')->children($loginForm);
         $css = [
             '.antd-Page' => ['height' => '100vh', 'overflow' => 'hidden']
         ];

@@ -5,5 +5,16 @@ use Edith\Admin\Http\Controllers\EdithController as BaseController;
 
 class EdithController extends Controller
 {
+    /**
+     * Edith UI 初始化
+     * @return mixed
+     */
+     public function init()
+    {
+        $config = [
+             'initPage' => null
+        ];
 
+        return $config;
+    }
 }
