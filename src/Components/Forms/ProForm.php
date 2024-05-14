@@ -2,9 +2,9 @@
 namespace Edith\Admin\Components\Forms;
 
 use Edith\Admin\Components\Amis\Service;
+use Edith\Admin\Components\Displays\Tabs;
 use Edith\Admin\Components\Fields\Field;
 use Edith\Admin\Components\Renderer;
-use Edith\Admin\Components\Tabs\Tabs;
 use Edith\Admin\Components\Traits\FormActions;
 use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;

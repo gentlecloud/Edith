@@ -23,7 +23,7 @@ return [
     'auth' => [
         'guards' => [
             'manage' => [
-                'driver'   => 'session',
+                'driver'   => 'sanctum',
                 'provider' => 'manage',
             ],
         ],
@@ -31,7 +31,7 @@ return [
         'providers' => [
             'manage' => [
                 'driver' => 'eloquent',
-                'model'  => Edith\Admin\Models\EdithAdmin::class,
+                'model'  => \Edith\Admin\Models\EdithAdmin::class,
             ],
         ],
 
@@ -74,17 +74,6 @@ return [
         'namespace' => 'App\\Edith\\Controllers',
         'middleware' => ['edith.auth', 'edith.log'],
     ],
-
-    /*
-     |------------------------------------------------------------------------------
-     | Edith Module settings
-     |------------------------------------------------------------------------------
-     |
-     | The Module packages Powered by nWidart/laravel-modules
-     | Edith-Cms uses the above package for secondary integration development
-     | Thank you again for the high quality open source project provided by nwidart
-     |
-     */
 
     'rsa' => [
         'public_key' => "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoOyoxDRR4XawjfZ3Kkw9CRcsq+NJ1A1Tt6dY8BvvjMVGZhVLv+Vz1q4y+TiaPIGHAXR2Y7DWCu/ZR1lL9Ga0KddrM4W46pAUBiI44/jZh2IGNx5zLwJnx4Mo1edLiB/1ZYpnCuS4XPULJMX2Vlm2B8dZdIA5qoB8Omkl0ZAA65KweUhiMxtrGkqq03ET6eq6dEV8/4nX412nqiEDVIFDiuPJ1Jb0tpkvh02zKEs4eh8cZAClTHSMApHRf+qL2QBc45PKI64BFyYc5rdjKAF2oD4sTMxJuJQ24/XAExludMK1tJxYCmwFL6uDWMgk6GfRU5DiyI0L0V4hbQAvdzBjtQIDAQAB",

@@ -2,7 +2,6 @@
 namespace Edith\Admin\Components\Forms;
 
 use Edith\Admin\Components\Displays\TabPane;
-use Edith\Admin\Components\Tabs\Tabs;
 use Illuminate\Support\Collection;
 
 class TabsForm extends ProForm
@@ -30,7 +29,7 @@ class TabsForm extends ProForm
     /**
      * 子表单
      * @param string $label 标签 Label
-     * @param null|array 子表单项
+     * @param null|array $items 子表单项
      * @return TabPane
      */
     public function tab(string $label, ?array $items = null): TabPane

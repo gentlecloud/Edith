@@ -1,7 +1,7 @@
 <?php
 namespace Edith\Admin\Components\Displays;
 
-use Edith\Admin\Components\Renderer;
+use Edith\Admin\Components\BaseRenderer;
 use Illuminate\Support\Collection;
 
 /**
@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
  * @method $this children($body)                                    选项卡头显示内容
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  */
-class TabPane extends Renderer
+class TabPane extends BaseRenderer
 {
     /**
      * 翼搭渲染类型
@@ -25,12 +25,13 @@ class TabPane extends Renderer
      * @param string|null $key 对应 activeKey
      * @param string|null $label 选项卡头显示文字
      */
-    public function __construct(?string $key = null, ?string $label = null)
+    public function __construct(?string $label = null, ?string $key = null)
     {
-        parent::__construct();
-        !is_null($key) && $this->set('key', $key);
         !is_null($label) && $this->set('label', $label);
-
+        if (is_null($key)) {
+            $key = uniqid('ant-tab-pane');
+        }
+        $this->set('key', $key);
     }
 
     /**

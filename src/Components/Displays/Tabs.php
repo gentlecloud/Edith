@@ -2,6 +2,7 @@
 namespace Edith\Admin\Components\Displays;
 
 use Edith\Admin\Components\Renderer;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 
 /**
@@ -11,13 +12,11 @@ use Illuminate\Support\Collection;
  * @method Tabs addIcon($icon)                                     自定义添加按钮
  * @method Tabs animated($animated)                                是否使用动画切换 Tabs, 仅生效于 tabPosition="top", boolean | { inkBar: boolean, tabPane: boolean }
  * @method Tabs defaultActiveKey(string $defaultActiveKey)         初始化选中面板的 key，如果没有设置 activeKey
- * @method Tabs hideAdd(bool $hideAdd = true)                      是否隐藏加号图标，在 type="editable-card" 时有效
  * @method Tabs moreIcon($icon)                                    自定义折叠 icon
  * @method Tabs popupClassName(string $popupClassName)             更多菜单的 className
  * @method Tabs tabBarExtraContent($tabBarExtraContent)            tab bar 上额外的元素
  * @method Tabs tabBarGutter(int $tabBarGutter)                    tabs 之间的间隙
  * @method Tabs tabBarStyle($tabBarStyle)                          tab bar 的样式对象
- * @method Tabs destroyInactiveTabPane(bool $destroy)              被隐藏时是否销毁 DOM 结构
  * @author Chico Written in Xiamen on 2022.11.30, Xiamen Gentle Technology Co., Ltd
  * @copyright Xiamen Gentle Technology Co., Ltd
  */
@@ -77,6 +76,33 @@ class Tabs extends Renderer
     }
 
     /**
+     * 是否隐藏加号图标，在 type="editable-card" 时有效
+     * @default false
+     * @param bool $hideAdd
+     * @return Tabs
+     */
+    public function hideAdd(bool $hideAdd = true): Tabs
+    {
+        return $this->set('hideAdd', $hideAdd);
+    }
+
+    /**
+     * 大小
+     * @default middle
+     * @param string $size  large | middle | small
+     * @return Tabs
+     * @throws RendererException
+     */
+    public function size(string $size): Tabs
+    {
+        if (!in_array($size, ['large', 'middle', 'small'])) {
+            throw new RendererException("Tabs size only supports large, middle or small");
+        }
+        return $this->set('size', $size);
+    }
+
+
+    /**
      * Ant proCardTabs 页签的基本样式
      * @param string $type line | card | editable-card
      * @return $this
@@ -107,6 +133,30 @@ class Tabs extends Renderer
     }
 
     /**
+     * 被隐藏时是否销毁 DOM 结构
+     * @default false
+     * @param bool $destroyInactiveTabPane
+     * @return Tabs
+     */
+    public function destroyInactiveTabPane(bool $destroyInactiveTabPane = true): Tabs
+    {
+        return $this->set('destroyInactiveTabPane', $destroyInactiveTabPane);
+    }
+
+    /**
+     * 子标签
+     * @param string|null $label 选项卡头显示文字
+     * @param string|null $key 对应 activeKey
+     * @return TabPane
+     */
+    public function item(?string $label = null, ?string $key = null): TabPane
+    {
+        return tap(new TabPane($label, $key), function ($value) {
+            $this->items->push($value);
+        });
+    }
+
+    /**
      * 基于 antd 拓展的页签的基本配置，必填 [{label: '标签一', key: 'tab1', children: '内容一'}]
      * @param array|Collection $items
      * @return $this
@@ -123,14 +173,14 @@ class Tabs extends Renderer
 
     /**
      * 添加选项卡
-     * @param string|null $key 对应标签 activeKey
      * @param string|null $label 选项卡头显示文字
-     * @return TabPane
+     * @param \Closure $callback 选项卡头显示文字
+     * @return $this
      */
-    public function tab(?string $key = null, ?string $label = null): TabPane
+    public function tab(?string $label, \Closure $callback): Tabs
     {
-        return tap(new TabPane($key, $label), function ($value) {
-            $this->items->push($value);
-        });
+        $callback($pane = new TabPane($label));
+        $this->items->push($pane);
+        return $this;
     }
 }
