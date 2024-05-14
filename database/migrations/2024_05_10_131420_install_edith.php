@@ -96,8 +96,8 @@ return new class extends Migration {
 
         Schema::create('edith_menus', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('菜单名称');
-            $table->string('guard_name')->comment('菜单组')->default('basic');
+            $table->string('guard_name', 64)->comment('菜单组')->default('basic');
+            $table->string('name', 64)->comment('菜单名称');
             $table->string('icon')->nullable()->comment('菜单图标');
             $table->string('target')->default('default')->comment('default:内置routers,engine:引擎页,blank:外链');
             $table->boolean('layout')->default(1)->comment('是否嵌套Layout');
@@ -106,7 +106,7 @@ return new class extends Migration {
             $table->string('path')->nullable()->comment('路径')->unique();
             $table->string('module')->default('default')->comment('default:控制台/模块,system:控制台菜单,其他模块名称');
             $table->boolean('status')->default(1)->comment('状态');
-            $table->boolean('is_dev')->default(0)->comment('状态');
+            $table->boolean('is_dev')->default(0)->comment('开发菜单');
             $table->unique(['guard_name', 'name']);
             $table->timestamps();
         });
@@ -169,5 +169,14 @@ return new class extends Migration {
         Schema::dropIfExists('edith_permissions');
         Schema::dropIfExists('edith_role_permissions');
         Schema::dropIfExists('edith_role_menus');
+    }
+
+    /**
+     * 填充初始数据
+     * @return void
+     */
+    public function fillInitialData()
+    {
+
     }
 };

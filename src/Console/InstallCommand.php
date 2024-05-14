@@ -1,6 +1,7 @@
 <?php
 namespace Edith\Admin\Console;
 
+use Edith\Admin\Facades\Edith;
 use Edith\Admin\Models\Seeders\EdithSeeder;
 use Edith\Admin\Models\EdithAdmin;
 use Edith\Admin\Support\File;
@@ -9,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class InstallCommand extends Command
 {
-    const version = 'v1.0.0';
     /**
      * The console command name.
      * @var string
@@ -43,8 +43,7 @@ class InstallCommand extends Command
         // 创建软连接
         $this->call('storage:link');
 
-        modify_env(['EDITH_INSTALL' => true]);
-        modify_env(['EDITH_VERSION' => self::version]);
+        modify_env(['EDITH_INSTALL' => true, 'EDITH_VERSION' => Edith::version()]);
         File::writeLog(base_path('install.lock'), 'Gentle_Edith install: ok');
     }
 
@@ -55,15 +54,10 @@ class InstallCommand extends Command
      */
     public function initDatabase()
     {
-
         if (env('EDITH_INSTALL') === true){
             $this->call('migrate:fresh --seed');
         } else {
             $this->call('migrate');
-        }
-
-        if (!EdithAdmin::count()) {
-            $this->runDatabaseSeeders();
         }
     }
 
@@ -167,7 +161,7 @@ class InstallCommand extends Command
         $email = $this->argument('email');
         // 管理员
         EdithAdmin::create([
-            'username' => $username,'nickname' => '超级管理员', 'email' => $email, 'phone' => '10086', 'password' => $password
+            'username' => $username, 'nickname' => '超级管理员', 'email' => $email, 'phone' => '10086', 'password' => $password
         ]);
     }
 }

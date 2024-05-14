@@ -35,25 +35,25 @@ class EdithSeeder extends Seeder
 
         // 菜单
         EdithMenu::insert([
-            ['name' => '控制台', 'guard_name' => 'basic', 'icon' => 'icon-kongzhitaishouye', 'target' => 'default', 'sort' => 0, 'path' => '/dashboard', 'module' => 'default'],
-            ['name' => '主页', 'guard_name' => 'basic', 'icon' => 'icon-shouye', 'target' => 'engine', 'parent_id' => 1, 'path' => 'index', 'module' => 'default'],
+            ['name' => '控制台', 'guard_name' => 'basic', 'icon' => 'icon-kongzhitaishouye', 'target' => 'default', 'parent_id' => 0, 'sort' => 0, 'path' => '/dashboard', 'module' => 'default', 'is_dev' => 0],
+            ['name' => '主页', 'guard_name' => 'basic', 'icon' => 'icon-shouye', 'target' => 'engine', 'parent_id' => 1, 'sort' => 0, 'path' => 'index', 'module' => 'default', 'is_dev' => 0],
 
-            ['name' => '管理员', 'guard_name' => 'admin', 'icon' => 'icon-guanliyuan', 'target' => 'default', 'sort' => 2, 'path' => '/auth', 'module' => 'system'],
-            ['name' => '管理员列表', 'guard_name' => 'admin', 'icon' => 'icon-guanliyuan2', 'target' => 'engine', 'parent_id' => 3, 'path' => 'admin', 'module' => 'system'],
-            ['name' => '菜单列表', 'guard_name' => 'admin', 'icon' => 'icon-caidan', 'target' => 'engine', 'parent_id' => 3, 'path' => 'menu', 'module' => 'system'],
-            ['name' => '权限列表', 'guard_name' => 'admin', 'icon' => 'icon-quanxian', 'target' => 'engine', 'parent_id' => 3, 'path' => 'permission', 'module' => 'system'],
-            ['name' => '角色列表', 'guard_name' => 'admin', 'icon' => 'icon-jiaoseguanli', 'target' => 'engine', 'parent_id' => 3, 'path' => 'role', 'module' => 'system'],
+            ['name' => '管理员', 'guard_name' => 'admin', 'icon' => 'icon-guanliyuan', 'target' => 'default', 'parent_id' => 0, 'sort' => 2, 'path' => '/auth', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '管理员列表', 'guard_name' => 'admin', 'icon' => 'icon-guanliyuan2', 'target' => 'engine', 'parent_id' => 3, 'sort' => 0, 'path' => 'admin', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '菜单列表', 'guard_name' => 'admin', 'icon' => 'icon-caidan', 'target' => 'engine', 'parent_id' => 3, 'sort' => 0, 'path' => 'menu', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '权限列表', 'guard_name' => 'admin', 'icon' => 'icon-quanxian', 'target' => 'engine', 'parent_id' => 3, 'sort' => 0, 'path' => 'permission', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '角色列表', 'guard_name' => 'admin', 'icon' => 'icon-jiaoseguanli', 'target' => 'engine', 'parent_id' => 3, 'sort' => 0, 'path' => 'role', 'module' => 'system', 'is_dev' => 0],
 
-            ['name' => '系统配置', 'guard_name' => 'admin', 'icon' => 'icon-setting', 'target' => 'default', 'sort' => 4, 'path' => '/system', 'module' => 'system'],
-            ['name' => '网站设置', 'guard_name' => 'admin', 'icon' => 'icon-shezhi', 'target' => 'engine', 'parent_id' => 8, 'path' => 'website', 'module' => 'system'],
-            ['name' => '配置管理', 'guard_name' => 'admin', 'icon' => 'icon-peizhi', 'target' => 'engine', 'parent_id' => 8, 'path' => 'config', 'module' => 'system', 'is_dev' => 1],
-            ['name' => '操作日志', 'guard_name' => 'admin', 'icon' => 'icon-rizhi', 'target' => 'engine', 'parent_id' => 8, 'path' => 'actionLog/index', 'module' => 'system'],
+            ['name' => '系统配置', 'guard_name' => 'admin', 'icon' => 'icon-setting', 'target' => 'default', 'parent_id' => 0, 'sort' => 4, 'path' => '/system', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '网站设置', 'guard_name' => 'admin', 'icon' => 'icon-shezhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'website', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '配置管理', 'guard_name' => 'admin', 'icon' => 'icon-peizhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'config', 'module' => 'system', 'is_dev' => 1],
+            ['name' => '操作日志', 'guard_name' => 'admin', 'icon' => 'icon-rizhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'actionLog/index', 'module' => 'system', 'is_dev' => 0],
 
-            ['name' => '附件空间', 'guard_name' => 'basic', 'icon' => 'icon-fujian', 'type' => 'target', 'sort' => 8, 'path' => '/attachments', 'module' => 'default'],
-            ['name' => '附件管理', 'guard_name' => 'basic', 'icon' => 'icon-icon-', 'parent_id' => 14, 'target' => 'engine', 'path' => 'list', 'module' => 'default'],
+            ['name' => '附件空间', 'guard_name' => 'basic', 'icon' => 'icon-fujian', 'target' => 'default', 'parent_id' => 0, 'sort' => 8, 'path' => '/attachments', 'module' => 'default', 'is_dev' => 0],
+            ['name' => '附件管理', 'guard_name' => 'basic', 'icon' => 'icon-icon-', 'target' => 'engine', 'parent_id' => 12, 'sort' => 0, 'path' => 'list', 'module' => 'default', 'is_dev' => 0],
 
-            ['name' => '管理设置', 'guard_name' => 'basic', 'icon' => 'icon-zhanghao', 'target' => 'default', 'sort' => 10, 'path' => '/account', 'module' => 'default'],
-            ['name' => '账号设置', 'guard_name' => 'basic', 'icon' => 'icon-profilesetting', 'target' => 'default', 'parent_id' => 16, 'path' => 'settings', 'module' => 'default'],
+            ['name' => '管理设置', 'guard_name' => 'basic', 'icon' => 'icon-zhanghao', 'target' => 'default', 'parent_id' => 0, 'sort' => 10, 'path' => '/account', 'module' => 'default', 'is_dev' => 0],
+            ['name' => '账号设置', 'guard_name' => 'basic', 'icon' => 'icon-profilesetting', 'target' => 'engine', 'parent_id' => 14, 'sort' => 0, 'path' => 'settings', 'module' => 'default', 'is_dev' => 0],
         ]);
     }
 }

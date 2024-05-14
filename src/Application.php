@@ -9,8 +9,10 @@ namespace Edith\Admin;
  */
 class Application
 {
-
-    public $version = 'v1.0.0';
+    /**
+     * Edith version
+     */
+    const version = 'v1.0.3';
 
     /**
      * edith router prefix
@@ -22,11 +24,11 @@ class Application
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function version()
+    public function version(): string
     {
-        return $this->version;
+        return self::version;
     }
 
     /**

@@ -1,3 +1,6 @@
 <?php
+use Illuminate\Support\Facades\Route;
 
-\Edith\Admin\Facades\EdithAdmin::routes();
+Route::get('edith/init', 'App\Edith\Controllers\EdithController@init')->name('api/edith/init');
+
+\Edith\Admin\Facades\Edith::routes();
