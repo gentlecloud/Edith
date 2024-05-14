@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Traits;
+namespace Edith\Admin\Components\Traits;
 
 trait RendererAttribute
 {

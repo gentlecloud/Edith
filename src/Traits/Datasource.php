@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Traits;
+namespace Edith\Admin\Traits;
 
-use Gentle\Edith\Exceptions\ServiceException;
-use Gentle\Edith\Services\ModelService;
+use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Services\ModelService;
 
 trait Datasource
 {

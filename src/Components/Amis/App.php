@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
 /**
  * Amis App多页应用

@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Exceptions\ServiceException;
+use Edith\Admin\Exceptions\ServiceException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +11,7 @@ class ActionLogService extends ModelService
      * 定义模型名称
      * @var string|null
      */
-    protected ?string $modelName = 'Gentle\Edith\Models\EdithActionLog';
+    protected ?string $modelName = 'Edith\Admin\Models\EdithActionLog';
 
     /**
      * @return Builder

@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Events;
+namespace Edith\Admin\Events;
 
 class ConfigSaveAfter
 {

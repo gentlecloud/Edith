@@ -1,11 +1,11 @@
 <?php
-namespace Gentle\Edith\Http\Middleware;
+namespace Edith\Admin\Http\Middleware;
 
 use Closure;
-use Gentle\Edith\Exceptions\AuthenticationException;
-use Gentle\Edith\Models\EdithAdmin;
-use Gentle\Edith\Models\EdithAuthToken;
-use Gentle\Edith\Models\EdithPlatform;
+use Edith\Admin\Exceptions\AuthenticationException;
+use Edith\Admin\Models\EdithAdmin;
+use Edith\Admin\Models\EdithAuthToken;
+use Edith\Admin\Models\EdithPlatform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

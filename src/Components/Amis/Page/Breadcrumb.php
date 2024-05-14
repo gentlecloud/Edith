@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Page;
+namespace Edith\Admin\Components\Amis\Page;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\AmisRenderer;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * Amis Breadcrumb 面包屑

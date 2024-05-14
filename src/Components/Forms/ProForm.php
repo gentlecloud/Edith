@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Components\Forms;
+namespace Edith\Admin\Components\Forms;
 
-use Gentle\Edith\Components\Amis\Service;
-use Gentle\Edith\Components\Fields\Field;
-use Gentle\Edith\Components\Renderer;
-use Gentle\Edith\Components\Tabs\Tabs;
-use Gentle\Edith\Components\Traits\FormActions;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Service;
+use Edith\Admin\Components\Fields\Field;
+use Edith\Admin\Components\Renderer;
+use Edith\Admin\Components\Tabs\Tabs;
+use Edith\Admin\Components\Traits\FormActions;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 
 /**

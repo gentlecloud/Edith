@@ -1,18 +1,18 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Action\Action;
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\Select;
-use Gentle\Edith\Components\Amis\Form\Textarea;
-use Gentle\Edith\Components\Fields\Field;
-use Gentle\Edith\Components\Forms\TabsForm;
-use Gentle\Edith\Components\Pages\ProCard;
-use Gentle\Edith\Events\ConfigRendererAfter;
-use Gentle\Edith\Events\ConfigRendererBefore;
-use Gentle\Edith\Exceptions\RendererException;
-use Gentle\Edith\Models\EdithConfig;
+use Edith\Admin\Components\Amis\Action\Action;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\Select;
+use Edith\Admin\Components\Amis\Form\Textarea;
+use Edith\Admin\Components\Fields\Field;
+use Edith\Admin\Components\Forms\TabsForm;
+use Edith\Admin\Components\Pages\ProCard;
+use Edith\Admin\Events\ConfigRendererAfter;
+use Edith\Admin\Events\ConfigRendererBefore;
+use Edith\Admin\Exceptions\RendererException;
+use Edith\Admin\Models\EdithConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -27,7 +27,7 @@ class SystemController extends Controller
      * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\ConfigService";
+    protected ?string $serviceName = "Edith\Admin\Services\ConfigService";
 
     /**
      * @param Crud $crud

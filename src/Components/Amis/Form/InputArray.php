@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Form;
+namespace Edith\Admin\Components\Amis\Form;
 
 /**
  * Amis Form 数组输入框

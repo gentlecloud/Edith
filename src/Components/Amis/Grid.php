@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
-use Gentle\Edith\Components\Amis\Page\GridColumn;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Page\GridColumn;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 
 /**

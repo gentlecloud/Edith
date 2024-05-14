@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Pages;
+namespace Edith\Admin\Components\Pages;
 
-use Gentle\Edith\Components\Renderer;
+use Edith\Admin\Components\Renderer;
 
 /**
  * Ant PageContainer - 页容器

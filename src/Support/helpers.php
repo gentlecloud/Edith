@@ -1,7 +1,7 @@
 <?php
 
-use Gentle\Edith\Widgets\Layout\Layout;
-use Gentle\Edith\Widgets\Page\Content;
+use Edith\Admin\Widgets\Layout\Layout;
+use Edith\Admin\Widgets\Page\Content;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 if (!function_exists('engine')) {
     function engine($body, $pageBody = true): \Illuminate\Http\JsonResponse
     {
-        return \Gentle\Edith\Support\Response::render($body, $pageBody);
+        return \Edith\Admin\Support\Response::render($body, $pageBody);
     }
 }
 
@@ -29,7 +29,7 @@ if (!function_exists('success')) {
         if (!is_null($refresh_token)) {
             $header = ['X-Refresh-Token' => $refresh_token];
         }
-        return \Gentle\Edith\Support\Response::success($msg, $data, $url, $header);
+        return \Edith\Admin\Support\Response::success($msg, $data, $url, $header);
     }
 }
 
@@ -41,7 +41,7 @@ if (!function_exists('success')) {
 if (!function_exists('error')) {
     function error(string $msg, int $errCode = -1, ?string $url = null): \Illuminate\Http\JsonResponse
     {
-        return \Gentle\Edith\Support\Response::error($msg, $errCode, $url);
+        return \Edith\Admin\Support\Response::error($msg, $errCode, $url);
     }
 }
 
@@ -53,7 +53,7 @@ if (!function_exists('error')) {
 if (!function_exists('failed')) {
     function failed(string $msg, int $errCode = -500): \Illuminate\Http\JsonResponse
     {
-        return \Gentle\Edith\Support\Response::response(-2, $errCode, $msg, null, null, null, 500);
+        return \Edith\Admin\Support\Response::response(-2, $errCode, $msg, null, null, null, 500);
     }
 }
 
@@ -68,7 +68,7 @@ if (!function_exists('edith_config')) {
             return $value;
         }
 
-        $value = \Gentle\Edith\Models\EdithConfig::where('name', $name)->value('value');
+        $value = \Edith\Admin\Models\EdithConfig::where('name', $name)->value('value');
         if (empty($value)) {
             $value = $default;
         } else {
@@ -155,7 +155,7 @@ if(!function_exists('get_attachment')) {
                 return $json;
             }
         }
-        $picture = \Gentle\Edith\Models\EdithAttachment::where('id', $id)->orWhere('path', $id)->select('id', 'name', 'path')->first();
+        $picture = \Edith\Admin\Models\EdithAttachment::where('id', $id)->orWhere('path', $id)->select('id', 'name', 'path')->first();
 
         // 图片存在
         if ($picture) {

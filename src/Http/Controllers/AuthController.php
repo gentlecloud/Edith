@@ -1,28 +1,28 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Form\InputText;
-use Gentle\Edith\Components\Amis\Form\Uuid;
-use Gentle\Edith\Components\Amis\Page;
-use Gentle\Edith\Components\Displays\Iconfont;
-use Gentle\Edith\Components\Displays\Tabs;
-use Gentle\Edith\Components\Fields\Field;
-use Gentle\Edith\Components\Fields\ImageCaptcha;
-use Gentle\Edith\Components\Pages\Helmet;
-use Gentle\Edith\Components\Pages\LoginForm;
-use Gentle\Edith\Events\AuthLoginAfter;
-use Gentle\Edith\Events\AuthLoginBefore;
-use Gentle\Edith\Exceptions\AuthException;
-use Gentle\Edith\Models\EdithAdmin;
-use Gentle\Edith\Models\EdithMenu;
-use Gentle\Edith\Models\EdithPlatform;
-use Gentle\Edith\Support\Captcha;
+use Edith\Admin\Components\Amis\Form\InputText;
+use Edith\Admin\Components\Amis\Form\Uuid;
+use Edith\Admin\Components\Amis\Page;
+use Edith\Admin\Components\Displays\Iconfont;
+use Edith\Admin\Components\Displays\Tabs;
+use Edith\Admin\Components\Fields\Field;
+use Edith\Admin\Components\Fields\ImageCaptcha;
+use Edith\Admin\Components\Pages\Helmet;
+use Edith\Admin\Components\Pages\LoginForm;
+use Edith\Admin\Events\AuthLoginAfter;
+use Edith\Admin\Events\AuthLoginBefore;
+use Edith\Admin\Exceptions\AuthException;
+use Edith\Admin\Models\EdithAdmin;
+use Edith\Admin\Models\EdithMenu;
+use Edith\Admin\Models\EdithPlatform;
+use Edith\Admin\Support\Captcha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
-class AuthController extends Controller
+abstract class AuthController extends Controller
 {
     /**
      * 登录表单校验规则
@@ -49,7 +49,7 @@ class AuthController extends Controller
      * 登录界面
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Gentle\Edith\Exceptions\FormValidatorException
+     * @throws \Edith\Admin\Exceptions\FormValidatorException
      */
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
@@ -98,7 +98,7 @@ class AuthController extends Controller
      * 登录
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Gentle\Edith\Exceptions\FormValidatorException|AuthException
+     * @throws \Edith\Admin\Exceptions\FormValidatorException|AuthException
      */
     public function toLogin(Request $request)
     {

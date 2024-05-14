@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Http\Middleware;
+namespace Edith\Admin\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use Gentle\Edith\Models\EdithActionLog as LogModel;
+use Edith\Admin\Models\EdithActionLog as LogModel;
 
 class LogOperation
 {
@@ -23,7 +23,7 @@ class LogOperation
         ]), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 
         $data['ip'] = $request->ip();
-        $ip2region = \Gentle\Edith\Support\IpLocation::find($data['ip']);
+        $ip2region = \Edith\Admin\Support\IpLocation::find($data['ip']);
         $data['region'] = implode("|",$ip2region);
         $data['remark'] = '';
         if ($data['type'] == 'ADMIN'){

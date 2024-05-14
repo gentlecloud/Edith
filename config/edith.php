@@ -31,7 +31,7 @@ return [
         'providers' => [
             'manage' => [
                 'driver' => 'eloquent',
-                'model'  => Gentle\Edith\Models\EdithAdmin::class,
+                'model'  => Edith\Admin\Models\EdithAdmin::class,
             ],
         ],
 

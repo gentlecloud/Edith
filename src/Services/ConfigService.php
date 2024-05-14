@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
 class ConfigService extends ModelService
 {
@@ -7,7 +7,7 @@ class ConfigService extends ModelService
      * 定义模型名称
      * @var string|null
      */
-    protected ?string $modelName = 'Gentle\Edith\Models\EdithConfig';
+    protected ?string $modelName = 'Edith\Admin\Models\EdithConfig';
 
     /**
      * @var string

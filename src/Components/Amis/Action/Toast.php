@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Action;
+namespace Edith\Admin\Components\Amis\Action;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Amis\AmisRenderer;
 use Illuminate\Support\Collection;
 
 /**

@@ -1,15 +1,15 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\Group;
-use Gentle\Edith\Components\Amis\Form\Hidden;
-use Gentle\Edith\Components\Amis\Form\InputNumber;
-use Gentle\Edith\Components\Amis\Form\InputSwitch;
-use Gentle\Edith\Components\Amis\Form\InputText;
-use Gentle\Edith\Components\Amis\Form\ListSelect;
-use Gentle\Edith\Components\Amis\Form\TreeSelect;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\Group;
+use Edith\Admin\Components\Amis\Form\Hidden;
+use Edith\Admin\Components\Amis\Form\InputNumber;
+use Edith\Admin\Components\Amis\Form\InputSwitch;
+use Edith\Admin\Components\Amis\Form\InputText;
+use Edith\Admin\Components\Amis\Form\ListSelect;
+use Edith\Admin\Components\Amis\Form\TreeSelect;
 
 class MenuController extends Controller
 {
@@ -21,7 +21,7 @@ class MenuController extends Controller
     /**
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\MenuService";
+    protected ?string $serviceName = "Edith\Admin\Services\MenuService";
 
     /**
      * 生成 Crud 列表页面
@@ -59,7 +59,7 @@ class MenuController extends Controller
     /**
      * 表单列
      * @return array
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     public function controls(): array
     {

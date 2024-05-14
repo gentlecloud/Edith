@@ -1,6 +1,6 @@
 <?php
 
-namespace Gentle\Edith\Console;
+namespace Edith\Admin\Console;
 
 use Illuminate\Console\Command;
 
@@ -29,7 +29,7 @@ class PublishCommand extends Command
     {
         // 发布资源
         $this->call('vendor:publish', [
-            '--provider' => "Gentle\Edith\EdithServiceProvider"
+            '--provider' => "Edith\Admin\EdithAdminServiceProvider"
         ]);
     }
 }

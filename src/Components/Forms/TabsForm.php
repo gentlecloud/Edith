@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Forms;
+namespace Edith\Admin\Components\Forms;
 
-use Gentle\Edith\Components\Displays\TabPane;
-use Gentle\Edith\Components\Tabs\Tabs;
+use Edith\Admin\Components\Displays\TabPane;
+use Edith\Admin\Components\Tabs\Tabs;
 use Illuminate\Support\Collection;
 
 class TabsForm extends ProForm

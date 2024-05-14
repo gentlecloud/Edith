@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Exceptions\ServiceException;
+use Edith\Admin\Exceptions\ServiceException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Models;
+namespace Edith\Admin\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Gentle\Edith\Traits\DateTimeFormatter;
+use Edith\Admin\Traits\DateTimeFormatter;
 
 class EdithActionLog extends Model
 {
@@ -31,6 +31,6 @@ class EdithActionLog extends Model
 
     public function admin()
     {
-        return $this->hasOne('Gentle\Edith\Models\EdithAdmin', 'id', 'obj_id');
+        return $this->hasOne('Edith\Admin\Models\EdithAdmin', 'id', 'obj_id');
     }
 }

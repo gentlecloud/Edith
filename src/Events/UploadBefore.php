@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Events;
+namespace Edith\Admin\Events;
 
 use Illuminate\Http\Request;
 
 /**
  * Class UploadBefore
  * 上传文件前触发事件
- * @package Gentle\Edith\Events
+ * @package Edith\Admin\Events
  */
 class UploadBefore
 {

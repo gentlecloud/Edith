@@ -1,13 +1,13 @@
 <?php
-namespace Gentle\Edith\Components\Traits;
+namespace Edith\Admin\Components\Traits;
 
-use Gentle\Edith\Components\Amis\Action\Action;
-use Gentle\Edith\Components\Amis\Action\AjaxAction;
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Amis\Action\Dialog;
-use Gentle\Edith\Components\Amis\Action\Drawer;
-use Gentle\Edith\Components\Amis\Form\Form;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Action\Action;
+use Edith\Admin\Components\Amis\Action\AjaxAction;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Amis\Action\Dialog;
+use Edith\Admin\Components\Amis\Action\Drawer;
+use Edith\Admin\Components\Amis\Form\Form;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -38,7 +38,7 @@ trait CrudActions
      * @param string $buttonName 按钮名称
      * @param string $type 按钮类型
      * @return Action
-     * @throws \Gentle\Edith\Exceptions\RendererException
+     * @throws \Edith\Admin\Exceptions\RendererException
      */
     public function createAction(string $mode = 'modal', array|Form $controls = [], string $buttonName = '创建', string $type = 'primary'): Action
     {

@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
 /**
  * Amis Helmet 页面组件

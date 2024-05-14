@@ -1,18 +1,18 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Divider;
-use Gentle\Edith\Components\Amis\Form\FieldSet;
-use Gentle\Edith\Components\Amis\Form\Form;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\InputPassword;
-use Gentle\Edith\Components\Amis\Form\InputSwitch;
-use Gentle\Edith\Components\Amis\Form\InputUploader;
-use Gentle\Edith\Components\Pages\PageContainer;
-use Gentle\Edith\Components\Pages\ProCard;
-use Gentle\Edith\Exceptions\RendererException;
-use Gentle\Edith\Models\EdithAdmin;
-use Gentle\Edith\Services\AdminUserService;
+use Edith\Admin\Components\Amis\Divider;
+use Edith\Admin\Components\Amis\Form\FieldSet;
+use Edith\Admin\Components\Amis\Form\Form;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\InputPassword;
+use Edith\Admin\Components\Amis\Form\InputSwitch;
+use Edith\Admin\Components\Amis\Form\InputUploader;
+use Edith\Admin\Components\Pages\PageContainer;
+use Edith\Admin\Components\Pages\ProCard;
+use Edith\Admin\Exceptions\RendererException;
+use Edith\Admin\Models\EdithAdmin;
+use Edith\Admin\Services\AdminUserService;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller

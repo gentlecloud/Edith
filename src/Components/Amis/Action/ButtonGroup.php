@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Action;
+namespace Edith\Admin\Components\Amis\Action;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\AmisRenderer;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * Amis ButtonGroup 按钮组

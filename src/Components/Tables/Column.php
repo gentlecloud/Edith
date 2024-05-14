@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Tables;
+namespace Edith\Admin\Components\Tables;
 
-use Gentle\Edith\Components\Fields\Column as BasicColumn;
+use Edith\Admin\Components\Fields\Column as BasicColumn;
 
 /**
  * Antd Table Column 表格列

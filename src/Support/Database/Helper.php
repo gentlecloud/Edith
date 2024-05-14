@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Support\Database;
+namespace Edith\Admin\Support\Database;
 
 use Illuminate\Support\Facades\DB;
 class Helper

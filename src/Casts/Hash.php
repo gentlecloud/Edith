@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Casts;
+namespace Edith\Admin\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 

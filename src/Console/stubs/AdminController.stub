@@ -1,7 +1,7 @@
 <?php
 namespace App\Edith\Controllers;
 
-use Gentle\Edith\Http\Controllers\AdminController as BaseController;
+use Edith\Admin\Http\Controllers\AdminController as BaseController;
 
 class AdminController extends BaseController
 {

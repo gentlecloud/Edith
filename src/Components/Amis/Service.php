@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
 /**
  * Amis Service 功能型容器

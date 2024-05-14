@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Pages;
+namespace Edith\Admin\Components\Pages;
 
-use Gentle\Edith\Components\Renderer;
+use Edith\Admin\Components\Renderer;
 
 /**
  * Edith Login Helmet 翼搭登录页面

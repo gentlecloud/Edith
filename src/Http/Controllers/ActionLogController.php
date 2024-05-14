@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\InputDatetimeRange;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\InputDatetimeRange;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Http\Request;
 
 class ActionLogController extends Controller
@@ -17,7 +17,7 @@ class ActionLogController extends Controller
      * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\ActionLogService";
+    protected ?string $serviceName = "Edith\Admin\Services\ActionLogService";
 
     /**
      * @param Crud $crud

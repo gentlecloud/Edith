@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Listeners;
+namespace Edith\Admin\Listeners;
 
-use Gentle\Edith\Events;
-use Gentle\Edith\Models\EdithAttachment;
+use Edith\Admin\Events;
+use Edith\Admin\Models\EdithAttachment;
 
 class UploadAfter
 {

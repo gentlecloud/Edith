@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Events;
+namespace Edith\Admin\Events;
 
 use Illuminate\Http\Request;
 
 /**
  * Class AuthBefore
  * 管理用户登录前事件
- * @package Gentle\Edith\Events
+ * @package Edith\Admin\Events
  */
 class AuthLoginBefore
 {

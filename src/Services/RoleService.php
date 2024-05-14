@@ -1,11 +1,11 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Models\EdithMenu;
-use Gentle\Edith\Models\EdithPermission;
-use Gentle\Edith\Models\EdithRole;
-use Gentle\Edith\Models\EdithRoleMenu;
-use Gentle\Edith\Models\EdithRolePermission;
+use Edith\Admin\Models\EdithMenu;
+use Edith\Admin\Models\EdithPermission;
+use Edith\Admin\Models\EdithRole;
+use Edith\Admin\Models\EdithRoleMenu;
+use Edith\Admin\Models\EdithRolePermission;
 
 class RoleService extends ModelService
 {
@@ -20,7 +20,7 @@ class RoleService extends ModelService
     /**
      * @param $id
      * @return mixed
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     public function get($id = null)
     {

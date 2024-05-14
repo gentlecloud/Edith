@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Page;
+namespace Edith\Admin\Components\Amis\Page;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Amis\AmisRenderer;
 
 /***
  * Amis Timeline item

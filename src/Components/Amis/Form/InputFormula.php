@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Form;
+namespace Edith\Admin\Components\Amis\Form;
 
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Exceptions\RendererException;
 
 /***
  * Amis Form InputFormula 公式编辑器

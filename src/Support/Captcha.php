@@ -1,6 +1,6 @@
 <?php
 
-namespace Gentle\Edith\Support;
+namespace Edith\Admin\Support;
 
 use Illuminate\Support\Facades\Cache;
 

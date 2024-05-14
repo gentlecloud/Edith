@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Action\AjaxAction;
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\TreeSelect;
-use Gentle\Edith\Models\EdithMenu;
-use Gentle\Edith\Models\EdithPermission;
+use Edith\Admin\Components\Amis\Action\AjaxAction;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\TreeSelect;
+use Edith\Admin\Models\EdithMenu;
+use Edith\Admin\Models\EdithPermission;
 use Illuminate\Support\Facades\Route;
 
 class PermissionController extends Controller
@@ -19,7 +19,7 @@ class PermissionController extends Controller
     /**
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\PermissionService";
+    protected ?string $serviceName = "Edith\Admin\Services\PermissionService";
 
     /**
      * 生成 Crud 列表页面

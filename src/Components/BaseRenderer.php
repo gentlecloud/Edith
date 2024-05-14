@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components;
+namespace Edith\Admin\Components;
 
-use Gentle\Edith\Components\Contracts\RendererInterface;
-use Gentle\Edith\Components\Traits\RendererAttribute;
+use Edith\Admin\Components\Contracts\RendererInterface;
+use Edith\Admin\Components\Traits\RendererAttribute;
 
 /**
  * Edith Basic Renderer

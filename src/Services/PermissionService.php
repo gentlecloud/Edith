@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Exceptions\ServiceException;
-use Gentle\Edith\Models\EdithPermission;
+use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Models\EdithPermission;
 use Illuminate\Database\Eloquent\Builder;
 
 class PermissionService extends ModelService

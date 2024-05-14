@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Action;
+namespace Edith\Admin\Components\Amis\Action;
 
-use Gentle\Edith\Components\BaseRenderer;
+use Edith\Admin\Components\BaseRenderer;
 
 /**
  * Amis OnAction 操作

@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Models;
+namespace Edith\Admin\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Gentle\Edith\Support\Rsa;
-use Gentle\Edith\Traits\DateTimeFormatter;
+use Edith\Admin\Support\Rsa;
+use Edith\Admin\Traits\DateTimeFormatter;
 
 class EdithAuthToken extends Model
 {

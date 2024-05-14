@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Form;
+namespace Edith\Admin\Components\Amis\Form;
 
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * Custom Form InputUploader 翼搭附件选择上传组件

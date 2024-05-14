@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Providers;
+namespace Edith\Admin\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as BaseServiceProvider;
 
@@ -10,14 +10,14 @@ class EventServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $listen = [
-        \Gentle\Edith\Events\AuthLoginBefore::class => [
-            \Gentle\Edith\Listeners\AuthLoginBefore::class
+        \Edith\Admin\Events\AuthLoginBefore::class => [
+            \Edith\Admin\Listeners\AuthLoginBefore::class
         ],
-        \Gentle\Edith\Events\AuthLoginAfter::class => [
-            \Gentle\Edith\Listeners\AuthLoginAfter::class
+        \Edith\Admin\Events\AuthLoginAfter::class => [
+            \Edith\Admin\Listeners\AuthLoginAfter::class
         ],
-        \Gentle\Edith\Events\UploadAfter::class => [
-            \Gentle\Edith\Listeners\UploadAfter::class
+        \Edith\Admin\Events\UploadAfter::class => [
+            \Edith\Admin\Listeners\UploadAfter::class
         ]
     ];
 

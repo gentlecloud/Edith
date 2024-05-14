@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Gentle\\Edith\\": "src/"
+            "Edith\\Admin\\": "src/"
         },
         "files": [
             "src/Support/helpers.php"
@@ -26,10 +26,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Gentle\\Edith\\EdithServiceProvider"
+                "Edith\\Admin\\EdithAdminServiceProvider"
             ],
             "aliases": {
-                "Edith": "Gentle\\Edith\\Facades\\Edith"
+                "EdithAdmin": "Edith\\Admin\\Facades\\EdithAdmin"
             }
         }
     },

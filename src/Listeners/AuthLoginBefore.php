@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Listeners;
+namespace Edith\Admin\Listeners;
 
-use Gentle\Edith\Events;
-use Gentle\Edith\Exceptions\AuthException;
-use Gentle\Edith\Support\Captcha;
+use Edith\Admin\Events;
+use Edith\Admin\Exceptions\AuthException;
+use Edith\Admin\Support\Captcha;
 use Illuminate\Http\JsonResponse;
 
 class AuthLoginBefore

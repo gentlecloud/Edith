@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Fields;
+namespace Edith\Admin\Components\Fields;
 
 /**
  * Edith 图片验证码

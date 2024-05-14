@@ -1,11 +1,11 @@
 <?php
 namespace Gentle\Edith;
 
-use Gentle\Edith\Contracts\EdithAuthInterface;
-use Gentle\Edith\Contracts\EdithPlatformInterface;
-use Gentle\Edith\Core\Auth;
-use Gentle\Edith\Core\Platform;
-use Gentle\Edith\Support\Database\Helper;
+use Edith\Admin\Contracts\EdithAuthInterface;
+use Edith\Admin\Contracts\EdithPlatformInterface;
+use Edith\Admin\Core\Auth;
+use Edith\Admin\Core\Platform;
+use Edith\Admin\Support\Database\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
  * @author Chico Written in Xiamen on 2022.11.30, Xiamen Gentle Technology Co., Ltd
  * @copyright 2021-2038 Xiamen Gentle Technology Co., Ltd
  */
-class EdithServiceProvider extends ServiceProvider
+class EdithAdminServiceProvider extends ServiceProvider
 {
     /**
      * The application's Command

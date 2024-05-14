@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * HBox 布局

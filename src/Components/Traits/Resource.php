@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Components\Traits;
+namespace Edith\Admin\Components\Traits;
 
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Amis\Form\Form;
-use Gentle\Edith\Components\Forms\ProForm;
-use Gentle\Edith\Components\Forms\SchemaForm;
-use Gentle\Edith\Components\Pages\ProCard;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Amis\Form\Form;
+use Edith\Admin\Components\Forms\ProForm;
+use Edith\Admin\Components\Forms\SchemaForm;
+use Edith\Admin\Components\Pages\ProCard;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Str;
 
 trait Resource
@@ -15,7 +15,7 @@ trait Resource
      * 生成表单页 JSON
      * @param $id
      * @return object
-     * @throws RendererException|\Gentle\Edith\Exceptions\ServiceException
+     * @throws RendererException|\Edith\Admin\Exceptions\ServiceException
      */
     protected function renderFormPage($id = null)
     {

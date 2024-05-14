@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith;
+namespace Edith\Admin;
 
 /**
  * Edith Application
@@ -62,7 +62,7 @@ class Application
         });
 
         app('router')->middleware(config('edith.route.middleware', ['edith.auth', 'edith.log']))
-            ->namespace('Gentle\\Edith\\Http\\Controllers')
+            ->namespace('Edith\\Admin\\Http\\Controllers')
             ->group(function ($router) {
                 $router->apiResources([
                     'auth/menu' => \MenuController::class,

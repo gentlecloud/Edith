@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
-use Gentle\Edith\Components\Renderer;
+use Edith\Admin\Components\Renderer;
 
 /**
  * @method $this data(array $data)                                页面携带变量

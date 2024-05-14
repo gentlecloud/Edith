@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Forms;
+namespace Edith\Admin\Components\Forms;
 
-use Gentle\Edith\Components\Fields\Column as BasicColumn;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Fields\Column as BasicColumn;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 
 /**

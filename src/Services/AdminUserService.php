@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Exceptions\ServiceException;
-use Gentle\Edith\Models\EdithRole;
-use Gentle\Edith\Models\EdithRoleUser;
+use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Models\EdithRole;
+use Edith\Admin\Models\EdithRoleUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +13,7 @@ class AdminUserService extends ModelService
      * 定义模型名称
      * @var string|null
      */
-    protected ?string $modelName = 'Gentle\Edith\Models\EdithAdmin';
+    protected ?string $modelName = 'Edith\Admin\Models\EdithAdmin';
 
     /**
      * @var array|string[]

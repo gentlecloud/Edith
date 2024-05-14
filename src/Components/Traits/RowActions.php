@@ -1,13 +1,13 @@
 <?php
-namespace Gentle\Edith\Components\Traits;
+namespace Edith\Admin\Components\Traits;
 
-use Gentle\Edith\Components\Amis\Action\Action;
-use Gentle\Edith\Components\Amis\Action\AjaxAction;
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Amis\Action\Dialog;
-use Gentle\Edith\Components\Amis\Action\Drawer;
-use Gentle\Edith\Components\Amis\Form\Form;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Action\Action;
+use Edith\Admin\Components\Amis\Action\AjaxAction;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Amis\Action\Dialog;
+use Edith\Admin\Components\Amis\Action\Drawer;
+use Edith\Admin\Components\Amis\Form\Form;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Str;
 
 trait RowActions

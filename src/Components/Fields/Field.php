@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Fields;
+namespace Edith\Admin\Components\Fields;
 
-use Gentle\Edith\Components\Renderer;
+use Edith\Admin\Components\Renderer;
 use Illuminate\Support\Collection;
 
 /**

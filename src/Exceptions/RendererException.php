@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Exceptions;
+namespace Edith\Admin\Exceptions;
 
-use Gentle\Edith\Support\Response;
+use Edith\Admin\Support\Response;
 
 class RendererException extends \Exception
 {

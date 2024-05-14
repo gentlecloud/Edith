@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Displays;
+namespace Edith\Admin\Components\Displays;
 
-use Gentle\Edith\Components\Renderer;
+use Edith\Admin\Components\Renderer;
 
 /**
  * @method $this type(string $icon)

@@ -1,25 +1,21 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\Form;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\Hidden;
-use Gentle\Edith\Components\Amis\Form\InputDate;
-use Gentle\Edith\Components\Amis\Form\InputDatetimeRange;
-use Gentle\Edith\Components\Amis\Form\InputImage;
-use Gentle\Edith\Components\Amis\Form\InputPassword;
-use Gentle\Edith\Components\Amis\Form\InputStatic;
-use Gentle\Edith\Components\Amis\Form\InputSwitch;
-use Gentle\Edith\Components\Amis\Form\InputUploader;
-use Gentle\Edith\Components\Amis\Form\Select;
-use Gentle\Edith\Components\Amis\Show\Qrcode;
-use Gentle\Edith\Components\Forms\SchemaForm;
-use Gentle\Edith\Models\EdithRole;
-use Gentle\Edith\Support\GoogleAuthenticator;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\Hidden;
+use Edith\Admin\Components\Amis\Form\InputDatetimeRange;
+use Edith\Admin\Components\Amis\Form\InputPassword;
+use Edith\Admin\Components\Amis\Form\InputStatic;
+use Edith\Admin\Components\Amis\Form\InputSwitch;
+use Edith\Admin\Components\Amis\Form\InputUploader;
+use Edith\Admin\Components\Amis\Form\Select;
+use Edith\Admin\Components\Forms\SchemaForm;
+use Edith\Admin\Models\EdithRole;
+use Edith\Admin\Support\GoogleAuthenticator;
 
-class AdminController extends Controller
+abstract class AdminController extends Controller
 {
     /**
      * @var string|null
@@ -30,7 +26,7 @@ class AdminController extends Controller
      * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\AdminUserService";
+    protected ?string $serviceName = "Edith\Admin\Services\AdminUserService";
 
     /**
      * 生成 Crud 列表页面
@@ -99,7 +95,7 @@ class AdminController extends Controller
      * 表单页
      * @param $id
      * @return SchemaForm
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     public function form($id = null)
     {

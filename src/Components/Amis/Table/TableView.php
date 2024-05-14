@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Table;
+namespace Edith\Admin\Components\Amis\Table;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Amis\AmisRenderer;
 
 /**
  * Amis TableView 表格视图

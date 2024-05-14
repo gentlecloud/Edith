@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\InputTree;
-use Gentle\Edith\Components\Amis\Form\Select;
-use Gentle\Edith\Models\EdithMenu;
-use Gentle\Edith\Models\EdithPermission;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\InputTree;
+use Edith\Admin\Components\Amis\Form\Select;
+use Edith\Admin\Models\EdithMenu;
+use Edith\Admin\Models\EdithPermission;
 
 class RoleController extends Controller
 {
@@ -18,7 +18,7 @@ class RoleController extends Controller
     /**
      * @var string|null
      */
-    protected ?string $serviceName = "Gentle\Edith\Services\RoleService";
+    protected ?string $serviceName = "Edith\Admin\Services\RoleService";
 
     /**
      * 生成 Crud 列表页面

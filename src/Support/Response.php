@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Support;
+namespace Edith\Admin\Support;
 
-use Gentle\Edith\Components\Amis\Page;
-use Gentle\Edith\Components\Pages\PageContainer;
-use Gentle\Edith\Support\Database\Helper;
+use Edith\Admin\Components\Amis\Page;
+use Edith\Admin\Components\Pages\PageContainer;
+use Edith\Admin\Support\Database\Helper;
 
 /**
  * Edith Response

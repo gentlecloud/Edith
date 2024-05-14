@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Support;
+namespace Edith\Admin\Support;
 
 use Composer\Autoload\ClassLoader;
 

@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Traits;
+namespace Edith\Admin\Components\Traits;
 
-use Gentle\Edith\Components\Amis\Action\OnAction;
+use Edith\Admin\Components\Amis\Action\OnAction;
 use Illuminate\Support\Str;
 
 trait FormActions

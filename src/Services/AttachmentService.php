@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Events\UploadAfter;
-use Gentle\Edith\Events\UploadBefore;
-use Gentle\Edith\Exceptions\ServiceException;
+use Edith\Admin\Events\UploadAfter;
+use Edith\Admin\Events\UploadBefore;
+use Edith\Admin\Exceptions\ServiceException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
@@ -15,11 +15,11 @@ class AttachmentService extends ModelService
      * 定义模型名称
      * @var string|null
      */
-    protected ?string $modelName = 'Gentle\Edith\Models\EdithAttachment';
+    protected ?string $modelName = 'Edith\Admin\Models\EdithAttachment';
 
     /**
      * @return Builder
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     public function query(): Builder
     {
@@ -65,7 +65,7 @@ class AttachmentService extends ModelService
      * 本地上传图片
      * @param int $platformId
      * @return array
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     protected function localUpload(int $platformId): array
     {

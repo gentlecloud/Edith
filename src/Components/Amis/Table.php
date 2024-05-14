@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
-use Gentle\Edith\Components\Amis\Table\Column;
+use Edith\Admin\Components\Amis\Table\Column;
 use Illuminate\Support\Collection;
 
 /**

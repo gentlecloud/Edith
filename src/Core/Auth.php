@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Core;
+namespace Edith\Admin\Core;
 
-use Gentle\Edith\Contracts\EdithAuthInterface;
-use Gentle\Edith\Models\EdithAuthToken;
+use Edith\Admin\Contracts\EdithAuthInterface;
+use Edith\Admin\Models\EdithAuthToken;
 
 class Auth implements EdithAuthInterface
 {

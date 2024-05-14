@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Listeners;
+namespace Edith\Admin\Listeners;
 
-use Gentle\Edith\Events;
+use Edith\Admin\Events;
 
 class AuthLoginAfter
 {

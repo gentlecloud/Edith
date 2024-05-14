@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Contracts;
+namespace Edith\Admin\Contracts;
 
 interface EdithAuthInterface
 {

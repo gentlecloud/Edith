@@ -1,9 +1,9 @@
 <?php
 
-namespace Gentle\Edith\Models;
+namespace Edith\Admin\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Gentle\Edith\Traits\DateTimeFormatter;
+use Edith\Admin\Traits\DateTimeFormatter;
 
 class EdithMenu extends Model
 {

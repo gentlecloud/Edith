@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Action;
+namespace Edith\Admin\Components\Amis\Action;
 
 use Closure;
-use Gentle\Edith\Components\Amis\AmisRenderer;
-use Gentle\Edith\Components\Traits\RowActions;
+use Edith\Admin\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Traits\RowActions;
 use Illuminate\Support\Collection;
 
 /**

@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Traits;
+namespace Edith\Admin\Traits;
 
 trait DateTimeFormatter
 {

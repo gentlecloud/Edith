@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Form;
+namespace Edith\Admin\Components\Amis\Form;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Amis\AmisRenderer;
 
 /**
  * Amis Group 表单项组

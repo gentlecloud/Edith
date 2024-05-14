@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Support;
+namespace Edith\Admin\Support;
 
-use Gentle\Edith\Exceptions\RequestErrorException;
-use Gentle\Edith\Support\FileUtil;
+use Edith\Admin\Exceptions\RequestErrorException;
+use Edith\Admin\Support\FileUtil;
 
 class Http
 {

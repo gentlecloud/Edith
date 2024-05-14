@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Fields;
+namespace Edith\Admin\Components\Fields;
 
-use Gentle\Edith\Components\Forms\Column as FormColumn;
+use Edith\Admin\Components\Forms\Column as FormColumn;
 
 /**
  * Edith 搭配 Antd 上传组件

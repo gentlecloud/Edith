@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Contracts;
+namespace Edith\Admin\Components\Contracts;
 
 use JsonSerializable;
 

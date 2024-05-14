@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Table;
+namespace Edith\Admin\Components\Amis\Table;
 
-use Gentle\Edith\Components\BaseRenderer;
+use Edith\Admin\Components\BaseRenderer;
 
 /**
  * Amis Table 行单元格

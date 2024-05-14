@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Traits;
+namespace Edith\Admin\Traits;
 
-use Gentle\Edith\Exceptions\FormValidatorException;
+use Edith\Admin\Exceptions\FormValidatorException;
 use Illuminate\Support\Facades\Validator;
 
 trait FormValidator

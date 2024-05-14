@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Form;
+namespace Edith\Admin\Components\Amis\Form;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\AmisRenderer;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * Amis FormItem 普通表单项

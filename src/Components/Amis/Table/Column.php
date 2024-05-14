@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Table;
+namespace Edith\Admin\Components\Amis\Table;
 
-use Gentle\Edith\Components\BaseRenderer;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\BaseRenderer;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * Amis Table Column

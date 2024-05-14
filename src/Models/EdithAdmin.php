@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Models;
+namespace Edith\Admin\Models;
 
-use Gentle\Edith\Casts\Hash;
-use Gentle\Edith\Contracts\HasEdithToken as HasEdithTokenContract;
-use Gentle\Edith\Support\GoogleAuthenticator;
-use Gentle\Edith\Traits\DateTimeFormatter;
-use Gentle\Edith\Traits\HasEdithToken;
-use Gentle\Edith\Traits\HasPermissions;
+use Edith\Admin\Casts\Hash;
+use Edith\Admin\Contracts\HasEdithToken as HasEdithTokenContract;
+use Edith\Admin\Support\GoogleAuthenticator;
+use Edith\Admin\Traits\DateTimeFormatter;
+use Edith\Admin\Traits\HasEdithToken;
+use Edith\Admin\Traits\HasPermissions;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;

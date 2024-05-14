@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Show;
+namespace Edith\Admin\Components\Amis\Show;
 
-use Gentle\Edith\Components\Amis\Action\Action;
-use Gentle\Edith\Components\Amis\AmisRenderer;
-use Gentle\Edith\Components\Amis\Form\InputFile;
+use Edith\Admin\Components\Amis\Action\Action;
+use Edith\Admin\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Amis\Form\InputFile;
 
 /**
  * Amis OfficeViewer Office 文件阅读器

@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Services\AttachmentCategoryService;
+use Edith\Admin\Services\AttachmentCategoryService;
 use Illuminate\Http\Request;
 
 class AttachmentCategoryController extends Controller
@@ -20,7 +20,7 @@ class AttachmentCategoryController extends Controller
 
     /**
      * @return array
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     public function datasource(): array
     {

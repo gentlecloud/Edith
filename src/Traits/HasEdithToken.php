@@ -1,8 +1,8 @@
 <?php
-namespace Gentle\Edith\Traits;
+namespace Edith\Admin\Traits;
 
-use Gentle\Edith\Models\EdithAuthToken;
-use Gentle\Edith\Support\Rsa;
+use Edith\Admin\Models\EdithAuthToken;
+use Edith\Admin\Support\Rsa;
 
 trait HasEdithToken
 {

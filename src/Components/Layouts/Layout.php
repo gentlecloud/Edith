@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Layouts;
+namespace Edith\Admin\Components\Layouts;
 
-use Gentle\Edith\Components\Renderer;
+use Edith\Admin\Components\Renderer;
 
 /**
  * Ant ProLayout

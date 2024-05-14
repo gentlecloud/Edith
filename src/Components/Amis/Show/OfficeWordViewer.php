@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Show;
+namespace Edith\Admin\Components\Amis\Show;
 
 /**
  * Amis OfficeViewer Word 阅读器

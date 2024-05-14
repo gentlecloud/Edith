@@ -1,9 +1,9 @@
 <?php
 
-namespace Gentle\Edith\Models\Seeders;
+namespace Edith\Admin\Models\Seeders;
 
-use Gentle\Edith\Models\EdithConfig;
-use Gentle\Edith\Models\EdithMenu;
+use Edith\Admin\Models\EdithConfig;
+use Edith\Admin\Models\EdithMenu;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

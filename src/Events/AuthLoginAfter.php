@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Events;
+namespace Edith\Admin\Events;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 
 /**
  * Class AuthAfter
  * 管理用户登录后事件
- * @package Gentle\Edith\Events
+ * @package Edith\Admin\Events
  */
 class AuthLoginAfter
 {

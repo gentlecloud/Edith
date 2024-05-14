@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Console;
+namespace Edith\Admin\Console;
 
-use Gentle\Edith\Models\Seeders\EdithSeeder;
-use Gentle\Edith\Models\EdithAdmin;
-use Gentle\Edith\Support\File;
+use Edith\Admin\Models\Seeders\EdithSeeder;
+use Edith\Admin\Models\EdithAdmin;
+use Edith\Admin\Support\File;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

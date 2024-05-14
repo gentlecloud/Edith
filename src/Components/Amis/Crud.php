@@ -1,11 +1,11 @@
 <?php
-namespace Gentle\Edith\Components\Amis;
+namespace Edith\Admin\Components\Amis;
 
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Amis\Action\Operation;
-use Gentle\Edith\Components\Amis\Table\Column;
-use Gentle\Edith\Components\Traits\CrudActions;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Amis\Action\Operation;
+use Edith\Admin\Components\Amis\Table\Column;
+use Edith\Admin\Components\Traits\CrudActions;
+use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 
 /**

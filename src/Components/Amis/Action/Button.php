@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Action;
+namespace Edith\Admin\Components\Amis\Action;
 
 /**
  * Amis Button 按钮

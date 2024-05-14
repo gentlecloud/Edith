@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Services;
+namespace Edith\Admin\Services;
 
-use Gentle\Edith\Models\EdithAttachment;
+use Edith\Admin\Models\EdithAttachment;
 
 class AttachmentCategoryService extends ModelService
 {
@@ -9,12 +9,12 @@ class AttachmentCategoryService extends ModelService
      * 定义模型名称
      * @var string|null
      */
-    protected ?string $modelName = 'Gentle\Edith\Models\EdithAttachmentCategory';
+    protected ?string $modelName = 'Edith\Admin\Models\EdithAttachmentCategory';
 
     /**
      * @param $id
      * @return void
-     * @throws \Gentle\Edith\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\ServiceException
      */
     protected function deleting($id)
     {

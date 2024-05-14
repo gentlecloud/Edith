@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Forms;
+namespace Edith\Admin\Components\Forms;
 
 /**
  * Ant drawer form 表单

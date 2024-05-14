@@ -1,9 +1,9 @@
 <?php
-namespace Gentle\Edith\Components\Forms;
+namespace Edith\Admin\Components\Forms;
 
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Fields\Uploader;
-use Gentle\Edith\Exceptions\RendererException;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Fields\Uploader;
+use Edith\Admin\Exceptions\RendererException;
 
 /**
  * Antd Schema Form - JSON 表单

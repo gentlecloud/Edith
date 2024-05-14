@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Components\Amis\Show;
+namespace Edith\Admin\Components\Amis\Show;
 
-use Gentle\Edith\Components\Amis\AmisRenderer;
+use Edith\Admin\Components\Amis\AmisRenderer;
 
 /**
  * Amis Badge 角标

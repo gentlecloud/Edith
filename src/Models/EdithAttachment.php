@@ -1,7 +1,7 @@
 <?php
-namespace Gentle\Edith\Models;
+namespace Edith\Admin\Models;
 
-use Gentle\Edith\Traits\DateTimeFormatter;
+use Edith\Admin\Traits\DateTimeFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 

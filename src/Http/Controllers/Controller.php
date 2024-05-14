@@ -1,12 +1,12 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Traits\Resource;
-use Gentle\Edith\Exceptions\RendererException;
-use Gentle\Edith\Exceptions\ServiceException;
-use Gentle\Edith\Traits\Datasource;
-use Gentle\Edith\Traits\FormValidator;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Traits\Resource;
+use Edith\Admin\Exceptions\RendererException;
+use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Traits\Datasource;
+use Edith\Admin\Traits\FormValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;

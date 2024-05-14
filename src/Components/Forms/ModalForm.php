@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Components\Forms;
+namespace Edith\Admin\Components\Forms;
 
 /**
  * ant modal form 表单

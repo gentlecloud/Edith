@@ -1,26 +1,26 @@
 <?php
-namespace Gentle\Edith\Http\Controllers;
+namespace Edith\Admin\Http\Controllers;
 
-use Gentle\Edith\Components\Amis\Action\Action;
-use Gentle\Edith\Components\Amis\Action\Button;
-use Gentle\Edith\Components\Amis\Action\Dialog;
-use Gentle\Edith\Components\Amis\Container;
-use Gentle\Edith\Components\Amis\Crud;
-use Gentle\Edith\Components\Amis\Form\Form;
-use Gentle\Edith\Components\Amis\Form\FormItem;
-use Gentle\Edith\Components\Amis\Form\Group;
-use Gentle\Edith\Components\Amis\Form\Hidden;
-use Gentle\Edith\Components\Amis\Form\InputFile;
-use Gentle\Edith\Components\Amis\Form\InputStatic;
-use Gentle\Edith\Components\Amis\Form\Select;
-use Gentle\Edith\Components\Amis\Grid;
-use Gentle\Edith\Components\Amis\Page;
-use Gentle\Edith\Events\UploadAfter;
-use Gentle\Edith\Events\UploadBefore;
-use Gentle\Edith\Exceptions\RendererException;
-use Gentle\Edith\Exceptions\ServiceException;
-use Gentle\Edith\Models\EdithAttachment;
-use Gentle\Edith\Models\EdithAttachmentCategory;
+use Edith\Admin\Components\Amis\Action\Action;
+use Edith\Admin\Components\Amis\Action\Button;
+use Edith\Admin\Components\Amis\Action\Dialog;
+use Edith\Admin\Components\Amis\Container;
+use Edith\Admin\Components\Amis\Crud;
+use Edith\Admin\Components\Amis\Form\Form;
+use Edith\Admin\Components\Amis\Form\FormItem;
+use Edith\Admin\Components\Amis\Form\Group;
+use Edith\Admin\Components\Amis\Form\Hidden;
+use Edith\Admin\Components\Amis\Form\InputFile;
+use Edith\Admin\Components\Amis\Form\InputStatic;
+use Edith\Admin\Components\Amis\Form\Select;
+use Edith\Admin\Components\Amis\Grid;
+use Edith\Admin\Components\Amis\Page;
+use Edith\Admin\Events\UploadAfter;
+use Edith\Admin\Events\UploadBefore;
+use Edith\Admin\Exceptions\RendererException;
+use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Models\EdithAttachment;
+use Edith\Admin\Models\EdithAttachmentCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +32,7 @@ class AttachmentController extends Controller
      */
     protected ?string $title = '附件';
 
-    protected ?string $serviceName = 'Gentle\Edith\Services\AttachmentService';
+    protected ?string $serviceName = 'Edith\Admin\Services\AttachmentService';
 
     /**
      * 自定义渲染页面

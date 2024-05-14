@@ -1,5 +1,5 @@
 <?php
-namespace Gentle\Edith\Support;
+namespace Edith\Admin\Support;
 
 class Rsa
 {
