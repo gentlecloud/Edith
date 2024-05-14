@@ -61,7 +61,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Newly-Cms route settings
+    | Edith-Admin route settings
     |--------------------------------------------------------------------------
     |
     | The routing configuration of the admin page, including the path prefix,

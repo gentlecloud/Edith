@@ -63,10 +63,6 @@ class Action extends AmisRenderer
      */
     public function actionType(string $actionType, $args = null): Action
     {
-        if (!in_array($actionType, ['refresh', 'reload', 'ajax', 'toast', 'link', 'url', 'drawer', 'dialog', 'confirm', 'cancel', 'prev', 'next', 'copy', 'close', 'goBack', 'goPage', 'custom', 'submit', 'clear-and-submit', 'reset-and-submit'])) {
-            throw new RendererException("Unsupported operation method: {$actionType}");
-        }
-
         if (in_array($actionType, ['toast', 'goBack', 'goPage', 'custom', 'refresh'])) {
             if ($this->onEvent->has('click')) {
                 $click = $this->onEvent->get('click');
