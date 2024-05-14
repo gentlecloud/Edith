@@ -93,8 +93,12 @@ class EdithAdminServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([__DIR__.'/../config' => config_path()], 'edith-config');
             $this->publishes([__DIR__.'/../database/migrations' => database_path('migrations')], 'edith-migrations');
-            $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'edith-resources-lang');
-            $this->publishes([__DIR__.'/../resources/views' => resource_path('views/admin')], 'edith-resources-views');
+            if (file_exists(__DIR__.'/../resources/lang')) {
+                $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'edith-resources-lang');
+            }
+            if (file_exists(__DIR__.'/../resources/views')) {
+                $this->publishes([__DIR__.'/../resources/views' => resource_path('views/admin')], 'edith-resources-views');
+            }
         }
     }
 
