@@ -19,6 +19,7 @@ use Edith\Admin\Events\UploadAfter;
 use Edith\Admin\Events\UploadBefore;
 use Edith\Admin\Exceptions\RendererException;
 use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Facades\EdithAdmin;
 use Edith\Admin\Models\EdithAttachment;
 use Edith\Admin\Models\EdithAttachmentCategory;
 use Illuminate\Http\JsonResponse;
@@ -162,9 +163,9 @@ class AttachmentController extends Controller
         }
 
         $where = null;
-        if (app('edith.platform')->id()){
-            $query->where('platform_id', app('edith.platform')->id());
-            $where = array('platform_id', app('edith.platform')->id());
+        if (EdithAdmin::auth()->platformId()){
+            $query->where('platform_id', EdithAdmin::auth()->platformId());
+            $where = array('platform_id', EdithAdmin::auth()->platformId());
         }
 
         $pictures = $query->orderByDesc('id')->paginate(12);

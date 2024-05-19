@@ -2,7 +2,11 @@
 namespace Edith\Admin;
 
 use Edith\Admin\Contracts\EdithAuthInterface;
+use Edith\Admin\Contracts\EdithModuleCoreInterface;
 use Edith\Admin\Core\Auth;
+use Edith\Admin\Facades\EdithAdmin;
+use Edith\Admin\Modules\Core;
+use Edith\Admin\Support\Context;
 use Edith\Admin\Support\Database\Helper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
@@ -39,7 +43,7 @@ class EdithAdminServiceProvider extends ServiceProvider
      * @var array
      */
     protected array $middlewareGroups = [
-        'edith' => [
+        'edith.admin' => [
             'edith.auth',
             'edith.log'
         ]
@@ -61,6 +65,7 @@ class EdithAdminServiceProvider extends ServiceProvider
         if (env('APP_DEBUG') == true) {
             Helper::listen();
         }
+        $this->app->register(\Edith\Admin\Modules\ServiceProvider::class);
     }
 
     /**
@@ -97,7 +102,7 @@ class EdithAdminServiceProvider extends ServiceProvider
                 $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'edith-resources-lang');
             }
             if (file_exists(__DIR__.'/../resources/views')) {
-                $this->publishes([__DIR__.'/../resources/views' => resource_path('views/admin')], 'edith-resources-views');
+                $this->publishes([__DIR__.'/../resources/views' => resource_path('views/edith')], 'edith-resources-views');
             }
         }
     }
@@ -121,7 +126,7 @@ class EdithAdminServiceProvider extends ServiceProvider
     protected function registerEdithRoutes()
     {
         Route::prefix('api')
-            ->middleware('api')
+            ->middleware(config('edith.route.middleware', ['api', 'edith.admin']))
             ->group(base_path('/routes/edith.php'));
     }
 
@@ -147,6 +152,11 @@ class EdithAdminServiceProvider extends ServiceProvider
      * register Gentle Application Services
      */
     protected function registerServices() {
+        $this->app->singleton('edith.modules', EdithModuleCoreInterface::class);
+        $this->app->bind(EdithModuleCoreInterface::class, function ($app) {
+            return new Core($app);
+        });
+        $this->app->singleton('edith.context', Context::class);
         // 管理员鉴权
         $this->app->singleton('edith.auth', EdithAuthInterface::class);
         $this->app->bind(EdithAuthInterface::class, function() {

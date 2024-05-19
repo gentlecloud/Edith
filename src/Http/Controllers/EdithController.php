@@ -14,7 +14,7 @@ use Edith\Admin\Components\Amis\Wrapper;
 use Edith\Admin\Components\Layouts\Layout;
 use Edith\Admin\Components\Pages\PageContainer;
 use Edith\Admin\Components\Pages\ProCard;
-use Edith\Admin\Facades\Edith;
+use Edith\Admin\Facades\EdithAdmin;
 use Edith\Admin\Models\EdithMenu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,7 +103,7 @@ JS
         return [
             (new Card())->body([
                 (new InputStatic)->label('系统名称')->value(config('edith.name', '翼搭（Edith）')),
-                (new InputStatic)->label('翼搭版本')->value(Edith::version()),
+                (new InputStatic)->label('翼搭版本')->value(EdithAdmin::version()),
                 (new InputStatic)->label('Laravel版本')->value(app()::VERSION),
                 (new InputStatic)->label('运行环境')->value($os . ' ' . substr($_SERVER['SERVER_SOFTWARE'],0,50)),
                 (new InputStatic)->label('MYSQL版本')->value(DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION)),

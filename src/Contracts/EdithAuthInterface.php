@@ -59,10 +59,4 @@ interface EdithAuthInterface
      * @return bool
      */
     public function isSuperAdministrator(): bool;
-
-    /**
-     * 退出登录
-     * @return void
-     */
-    public function logout(): void;
 }

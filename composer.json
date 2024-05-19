@@ -34,7 +34,7 @@
                 "Edith\\Admin\\EdithAdminServiceProvider"
             ],
             "aliases": {
-                "EdithAdmin": "Edith"
+                "EdithAdmin": "Edith\\Admin\\Facades\\EdithAdmin"
             }
         }
     },

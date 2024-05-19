@@ -1,9 +1,9 @@
 <?php
 namespace Edith\Admin\Console;
 
-use Edith\Admin\Facades\Edith;
+use Edith\Admin\Facades\EdithAdmin;
 use Edith\Admin\Models\Seeders\EdithSeeder;
-use Edith\Admin\Models\EdithAdmin;
+use Edith\Admin\Models\EdithAdmin as EdithAdminModel;
 use Edith\Admin\Support\File;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -39,11 +39,12 @@ class InstallCommand extends Command
 
         // 初始化Admin目录
         $this->initAdminDirectory();
+        $this->initModulesDirectory();
 
         // 创建软连接
         $this->call('storage:link');
 
-        modify_env(['EDITH_INSTALL' => true, 'EDITH_VERSION' => Edith::version()]);
+        modify_env(['EDITH_INSTALL' => 'true', 'EDITH_VERSION' => EdithAdmin::version()]);
         File::writeLog(base_path('install.lock'), 'Gentle_Edith install: ok');
     }
 
@@ -54,11 +55,7 @@ class InstallCommand extends Command
      */
     public function initDatabase()
     {
-        if (env('EDITH_INSTALL') === true){
-            $this->call('migrate:fresh --seed');
-        } else {
-            $this->call('migrate');
-        }
+        $this->call('migrate');
     }
 
     /**
@@ -85,6 +82,20 @@ class InstallCommand extends Command
     }
 
     /**
+     * 创建模块应用目录
+     * @return void
+     */
+    protected function initModulesDirectory()
+    {
+        if (!is_dir(config('edith.modules.path'))) {
+            $this->laravel['files']->makeDirectory(config('edith.modules.path'), 0755, true, true);
+            $this->line('<info>Modules directory was created:</info> '.str_replace(base_path(), '', config('edith.modules.path')));
+        } else {
+            $this->line("<error>Modules directory already exists !</error> ");
+        }
+    }
+
+    /**
      * Create DashboardController.
      *
      * @return void
@@ -94,7 +105,7 @@ class InstallCommand extends Command
         $controller = $this->directory . '/EdithController.php';
         $contents = $this->getStub('EdithController');
 
-        $this->laravel['files']->put($controller,$contents);
+        $this->laravel['files']->put($controller, $contents);
         $this->line('<info>EdithController file was created:</info> '.str_replace(base_path(), '', $controller));
     }
 
@@ -160,7 +171,7 @@ class InstallCommand extends Command
         $password = $this->argument('password');
         $email = $this->argument('email');
         // 管理员
-        EdithAdmin::create([
+        EdithAdminModel::create([
             'username' => $username, 'nickname' => '超级管理员', 'email' => $email, 'phone' => '10086', 'password' => $password
         ]);
     }

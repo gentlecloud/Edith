@@ -72,7 +72,12 @@ return [
     'route' => [
         'prefix' => env('EDITH_MANAGE_ROUTE_PREFIX', 'edith'),
         'namespace' => 'App\\Edith\\Controllers',
-        'middleware' => ['edith.auth', 'edith.log'],
+        'middleware' => ['api', 'edith.admin'],
+    ],
+
+    'modules' => [
+        'path' => 'modules',
+        'namespace' => 'Modules\\'
     ],
 
     'rsa' => [
@@ -80,4 +85,3 @@ return [
         'private_key' => 'MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCg7KjENFHhdrCN9ncqTD0JFyyr40nUDVO3p1jwG++MxUZmFUu/5XPWrjL5OJo8gYcBdHZjsNYK79lHWUv0ZrQp12szhbjqkBQGIjjj+NmHYgY3HnMvAmfHgyjV50uIH/VlimcK5Lhc9QskxfZWWbYHx1l0gDmqgHw6aSXRkADrkrB5SGIzG2saSqrTcRPp6rp0RXz/idfjXaeqIQNUgUOK48nUlvS2mS+HTbMoSzh6HxxkAKVMdIwCkdF/6ovZAFzjk8ojrgEXJhzmt2MoAXagPixMzEm4lDbj9cATGW50wrW0nFgKbAUvq4NYyCToZ9FTkOLIjQvRXiFtAC93MGO1AgMBAAECggEASEbi6fTBze0cETbggMvrIfkZpD4ae7ZcooD0Liut5OD55IGuGws4gvSMimkExSY798hSICZdjF37jdMqjSPPyXcqe+KUki2SAMtAGAw9z1OUjQ8NFtESwYZEQgZ3YzVPZ4LJExh1QbMBhUuwf0odutKrd+rbe5vnr+hoBv6Rmzv4N6OZ8jImSYb5pQJoK4Ykeruv10wJgCuxxccun7lFxbeioRZQkFkcKdi6CrRrQiej2AbbWeBbPmgyOIkMe0oMNi3ymSyAxWrO2bbejHT+hKbcfsgJD27hYeJbI9QsskQdC4oiIOh6OjTLFopzVyam87bTdJvZPy1EnSjd7FvAQQKBgQDoBlgM3PhrN6bD0eyfqqyXXY1tFVc6AiCX+o3S47As1bw0Cq88KYeeA9xyK075pV+wNY6XOld+IkXicDUDbCb9aa6DFf50qWdT07rC0E3Xn8bkg8eeFuFTabRY4WdJWV6AU3nvl4GK13vw3PLqzBtNOSzimeHP/ErMEeQpYztaMQKBgQCxjYcKcn9KDqd1P2NpgbZQYDMYcCtbO1+2DJLhnpLAhyJzZxSF2YcmLru6dRAF5QeXZEQWXIdXPQ5uVCuqdnseKKMPPjBRl+LyHr00X6Msz8R1G+xhd5Z6BuPtF/DhqCxsI7sq0heQCbGtvw6aXXmpdD4bGJw9umNkbtkHbsi8xQKBgE3lI1ZeMQA91LzVEy2fbQX8IGjIy1nsMOkU8twkGJdUwjRuidoWzzLbdPzXUVI6lN9he5eFvK3Z78BPj1ywyH43JqFXlu+vl8LqyD5zFE8ZkvpQy4llgQwx5pwYQEa9vB406DDpmlH0eeWpJ9xv3ZKVaV5B7y+WMb5FG2ZRrDFhAoGANH2h0b3d0dgZO7l8u2Fks8hs8qmet78K4bg/6EHIIvEQh0uPLq8LnIcuasZW8VcvcltrIa1DOdBMJuPtcNzMMzNSWZxKDqU3q9rYltY7WHEoJHMX5AzFyNempJ5yUVQ1pda+a79mxeeHxtT4DTzbTfSWs84HytwCrFt1ABSJdf0CgYAmyCenrDhMZRJ6z3APioFEmRBAiuEmVYGxlQuN49ZnwPQO9La04KPW0+HfjcFt/PNMfpoB8rK2BPpi9EJNM8UOJdWdUq0PiNYFDFHYAZ3OLp9Je5kuGiskbq9vIHkKXKw4QmbyJN9RRoRotavhk/wcpbNwV4qk0VWINltWGKKvUQ=='
     ]
 ];
-

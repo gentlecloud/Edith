@@ -104,11 +104,11 @@ abstract class AuthController extends Controller
     {
         $credentials = $request->only(['username', 'password']);
         $this->checkFormRules($credentials);
-        $before = new AuthLoginBefore();
-        event($before);
         // 登录验证
         $credentials['status'] = 1;
         $loginResult = Auth::guard('manage')->attempt($credentials, $request->post('auto_login', false));
+        $before = new AuthLoginBefore();
+        event($before);
         if (!$loginResult){ // 验证失败
             $this->checkLoginFail($credentials['username']);
         }

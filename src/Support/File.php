@@ -4,9 +4,23 @@ namespace Edith\Admin\Support;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use Illuminate\Support\Str;
 
 class File
 {
+    /**
+     * Get the path to the cached file.
+     * @param string $fileName
+     * @return string
+     */
+    public function getCachedServicesPath(string $fileName): string
+    {
+        if (!is_null(env('VAPOR_MAINTENANCE_MODE', null))) {
+            return Str::replaceLast('config.php', $fileName, app('app')->getCachedConfigPath());
+        }
+        return Str::replaceLast('services.php', $fileName, app('app')->getCachedServicesPath());
+    }
+
     /**
      * 输出xml字符
      * @param array $values
