@@ -6,7 +6,7 @@ use Edith\Admin\Contracts\EdithAuthInterface;
 use Edith\Admin\Contracts\EdithModuleCoreInterface;
 use Edith\Admin\Support\Composer;
 use Edith\Admin\Support\Context;
-use Gentle\Edith\Modules\Core;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Edith Admin
@@ -70,6 +70,15 @@ class Admin
     public function modules(): EdithModuleCoreInterface
     {
         return app('edith.modules');
+    }
+
+    /**
+     * @param string $tableName
+     * @return bool
+     */
+    public function hasTable(string $tableName): bool
+    {
+        return Schema::hasTable($tableName);
     }
 
     /**

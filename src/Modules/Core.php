@@ -61,7 +61,7 @@ class Core implements EdithModuleCoreInterface
      */
     public function register(): void
     {
-        if (env('EDITH_INSTALL') == true) {
+        if (env('EDITH_INSTALL') == true && EdithAdmin::hasTable('edith_modules')) {
             $this->loadModules();
             $this->modules->each->register();
         }

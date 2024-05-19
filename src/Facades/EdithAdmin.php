@@ -4,7 +4,6 @@ namespace Edith\Admin\Facades;
 use Composer\Autoload\ClassLoader;
 use Edith\Admin\Contracts\EdithAuthInterface;
 use Edith\Admin\Contracts\EdithModuleCoreInterface;
-use Edith\Admin\Modules\Core;
 use Edith\Admin\Support\Context;
 use Illuminate\Support\Facades\Facade;
 
@@ -19,6 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static EdithAuthInterface auth()                Edith Auth
  * @method static Context context()                        上下文管理
  * @method static EdithModuleCoreInterface modules()       模块管理
+ * @method static bool hasTable(string $tableName)         检查mysql table是否存在
  */
 class EdithAdmin extends Facade
 {
