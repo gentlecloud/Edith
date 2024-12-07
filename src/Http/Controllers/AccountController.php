@@ -67,7 +67,7 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->only(['nickname', 'phone', 'email', 'password', 'confirm']);
+        $data = $request->only(['nickname', 'phone', 'email', 'password', 'confirm', 'avatar']);
         if ((!empty($data['password']) || !empty($data['confirm'])) && (empty($data['confirm']) || $data['password'] !== $data['confirm'])) {
             return error('两次输入的密码不一致！');
         }

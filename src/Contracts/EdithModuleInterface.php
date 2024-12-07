@@ -91,10 +91,10 @@ interface EdithModuleInterface
     public function uninstall(): void;
 
     /**
-     * @param bool $down
+     * @param bool $uninstall
      * @return void
      */
-    public function runMigrations(bool $down = false): void;
+    public function runMigrations(bool $uninstall = false): void;
 
     /**
      * @return string

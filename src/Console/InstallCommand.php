@@ -56,6 +56,7 @@ class InstallCommand extends Command
     public function initDatabase()
     {
         $this->call('migrate');
+        $this->runDatabaseSeeders();
     }
 
     /**
@@ -87,9 +88,9 @@ class InstallCommand extends Command
      */
     protected function initModulesDirectory()
     {
-        if (!is_dir(config('edith.modules.path'))) {
-            $this->laravel['files']->makeDirectory(config('edith.modules.path'), 0755, true, true);
-            $this->line('<info>Modules directory was created:</info> '.str_replace(base_path(), '', config('edith.modules.path')));
+        if (!is_dir(config('edith.modules.path', 'modules'))) {
+            $this->laravel['files']->makeDirectory(config('edith.modules.path', 'modules'), 0755, true, true);
+            $this->line('<info>Modules directory was created:</info> '.str_replace(base_path(), '', config('edith.modules.path', 'modules')));
         } else {
             $this->line("<error>Modules directory already exists !</error> ");
         }
@@ -134,7 +135,7 @@ class InstallCommand extends Command
      */
     protected function createRoutesFile()
     {
-        $file = base_path() . '/routes/edith.php';
+        $file = base_path('/routes/edith.php');
         $contents = $this->getStub('routes');
 
         $this->laravel['files']->put($file, $contents);

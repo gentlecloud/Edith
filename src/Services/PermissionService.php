@@ -30,6 +30,11 @@ class PermissionService extends ModelService
         });
     }
 
+    protected function saving(&$data, $id = null)
+    {
+        $data['menu_id'] = $data['menu_id']['value'] ?? null;
+    }
+
     /**
      * 解析权限名称
      * @param $route
@@ -62,7 +67,7 @@ class PermissionService extends ModelService
                 $name = $menuName . '详情';
                 break;
             case str_contains($as, 'store'):
-                $name = '添加' . $menuName;
+                $name = '保存' . $menuName;
                 break;
             case str_contains($as, 'update'):
                 $name = '更新' . $menuName;

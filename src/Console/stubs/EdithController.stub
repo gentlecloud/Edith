@@ -3,7 +3,7 @@ namespace App\Edith\Controllers;
 
 use Edith\Admin\Http\Controllers\EdithController as BaseController;
 
-class EdithController extends Controller
+class EdithController extends BaseController
 {
     /**
      * Edith UI 初始化

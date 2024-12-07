@@ -23,8 +23,16 @@ if (!function_exists('engine')) {
  * @return \Illuminate\Http\JsonResponse
  */
 if (!function_exists('success')) {
-    function success(string $msg = 'ok~', $data = [], ?string $url = null, ?string $refresh_token = null): \Illuminate\Http\JsonResponse
+    function success(string|array|object $msg = 'ok~', $data = [], ?string $url = null, ?string $refresh_token = null): \Illuminate\Http\JsonResponse
     {
+        switch (func_num_args()) {
+            case 1:
+                if (!is_string($msg)) {
+                    $data = $msg;
+                    $msg = 'succeed.';
+                }
+                break;
+        }
         $header = null;
         if (!is_null($refresh_token)) {
             $header = ['X-Refresh-Token' => $refresh_token];
@@ -72,7 +80,7 @@ if (!function_exists('edith_config')) {
         if (empty($value)) {
             $value = $default;
         } else {
-            \Illuminate\Support\Facades\Cache::put($name, $value);
+            \Illuminate\Support\Facades\Cache::put($name, $value, 60 * 60 * 24 * 30);
         }
         return $value;
     }

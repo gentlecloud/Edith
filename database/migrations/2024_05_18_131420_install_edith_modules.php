@@ -13,9 +13,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('edith_settings', function (Blueprint $table) {
-            $table->string('flag', 64)->unique();
-            $table->longText('value')->nullable();
+            $table->string('flag', 64);
+            $table->json('value')->nullable();
             $table->timestamps();
+            $table->primary('flag');
         });
 
         Schema::create('edith_modules', function (Blueprint $table) {

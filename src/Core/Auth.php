@@ -47,7 +47,7 @@ class Auth implements EdithAuthInterface
      */
     public function token(): ?string
     {
-        return $this->token;
+        return $this->token ?? null;
     }
 
     /**

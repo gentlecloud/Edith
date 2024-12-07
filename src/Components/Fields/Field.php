@@ -345,6 +345,7 @@ class Field extends Renderer
             'name' => $renderer['name'],
             'label' => $this->engine === 'ant' ? null : $renderer['label'],
             'visibleOn' => $renderer['visibleOn'] ?? null,
+            'autoFill' => $renderer['autoFill'] ?? null,
             'id' => $this->id ?? 'input-captcha'
         ];
     }

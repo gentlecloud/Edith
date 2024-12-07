@@ -50,6 +50,17 @@ return new class extends Migration {
             $table->index(['type', 'uid']);
         });
 
+        Schema::create('edith_admin_logins', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('admin_id')->comment('管理员ID');
+            $table->string('province')->nullable()->comment('登录省份');
+            $table->string('city')->nullable()->comment('登录城市');
+            $table->text('ip_info')->comment('IP信息')->nullable();
+            $table->string('lasted_ip')->comment('登录IP');
+            $table->timestamps();
+            $table->index(['admin_id']);
+        });
+
         Schema::create('edith_action_logs', function (Blueprint $table) {
             $table->id();
             $table->integer('obj_id')->nullable()->comment('操作人');
@@ -71,6 +82,7 @@ return new class extends Migration {
             $table->integer('sort')->default(0)->comment('排序');
             $table->string('description')->nullable()->comment('分类描述');
             $table->boolean('status')->default(1);
+            $table->timestamps();
         });
 
         /**

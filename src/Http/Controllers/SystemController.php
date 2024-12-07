@@ -122,7 +122,7 @@ class SystemController extends Controller
                 if (in_array($key, ['APP_DEBUG', 'WEB_SITE_SSL', 'EDITH_DEV'])) {
                     $envs[$key] = is_bool($value) ? ($value ? 'true' : 'false') : $value;
                 } else {
-                    Cache::put($key, $value);
+                    Cache::put($key, $value, 60 * 60 * 24 * 30);
                 }
             }
             if (count($envs)) {

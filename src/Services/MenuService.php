@@ -30,6 +30,19 @@ class MenuService extends ModelService
     }
 
     /**
+     * 保存前置操作 保存钩子 包含新增和更新
+     * @param $data
+     * @param $id
+     * @return void
+     */
+    protected function saving(&$data, $id = null)
+    {
+        if (isset($data['parent_id']) && is_array($data['parent_id'])) {
+            $data['parent_id'] = $data['parent_id']['id'];
+        }
+    }
+
+    /**
      * @param $id
      * @return void
      * @throws ServiceException

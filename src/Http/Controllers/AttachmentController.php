@@ -127,7 +127,12 @@ class AttachmentController extends Controller
                 ]),
             (new Group())->body([
                 new InputStatic('link', '外链地址'),
-                (new Button('复制外链地址'))->icon('fa-sharp fa-solid fa-copy')->actionType('copy')->content('${link}')->visibleOn('${link}')->columnRatio(2)
+                (new Button('复制外链地址'))
+                    ->icon('fa-sharp fa-solid fa-copy')
+                    ->actionType('copy')
+                    ->content('${link}')
+                    ->visibleOn('${link}')
+                    ->columnRatio(2)
             ])
         ]);
 

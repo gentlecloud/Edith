@@ -76,7 +76,7 @@ return [
     ],
 
     'modules' => [
-        'path' => 'modules',
+        'path' => base_path('modules'),
         'namespace' => 'Modules\\'
     ],
 

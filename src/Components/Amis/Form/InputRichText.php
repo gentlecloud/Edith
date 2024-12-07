@@ -28,6 +28,13 @@ class InputRichText extends FormItem
     protected string $receiver = '/api/attachments/upload?return=tinymce';
 
     /**
+     * 默认配置
+     */
+    protected array $options = [
+        'convert_urls' => false
+    ];
+
+    /**
      * 框的大小
      * @param string $size md | lg
      * @return InputRichText

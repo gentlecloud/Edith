@@ -30,14 +30,12 @@ class UploadBefore
 
     /**
      * 构造方法
-     * AuthLoginBefore constructor.
-     * @param Request $request
-     * @param string $obj_type
+     * UploadBefore constructor.
      * @param int $platform_id
      */
-    public function __construct(Request $request, int $platform_id = 0)
+    public function __construct(int $platform_id = 0)
     {
-        $this->request = $request;
+        $this->request = \request();
         $this->platform_id = $platform_id;
     }
 }

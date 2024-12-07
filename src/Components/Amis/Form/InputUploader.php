@@ -21,7 +21,7 @@ class InputUploader extends FormItem
      * 后端上传接口
      * @var string
      */
-    protected string $action = 'api/attachments/upload';
+    protected string $action = '/api/attachments/upload';
 
     /**
      * @var bool

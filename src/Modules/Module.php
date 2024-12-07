@@ -238,7 +238,7 @@ class Module implements EdithModuleInterface
             $namespace = $this->app->config->get('edith.modules.namespace', 'Modules\\') . $this->getName() . '\\Http\\Controllers';
             // 注册 API 路由
             if (is_file($this->getExtraPath('routes/api.php'))) {
-                $this->app->router->prefix('api')
+                $this->app->router->prefix('api/' . $this->getLowerName())
                     ->middleware('api')
                     ->namespace($namespace)
                     ->group($this->getExtraPath('routes/api.php'));
@@ -317,17 +317,17 @@ class Module implements EdithModuleInterface
 
     /**
      * 执行迁移
-     * @param bool $down
+     * @param bool $uninstall
      * @return void
      */
-    public function runMigrations(bool $down = false): void
+    public function runMigrations(bool $uninstall = false): void
     {
-        $path = $this->getExtraPath('database/migrations');
+        $path = $this->getExtraPath('database/Migrations');
         if (!is_dir($path)) {
             return;
         }
 
-        if ($down) {
+        if ($uninstall) {
             $this->app->migrator->rollback($path);
         } else {
             $this->app->migrator->run($path);

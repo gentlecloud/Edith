@@ -47,7 +47,7 @@ class EdithSeeder extends Seeder
             ['name' => '系统配置', 'guard_name' => 'admin', 'icon' => 'icon-setting', 'target' => 'default', 'parent_id' => 0, 'sort' => 4, 'path' => '/system', 'module' => 'system', 'is_dev' => 0],
             ['name' => '网站设置', 'guard_name' => 'admin', 'icon' => 'icon-shezhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'website', 'module' => 'system', 'is_dev' => 0],
             ['name' => '配置管理', 'guard_name' => 'admin', 'icon' => 'icon-peizhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'config', 'module' => 'system', 'is_dev' => 1],
-            ['name' => '操作日志', 'guard_name' => 'admin', 'icon' => 'icon-rizhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'actionLog/index', 'module' => 'system', 'is_dev' => 0],
+            ['name' => '操作日志', 'guard_name' => 'admin', 'icon' => 'icon-rizhi', 'target' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'log', 'module' => 'system', 'is_dev' => 0],
 
             ['name' => '附件空间', 'guard_name' => 'basic', 'icon' => 'icon-fujian', 'target' => 'default', 'parent_id' => 0, 'sort' => 8, 'path' => '/attachments', 'module' => 'default', 'is_dev' => 0],
             ['name' => '附件管理', 'guard_name' => 'basic', 'icon' => 'icon-icon-', 'target' => 'engine', 'parent_id' => 12, 'sort' => 0, 'path' => 'list', 'module' => 'default', 'is_dev' => 0],

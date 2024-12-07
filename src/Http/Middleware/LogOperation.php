@@ -24,7 +24,7 @@ class LogOperation
 
         $data['ip'] = $request->ip();
         $ip2region = \Edith\Admin\Support\IpLocation::find($data['ip']);
-        $data['region'] = implode("|",$ip2region);
+        $data['region'] = is_array($ip2region) ? implode("|", $ip2region) : $ip2region;
         $data['remark'] = '';
         if ($data['type'] == 'ADMIN'){
             $data['remark'] = implode(',', app('edith.auth')->user());

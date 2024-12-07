@@ -84,11 +84,11 @@ class Controller extends BaseController
 
     /**
      * 表单更新
-     * @param Request $request
      * @param $id
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
         $data = $request->except(['ids']);
         try {
@@ -127,12 +127,12 @@ class Controller extends BaseController
 
     /**
      * 详情页面
-     * @param Request $request
      * @param $id
+     * @param Request $request
      * @return JsonResponse
      * @throws ServiceException
      */
-    public function show(Request $request, $id)
+    public function show($id, Request $request)
     {
         if ($request->input('_action') == 'datasource') {
             return success('fetch succeed.', $this->service()->get($id));

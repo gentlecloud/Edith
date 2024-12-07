@@ -36,7 +36,7 @@ class AttachmentService extends ModelService
      */
     public function upfile(int $platform_id = 0)
     {
-        $before = new UploadBefore(\request(), $platform_id);
+        $before = new UploadBefore($platform_id);
         event($before); // 执行上传前事件，用于上传前的处理
 
         if (!($file = $before->file)) { // 如无工具模块事件存储文件 进行本地上传
@@ -47,7 +47,7 @@ class AttachmentService extends ModelService
         }
 
         if (!isset($file['id'])) { // 如果不存在模型索引ID 执行上传后事件
-            $after = new UploadAfter(\request(), $file);
+            $after = new UploadAfter($file);
             event($after);
             $result = [
                 'id' => $after->fileId,

@@ -51,7 +51,7 @@ abstract class EdithController extends Controller
                     ])
                 ])->direction('column')->justify('center')->alignItems('center'))->md(5),
                 (new ProCard())->title('系统信息')->body($this->systemInfo()),
-                (new ProCard())->title('晚上好！')->body([
+                (new ProCard())->title('您好！')->body([
                     (new Custom())->html('<div id="clock" class="text-4xl"></div><div id="clock-date" class="mt-5"></div>')
                         ->onMount(<<<JS
 const clock = document.getElementById('clock');

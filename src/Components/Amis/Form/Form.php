@@ -48,6 +48,12 @@ class Form extends AmisRenderer
     protected string $type = 'form';
 
     /**
+     * 表单标题
+     * @var string
+     */
+    protected string $title = "";
+
+    /**
      * 表单列
      * @var Collection|array
      */

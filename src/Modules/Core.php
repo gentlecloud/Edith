@@ -52,7 +52,7 @@ class Core implements EdithModuleCoreInterface
         $this->modules = new Collection();
         $this->config = $app['config'];
         $this->files = $app['files'];
-        $this->path = $app['config']->get('edith.modules.path', base_path('modules'));
+        $this->path = $this->config->get('edith.modules.path', base_path('modules'));
     }
 
     /**
@@ -165,9 +165,15 @@ class Core implements EdithModuleCoreInterface
      * load Edith Modules
      */
     protected function loadModules() {
-        $modules = EdithModule::query()->where('status', 1)->select('id', 'name', 'title', 'status', 'priority', 'expired_at')->orderByDesc('priority')->get();
+        $modules = EdithModule::query()->where('status', 1)
+            ->where(function ($query) {
+                $query->whereNull('expired_at')->orWhere('expired_at', '>', date('Y-m-d H:i:s'));
+            })
+            ->select('id', 'name', 'title', 'status', 'priority', 'expired_at')
+            ->orderByDesc('priority')
+            ->get();
         foreach ($modules as $key => $module) {
-            $name = $module['name'] ?? str_replace(str_replace('%s', '',$this->getPath()), '', $key);;
+            $name = $module['name'] ?? str_replace(str_replace('%s', '',$this->getPath()), '', $key);
             $path = sprintf($this->getPath(), $name);
             if (is_dir($path)) {
                 try {

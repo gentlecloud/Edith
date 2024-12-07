@@ -27,12 +27,11 @@ class UploadAfter
     /**
      * 上传文件后事件，当前用于存储数据库，模块可自定事件处理
      * UploadAfter constructor.
-     * @param Request $request
      * @param array $file
      */
-    public function __construct(Request $request, array $file)
+    public function __construct(array $file)
     {
-        $this->request = $request;
+        $this->request = \request();
         $this->file = $file;
         if (isset($file['id'])) {
             $this->fileId = $file['id'];

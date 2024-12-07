@@ -35,6 +35,7 @@ class MenuController extends Controller
         $crud->column('icon', '菜单图标');
         $crud->column('name', '菜单名称');
         $crud->column('path', '菜单路由')->copyable();
+        $crud->column('target', '菜单类型');
         $crud->column('sort', '排序')->quickEdit(['saveImmediately' => true]);
         $crud->column('status', '状态')->quickEdit([
             "mode" => "inline",
@@ -52,6 +53,8 @@ class MenuController extends Controller
         } else {
             $crud->onlyBulkStatusAction();
         }
+
+	$crud->model()->orderBy('sort');
 
         return $crud->footerToolbar(['statistics'])->draggable()->loadDataOnce()->quickSaveApi()->quickSaveItemApi();
     }

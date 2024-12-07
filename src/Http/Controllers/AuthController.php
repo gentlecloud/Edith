@@ -62,8 +62,9 @@ abstract class AuthController extends Controller
         $tabs = (new Tabs)->centered();
         $loginForm = [
             new Uuid('uuid'),
-            (new InputText('mode'))->style(['display' => 'none'])->autoFill(['api' => 'edith/auth/query?username=${username}']), //
+            (new InputText('mode'))->style(['display' => 'none']), //
             (new Field('username'))->id('username')->placeholder('用户名')->size('large')
+                ->autoFill(['api' => 'edith/auth/query?username=${username}'])
                 ->prefix(new Iconfont('icon-shouye1'))
                 ->fillRules($this->rules, $this->messages),
             (new Field('password'))->placeholder('登录密码')->renderer('password')->size('large')

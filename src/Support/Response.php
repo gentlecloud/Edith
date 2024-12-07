@@ -38,14 +38,22 @@ class Response
 
     /**
      * 返回成功信息
-     * @param string $msg 处理描述
-     * @param object|array|string|null $data 成功处理后的 Data
+     * @param array|string|object $msg 处理描述
+     * @param array|string|object|null $data 成功处理后的 Data
      * @param string|null $url 返回 Url 或当前路由
      * @param array|null $headers 响应页头
      * @return mixed
      */
-    public static function success(string $msg = 'ok.', $data = [], ?string $url = null, ?array $headers = null)
+    public static function success(string|array|object $msg = 'ok.', array|string|object|null $data = [], ?string $url = null, ?array $headers = null)
     {
+        switch (func_num_args()) {
+            case 1:
+                if (!is_string($msg)) {
+                    $data = $msg;
+                    $msg = 'succeed.';
+                }
+                break;
+        }
         return self::response(0, 0, $msg, $data, $url, $headers);
     }
 
@@ -66,13 +74,13 @@ class Response
      * @param int $status 状态 0 | -1
      * @param int $errCode 错误码 0 | (int)
      * @param string $msg 消息描述
-     * @param array|object|string|null $data 返回 Data
+     * @param array|string|object|null $data 返回 Data
      * @param string|null $url 返回 Url 或当前路由
      * @param array|null $headers 响应页头
      * @param int $statusCode 响应状态码
      * @return mixed
      */
-    public static function response(int $status = 0, int $errCode = 0, string $msg = 'ok.', $data = null, ?string $url = null, ?array $headers = null, int $statusCode = 200)
+    public static function response(int $status = 0, int $errCode = 0, string $msg = 'ok.', object|string|array|null $data = null, ?string $url = null, ?array $headers = null, int $statusCode = 200)
     {
         is_null($url) && $url = str_contains(url()->current(), 'manage') ? url()->current() : $url;
         $content = [
@@ -81,7 +89,7 @@ class Response
             'data' => $data,
             'url' => $url
         ];
-        if (app('edith.auth')->id() && !isset($headers['X-Refresh-Token']) && app('edith.auth')->tokenIsExpires()) {
+        if (app('edith.auth')->id() && !isset($headers['X-Refresh-Token']) && app('edith.auth')->tokenIsExpires(true)) {
             $headers['X-Refresh-Token'] = base64_encode(auth('manage')->user()->createToken(app('edith.auth')->platformId()));
         }
         if (is_array($headers)) {

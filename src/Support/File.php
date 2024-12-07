@@ -75,8 +75,7 @@ class File
         if (is_array($array)) {
             return json_encode($array);
         } elseif (is_object($array)) {
-            $json = json_encode($array, JSON_FORCE_OBJECT);
-            return $json;
+            return json_encode($array, JSON_FORCE_OBJECT);
         } else {
             return null;
         }
