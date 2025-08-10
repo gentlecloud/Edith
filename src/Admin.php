@@ -19,7 +19,7 @@ class Admin
     /**
      * Edith version
      */
-    const version = 'v1.0.3';
+    const version = 'v2.0.0';
 
     /**
      * load current Composer
@@ -103,28 +103,35 @@ class Admin
             $router->get('edith/auth/menu', 'AuthController@menu')->name("edith.auth.menu");
             $router->get('edith/manage', 'EdithController@manage')->name('edith.manage');
 
-            $router->get('dashboard/index', 'EdithController@dashboard')->name('dashboard.index');
-
             $router->apiResource('auth/admin', \AdminController::class);
-
         });
 
         app('router')->namespace('Edith\\Admin\\Http\\Controllers')
             ->group(function ($router) {
+                $router->get('dashboard/index', 'HomeController@dashboard')->name('dashboard.index');
+
                 $router->apiResources([
                     'auth/menu' => \MenuController::class,
                     'auth/role' => \RoleController::class,
+                    'auth/permission' => \PermissionController::class,
 
                     'system/config' => \SystemController::class,
                     'modules/cloud' => \ModulesController::class,
-                    'attachments/list' => \AttachmentController::class,
-                    'attachments/category' => \AttachmentCategoryController::class
+                ]);
+                $router->apiResource('attachments/list', \AttachmentController::class)->only(['index', 'destroy'])->names([
+                    'index'   => 'attachments.list.index',
+                    'show'    => 'attachments.list.show',
+                    'destroy' => 'attachments.list.destroy',
+                ]);
+                $router->apiResource('attachments/category', \AttachmentCategoryController::class)->names([
+                    'index'   => 'attachments.category.index',
+                    'store'   => 'attachments.category.store',
+                    'show'    => 'attachments.category.show',
+                    'update'  => 'attachments.category.update',
+                    'destroy' => 'attachments.category.destroy',
                 ]);
                 // 管理权限
-                $router->get('auth/permission', 'PermissionController@index')->name('permission.index');
-                $router->put('auth/permission/{permission}', 'PermissionController@update')->name('permission.update');
                 $router->post('auth/permission/sync', 'PermissionController@sync')->name('permission.sync');
-                $router->delete('auth/permission/{permission}', 'PermissionController@destroy')->name('permission.destroy');
                 // 系统配置
                 $router->get('system/website', 'SystemController@website')->name('website');
                 $router->put('system/website/store', 'SystemController@store')->name('website.store');
@@ -134,8 +141,8 @@ class Admin
                 $router->get('attachments/attachments', 'AttachmentController@attachments')->name('attachments.attachments');
                 $router->post('attachments/upload', 'AttachmentController@upload')->name('attachments.upload');
                 // 账号配置
-                $router->get('account/settings', 'AccountController@index')->name('settings.index');
-                $router->post('account/settings', 'AccountController@store')->name('settings.store');
+                $router->get('account/settings', 'AccountController@index')->name('account.settings');
+                $router->post('account/settings', 'AccountController@store')->name('account.settings.store');
             });
     }
 }

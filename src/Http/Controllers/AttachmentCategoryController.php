@@ -1,7 +1,7 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Services\AttachmentCategoryService;
+use Edith\Admin\Dao\AttachmentCategoryDao;
 use Illuminate\Http\Request;
 
 class AttachmentCategoryController extends Controller
@@ -16,21 +16,22 @@ class AttachmentCategoryController extends Controller
      * 控制器模型
      * @var string|null
      */
-    protected ?string $serviceName = AttachmentCategoryService::class;
+    protected ?string $daoName = AttachmentCategoryDao::class;
 
     /**
      * @return array
-     * @throws \Edith\Admin\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\DaoException
      */
     public function datasource(): array
     {
         $list = parent::datasource();
 
-        return array_merge([
+        $list['items'] = array_merge([
             [
                 'id' => 0,
                 'title' => '默认目录'
             ]
         ], $list['items']);
+        return $list;
     }
 }

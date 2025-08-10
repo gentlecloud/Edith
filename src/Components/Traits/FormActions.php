@@ -1,43 +1,36 @@
 <?php
 namespace Edith\Admin\Components\Traits;
 
-use Edith\Admin\Components\Amis\Action\OnAction;
 use Illuminate\Support\Str;
 
 trait FormActions
 {
-    /**
-     * @return OnAction
-     */
-    public function onAction(): OnAction
-    {
-        return tap(new OnAction(), function ($action) {
-            $this->set('api', $action);
-        });
-    }
 
     /**
-     * 构建 Amis 基础 OnAction Ajax 请求配置 JSON
+     * 构建保存接口请求 API
      * @param $id
-     * @return string[]
+     * @return string
      */
-    public function makeActionApi($id = null): array
+    public function makeActionApi($id = null): string
     {
+        $method = 'POST';
+        if (str_contains($id, '/')) {
+            $url = $id;
+            $id = null;
+        }
         if (empty($id) && isset($this->data['id'])) {
             $id = $this->data['id'];
         }
 
-        $api = [
-            'method' => 'POST'
-        ];
         if (is_null($id)) {
-            $api['url'] = Str::replaceLast('/create', '', url()->current());
+            empty($url) && $url = Str::replaceLast('/create', '', \request()->path());
         } else {
-            $api['method'] = 'PUT';
-            $api['url'] = Str::replaceLast('/edit', '', url()->current()) . '/' . $id;
-//            $this->set('initApi', $api['url']);
+            $method = 'PUT';
+            empty($url) && $url = Str::replaceLast('/edit', '', \request()->path());
         }
-        $api['data'] = '${values}';
-        return $api;
+        if (!empty($id) && !Str::contains($url, $id)) {
+            $url .= '/' . $id;
+        }
+        return $method . ':' . Str::replaceFirst('api/', '', $url);
     }
 }

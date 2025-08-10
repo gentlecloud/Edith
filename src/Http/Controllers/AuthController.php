@@ -1,15 +1,12 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Components\Amis\Form\InputText;
-use Edith\Admin\Components\Amis\Form\Uuid;
-use Edith\Admin\Components\Amis\Page;
 use Edith\Admin\Components\Displays\Iconfont;
-use Edith\Admin\Components\Displays\Tabs;
 use Edith\Admin\Components\Fields\Field;
-use Edith\Admin\Components\Fields\ImageCaptcha;
+use Edith\Admin\Components\Fields\Item\ImageCaptcha;
+use Edith\Admin\Components\Forms\LoginForm;
 use Edith\Admin\Components\Pages\Helmet;
-use Edith\Admin\Components\Pages\LoginForm;
+use Edith\Admin\Components\Pages\Tabs;
 use Edith\Admin\Events\AuthLoginAfter;
 use Edith\Admin\Events\AuthLoginBefore;
 use Edith\Admin\Exceptions\AuthException;
@@ -57,17 +54,25 @@ abstract class AuthController extends Controller
             ->title('翼搭')
             ->subTitle('翼搭 - 便捷快速的低代码搭建平台')
             ->logo('https://newly.oss-cn-shanghai.aliyuncs.com/images/GENTLE_LOGO.jpeg')
+            ->containerStyle([
+                'boxSizing' => 'border-box'
+            ])
+            ->failedReload('image-captcha')
             ->layout('horizontal');
 
         $tabs = (new Tabs)->centered();
         $loginForm = [
-            new Uuid('uuid'),
-            (new InputText('mode'))->style(['display' => 'none']), //
-            (new Field('username'))->id('username')->placeholder('用户名')->size('large')
+            (new Field('uuid'))->hidden()->initialValue(uniqid()),
+            (new Field('mode'))->hidden(), //
+            (new Field('username'))
+                ->id('username')
+                ->placeholder('用户名')
+                ->size('large')
                 ->autoFill(['api' => 'edith/auth/query?username=${username}'])
-                ->prefix(new Iconfont('icon-shouye1'))
-                ->fillRules($this->rules, $this->messages),
-            (new Field('password'))->placeholder('登录密码')->renderer('password')->size('large')
+                ->prefix(new Iconfont('icon-shouye1')),
+            (new Field('password'))->placeholder('登录密码')
+                ->component('password')
+                ->size('large')
                 ->prefix(new Iconfont('icon-password'))
                 ->fillRules($this->rules, $this->messages)
         ];
@@ -76,7 +81,7 @@ abstract class AuthController extends Controller
                 (new ImageCaptcha('captcha'))
                     ->id('captcha')
                     ->size('large')
-                    ->captcha(url('api/edith/auth/captcha?uuid=${uuid}'))
+                    ->source('edith/auth/captcha?uuid=${uuid}')
                     ->placeholder('图形验证码')
                     ->prefix(new Iconfont('icon-password'))
                     ->visibleOn('${ mode === "captcha" }'),
@@ -87,12 +92,8 @@ abstract class AuthController extends Controller
             ]);
         }
         $tabs->item('账号密码登录', 'account')->children($loginForm);
-        $css = [
-            '.antd-Page' => ['height' => '100vh', 'overflow' => 'hidden']
-        ];
-        $render = (new Page)->body($page->body($tabs))->css($css);
 
-        return engine(Helmet::make()->title('登录')->body($render), false);
+        return engine((new Helmet())->title('翼搭')->body($page->body($tabs)->style(['height' => '100vh'])), false);
     }
 
     /**
@@ -104,22 +105,25 @@ abstract class AuthController extends Controller
     public function toLogin(Request $request)
     {
         $credentials = $request->only(['username', 'password']);
-        $this->checkFormRules($credentials);
+        $this->checkFormRules($request);
         // 登录验证
         $credentials['status'] = 1;
-        $loginResult = Auth::guard('manage')->attempt($credentials, $request->post('auto_login', false));
-        $before = new AuthLoginBefore();
-        event($before);
-        if (!$loginResult){ // 验证失败
-            $this->checkLoginFail($credentials['username']);
+        try {
+            $loginResult = Auth::guard('manage')->attempt($credentials, $request->post('auto_login', false));
+            $before = new AuthLoginBefore();
+            event($before);
+            if (!$loginResult){ // 验证失败
+                $this->checkLoginFail($credentials['username']);
+            }
+            $user = Auth::guard('manage')->user();
+            if (!$user->isSuperAdministrator() && !count($user->roles)) {
+                return error('无权限.');
+            }
+            $after = new AuthLoginAfter($user);
+            event($after);
+        } catch (\Exception $e) {
+            return error($e->getMessage());
         }
-        $user = Auth::guard('manage')->user();
-        if (!$user->isSuperAdministrator() && !count($user->roles)) {
-            return error('无权限.');
-        }
-        $after = new AuthLoginAfter($user);
-        event($after);
-        
         return success('登录成功', $after->result);
     }
 
@@ -167,38 +171,56 @@ abstract class AuthController extends Controller
     {
         $type = app('edith.auth')->platformId() == 0 ? 'admin' : 'platform';
         $user = auth('manage')->user();
-        $ids = [];
         if (!$user->isSuperAdministrator()) {
             $ids = $user->menus()->pluck('menu_id')->toArray();
+            $parents = EdithMenu::where('id', $ids)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
+            $parentIds = EdithMenu::where('id', $parents)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
+            $ids = array_unique(array_merge($parents, $parentIds, $ids));
+            $menus = EdithMenu::where('status', 1)
+                ->whereIn('guard_name', ['basic', $type])
+                ->whereIn('id', $ids)
+                ->select('id', 'name', 'icon', 'guard_name', 'path', 'parent_id', 'sort', 'type', 'module', 'component')
+                ->orderBy('sort', 'asc')
+                ->orderBy('id', 'asc')
+                ->get()
+                ->toArray();
+            $menus = list_to_tree($menus, 'id', 'parent_id', 'routes');
+        } else {
+            $menus = EdithMenu::with('routes')
+                ->where('status', 1)
+                ->where('parent_id', 0)
+                ->whereIn('guard_name', ['basic', $type])
+                ->when(env('EDITH_DEV') == false, function ($query) {
+                    $query->where('is_dev', 0);
+                })
+                ->select('id', 'name', 'icon', 'guard_name', 'path', 'parent_id', 'sort', 'type', 'module', 'component')
+                ->orderBy('sort', 'asc')
+                ->orderBy('id', 'asc')
+                ->get()
+                ->toArray();
         }
-        $menus = EdithMenu::where('status', 1)
-            ->whereIn('guard_name', ['basic', $type])
-            ->when(!$user->isSuperAdministrator(), function ($query) use ($ids) {
-                $query->whereIn('id', $ids);
-            })
-            ->when(env('EDITH_DEV') == false, function ($query) {
-                $query->where('is_dev', 0);
-            })
-            ->select('id', 'name', 'icon', 'guard_name', 'path', 'parent_id', 'sort', 'target', 'module')
-            ->orderBy('sort', 'asc')
-            ->orderBy('id', 'asc')
-            ->get()
-            ->toArray();
 
         $list = [];
         foreach ($menus as $menu) {
+            foreach ($menu['routes'] as &$item) {
+                if (Str::startsWith($item['path'], '/') && $item['component'] == 'Engine') {
+                    $item['path'] = Str::replaceFirst($menu['path'] . '/', '', $item['path']);
+                }
+                $item['hideInMenu'] = false;
+            }
             $list[] = [
                 'id' => $menu['id'],
-                'key' => uniqid(),
+                'key' => md5($menu['path']),
                 'name' => $menu['name'],
                 'path' => $menu['parent_id'] == 0 ? $menu['path'] : (str_starts_with($menu['path'], "/") ? substr($menu['path'], 1, strlen($menu['path'])) : $menu['path']),
-                'icon' => $menu['icon'] ?: null,
-                'component' => 'Edith',
+                'icon' => $menu['icon'] ?? null,
+                'component' => $menu['component'] ?? null,
                 'parent_id' => $menu['parent_id'],
-                'hideInMenu' => false
+                'hideInMenu' => false,
+                'routes' => $menu['routes'],
             ];
         }
-        return success('query succeed.', list_to_tree($list, 'id', 'parent_id', 'routes'));
+        return success('query succeed.', $list);
     }
 
     /**

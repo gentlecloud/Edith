@@ -19,21 +19,18 @@ class Response
      */
     public static function render(array|object|string|null $body = null, string|bool|null $pageBody = true)
     {
-        if ($pageBody && !($body instanceof Page)) {
-            $body = (new Page)->body($body);
-        }
-        if (is_string($pageBody)) {
-            $body = new PageContainer($pageBody, $body);
+        if ($pageBody && !($body instanceof PageContainer)) {
+            $body = new PageContainer(null, $body);
         }
         $data = [
             'data' => $body,
             'status' => 0,
-            'msg' => 'renderer.'
+            'message' => 'renderer.'
         ];
         if (env('APP_DEBUG') == true) {
             $data['_sql'] = Helper::records();
         }
-        return response()->json($data);
+        return \response()->json($data);
     }
 
     /**
@@ -82,15 +79,16 @@ class Response
      */
     public static function response(int $status = 0, int $errCode = 0, string $msg = 'ok.', object|string|array|null $data = null, ?string $url = null, ?array $headers = null, int $statusCode = 200)
     {
-        is_null($url) && $url = str_contains(url()->current(), 'manage') ? url()->current() : $url;
         $content = [
             'status' => $status,
-            'msg' => $msg,
-            'data' => $data,
-            'url' => $url
+            'message' => $msg,
+            'data' => $data
         ];
         if (app('edith.auth')->id() && !isset($headers['X-Refresh-Token']) && app('edith.auth')->tokenIsExpires(true)) {
-            $headers['X-Refresh-Token'] = base64_encode(auth('manage')->user()->createToken(app('edith.auth')->platformId()));
+            $headers['X-Refresh-Token'] = auth('manage')->user()->createToken(app('edith.auth')->platformId());
+        }
+        if ($url) {
+            $content['url'] = $url;
         }
         if (is_array($headers)) {
             $allows = [];
@@ -108,7 +106,7 @@ class Response
 
         }
 
-        if ($status != 0) {
+        if ($status != 0 && $statusCode == 200) {
             $content['errorCode'] = $errCode;
             $content['errorMessage'] = $msg;
             $content['data'] = null;
@@ -119,5 +117,23 @@ class Response
         }
 
         return response()->json($content, $statusCode)->withHeaders($headers ?: []);
+    }
+
+    /**
+     * @param string $message
+     * @param array|object|null $data
+     * @param int $errCode
+     * @param array|null $headers
+     * @param int $statusCode
+     * @return mixed
+     */
+    public static function failed(string $message, array|object|null $data = null, int $errCode = -1, ?array $headers = [], int $statusCode = 500)
+    {
+        return response()->json([
+            'code' => $errCode,
+            'status' => -1,
+            'message' => $message,
+            'data' => $data
+        ], $statusCode)->withHeaders($headers ?: []);
     }
 }

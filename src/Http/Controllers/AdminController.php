@@ -1,19 +1,18 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Components\Amis\Action\Button;
-use Edith\Admin\Components\Amis\Crud;
-use Edith\Admin\Components\Amis\Form\FormItem;
-use Edith\Admin\Components\Amis\Form\Hidden;
-use Edith\Admin\Components\Amis\Form\InputDatetimeRange;
-use Edith\Admin\Components\Amis\Form\InputPassword;
-use Edith\Admin\Components\Amis\Form\InputStatic;
-use Edith\Admin\Components\Amis\Form\InputSwitch;
-use Edith\Admin\Components\Amis\Form\InputUploader;
-use Edith\Admin\Components\Amis\Form\Select;
+use Edith\Admin\Components\Columns\Column;
+use Edith\Admin\Components\Columns\Item\SelectColumn;
+use Edith\Admin\Components\Columns\Item\SwitchColumn;
+use Edith\Admin\Components\Columns\Item\UploaderColumn;
 use Edith\Admin\Components\Forms\SchemaForm;
+use Edith\Admin\Components\Tables\Table;
+use Edith\Admin\Http\Actions\CreateSchemaDrawerAction;
+use Edith\Admin\Http\Actions\DeleteAction;
+use Edith\Admin\Http\Actions\EditSchemaDrawerAction;
 use Edith\Admin\Models\EdithRole;
 use Edith\Admin\Support\GoogleAuthenticator;
+use Illuminate\Http\Request;
 
 abstract class AdminController extends Controller
 {
@@ -26,68 +25,91 @@ abstract class AdminController extends Controller
      * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Edith\Admin\Services\AdminUserService";
+    protected ?string $daoName = "Edith\Admin\Dao\AdminUserDao";
 
     /**
      * 生成 Crud 列表页面
-     * @param Crud $crud
-     * @return Crud
+     * @param Table $table
+     * @return Table
      * @throws \Exception
      */
-    public function crud(Crud $crud): Crud
+    public function table(Table $table): Table
     {
-        $crud->column('id', 'ID')->sortable();
-        $crud->column('avatar', '头像')->type('avatar')->src('${avatar}');
-        $crud->column('username', '用户名')->sortable()->copyable();
-        $crud->column('nickname', '昵称')->quickEdit();
-        $crud->column('phone', '手机号')->copyable();
-        $crud->column('lasted_at', '最后登录时间')->type('datetime');
-        $crud->column('log.lasted_ip', '最后登录IP');
-        $crud->column('status', '状态')->map(['1' => '正常', '0' => '禁用'])->quickEdit([
-            "mode" => "inline",
+        $table->column('id', 'ID')->sorter()->hideInSearch();
+        $table->column('avatar.url', '头像')->valueType('avatar')->hideInSearch()->size('64');
+        $table->column('username', '用户名')->sorter()->copyable();
+        $table->column('nickname', '昵称')->editable()->hideInSearch();
+        $table->column('phone', '手机号')->copyable();
+        $table->column('lasted_at', '最后登录时间')->valueType('datetime')->sorter()->width(180)->hideInSearch();
+        $table->column('lasted_at', '登录时间')->valueType('dateTimeRange')->hideInTable();
+        $table->column('log.lasted_ip', '最后登录IP')->hideInSearch();
+        $table->column('created_at', '创建时间')->valueType('datetime')->sorter()->hideInSearch()->width(180);
+        $table->column('created_at', '创建时间')->valueType('dateRange')->hideInTable()->placeholder(['起始创建时间', '截止创建时间']);
+        $table->column('status', '状态')->valueType('select')->valueEnum([1 => '启用', 0 => '禁用'])->editable([
             'type' => 'switch',
             'onText' => '启用',
-            'offText' => '禁用',
-            'saveImmediately' => true
-        ])->quickEditEnabledOn('${id !== 1}');
+            'offText' => '禁用'
+        ])->quickEditEnabledOn('${id != 1}');
 
-        $crud->operation()->rowOnlyEditAction($crud->makeForm($this->controls(), 'api/auth/admin/${id}?_action=datasource'), 'drawer')->button('删除', function(Button $button) {
-            $button->api('delete:' . url()->current() . '/${id}')
-                ->actionType('ajax')
-                ->level('link')
-                ->confirmText('请确认是否要删除所选项？')
-                ->style(['color' => '#FF5722'])
-                ->visibleOn('${id !== 1}');
-        });
-
-        $crud->filter([
-            (new FormItem('keyword', '关键词'))->size('md')->placeholder('请输入账号|昵称'),
-            new InputDatetimeRange('lasted_at', '登录时间'),
-            new InputDatetimeRange('created_at', '创建时间')
+        $table->toolbar([
+            new CreateSchemaDrawerAction('添加管理员', $this->fields())
         ]);
-        $crud->onlyBulkDeleteAction()->basicHeaderToolbar($this->controls(), 'drawer', '创建管理员')->quickSaveItemApi()->itemCheckableOn('${id !== 1}');
-        return $crud;
+
+        $table->operation([
+            (new EditSchemaDrawerAction('管理员', $this->fields()))->initApi('${id}'),
+            (new DeleteAction('删除', '是否确认要删除${username}账号？'))->confirmType('pop')->visibleOn('${id != 1}')
+        ]);
+
+        $table->enableBatchStatus();
+        $table->initQuickSaveItemApi();
+        return $table;
     }
 
-    public function controls()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function fields(): array
     {
         $google = new GoogleAuthenticator;
         $secret = $google->createSecret();
         $qrcode = $google->getQRCodeGoogleUrl('${google_secret}');
 
-        $roles = EdithRole::select('id as value', 'name as label')->get()->toArray();
+        $roles = EdithRole::select('name as label', 'id as value')->get()->toArray();
         return [
-            (new Select('role_ids', '角色'))->options($roles)->multiple()->searchable()->clearable()->visibleOn('${id !== 1}'),
-            (new FormItem('username', '账号'))->required(),
-            (new InputUploader('avatar', '头像'))->description('只支持jpg、png格式文件'),
-            (new FormItem('nickname', '昵称'))->required(),
-            (new FormItem('phone', '手机号'))->required(),
-            (new InputPassword('password', '密码'))->description('留空默认为：123456'),
-            (new FormItem('email', '邮箱')),
-            (new InputSwitch('google_open', '谷歌验证'))->onText('启用')->offText('禁用')->value(0)->trueValue(1)->falseValue(0),
-            (new Hidden('google_secret'))->value($secret),
-            (new InputStatic('google_qrcode'))->value($qrcode)->type('static-image')->visibleOn('${google_open === 1}'),
-            (new InputSwitch('status', '状态'))->onText('正常')->offText('禁用')->value(1)->trueValue(1)->falseValue(0)->visibleOn('${id !== 1}')
+            (new Column('id'))->hidden(),
+            (new SelectColumn('role_ids', '角色'))->options($roles)->multiple()->disabledOn('${id == 1}'),
+            (new Column('username', '账号'))->required('账号必须输入', [
+                [
+                    'unique' => 'edith_admins,username',
+                    'update_unique' => 'edith_admins,username,{id}',
+                    'message' => '账号已存在.'
+                ],
+                [
+                    'min' => 5,
+                    'message' => '账号最少5位数'
+                ]
+            ]),
+            (new UploaderColumn('avatar', '头像'))->button('上传头像'),
+            (new Column('nickname', '昵称'))->required(),
+            (new Column('phone', '手机号'))->required('手机号必须输入', [
+                [
+                    'regex' => '/^1[3-9]\d{9}$/',
+                    'message' => '手机号不正确'
+                ]
+            ]),
+            (new Column('password', '密码'))->help('新增时留空默认为：a12345678，修改时留空则不修改。'),
+            new Column('email', '邮箱'),
+            (new Column('google_open', '谷歌验证')),
+            (new SwitchColumn('status', '状态'))
+                ->initialValue(1)
+                ->disabledOn('${id == 1}')
+                ->checkedChildren('启用')
+                ->unCheckedChildren('禁用')
+                ->valueEnum([
+                    1 => '启用',
+                    0 => '禁用'
+                ])
         ];
     }
 
@@ -95,7 +117,7 @@ abstract class AdminController extends Controller
      * 表单页
      * @param $id
      * @return SchemaForm
-     * @throws \Edith\Admin\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\DaoException|\Edith\Admin\Exceptions\RendererException
      */
     public function form($id = null)
     {

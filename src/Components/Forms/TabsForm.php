@@ -1,7 +1,7 @@
 <?php
 namespace Edith\Admin\Components\Forms;
 
-use Edith\Admin\Components\Displays\TabPane;
+use Edith\Admin\Components\Pages\TabPane;
 use Illuminate\Support\Collection;
 
 class TabsForm extends ProForm

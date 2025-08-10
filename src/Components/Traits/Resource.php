@@ -15,7 +15,7 @@ trait Resource
      * 生成表单页 JSON
      * @param $id
      * @return object
-     * @throws RendererException|\Edith\Admin\Exceptions\ServiceException
+     * @throws RendererException|\Edith\Admin\Exceptions\DaoException
      */
     protected function renderFormPage($id = null)
     {
@@ -33,9 +33,9 @@ trait Resource
 
         if (!isset($this->initialValues) && method_exists($form, 'initialValues')) {
             if (!empty($id)) {
-                $form->initialValues($this->service()->get($id));
+                $form->initialValues($this->dao()->get($id));
             } else {
-                $form->initialValues($this->service()->getInitialValues());
+                $form->initialValues($this->dao()->getInitialValues());
             }
         }
         return (new ProCard)->title(($id ? '编辑' : '添加') . $this->title)->headerBordered()->extra((new Button('返回'))->actionType('goBack'))->body($form);

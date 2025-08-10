@@ -1,7 +1,7 @@
 <?php
 namespace Edith\Admin\Components\Pages;
 
-use Edith\Admin\Components\Renderer;
+use Edith\Admin\Components\EngineRenderer;
 
 /**
  * Ant ProCard
@@ -21,27 +21,21 @@ use Edith\Admin\Components\Renderer;
  * @method $this size(string $size)                                   卡片尺寸	 default | small
  * @method $this direction(string $direction)                         指定 Flex 方向，仅在嵌套子卡片时有效，默认方向为 row 横向,  column
  */
-class ProCard extends Renderer
+class ProCard extends EngineRenderer
 {
-    /**
-     * Amis 渲染类型
-     * @var string
-     */
-    protected string $type = 'edith';
-
     /**
      * Edith 渲染组件
      * @var string
      */
-    protected string $renderer = 'card';
+    protected string $renderer = 'pro-card';
 
     /**
      * 是否有边框
      * @param bool $bordered
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function bordered(bool $bordered = true): ProCard
+    public function bordered(bool $bordered = true): static
     {
         return $this->set('bordered', $bordered);
     }
@@ -50,9 +44,9 @@ class ProCard extends Renderer
      * 是否支持换行，仅在嵌套子卡片时有效
      * @param bool $wrap
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function wrap(bool $wrap): ProCard
+    public function wrap(bool $wrap): static
     {
         return $this->set('wrap', $wrap);
     }
@@ -61,9 +55,9 @@ class ProCard extends Renderer
      * 幽灵模式，即是否取消卡片内容区域的 padding 和 卡片的背景颜色。
      * @param bool $ghost
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function ghost(bool $ghost): ProCard
+    public function ghost(bool $ghost = true): static
     {
         return $this->set('ghost', $ghost);
     }
@@ -72,9 +66,9 @@ class ProCard extends Renderer
      * 页头是否有分割线
      * @param bool $bordered
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function headerBordered(bool $bordered = true): ProCard
+    public function headerBordered(bool $bordered = true): static
     {
         return $this->set('headerBordered', $bordered);
     }
@@ -83,9 +77,9 @@ class ProCard extends Renderer
      * 受控属性，是否折叠
      * @param bool $collapsed
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function collapsed(bool $collapsed): ProCard
+    public function collapsed(bool $collapsed): static
     {
         return $this->set('collapsed', $collapsed);
     }
@@ -94,20 +88,32 @@ class ProCard extends Renderer
      * 配置是否可折叠，受控时无效
      * @param bool $collapsible
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function collapsible(bool $collapsible): ProCard
+    public function collapsible(bool $collapsible): static
     {
         return $this->set('collapsible', $collapsible);
+    }
+
+
+    /**
+     * 当卡片内容还在加载中时，可以用 loading 展示一个占位
+     * @param bool $loading
+     * @default false
+     * @return $this
+     */
+    public function loading(bool $loading): static
+    {
+        return $this->set('loading', $loading);
     }
 
     /**
      * 默认折叠, 受控时无效
      * @param bool $defaultCollapsed
      * @default false
-     * @return ProCard
+     * @return $this
      */
-    public function defaultCollapsed(bool $defaultCollapsed): ProCard
+    public function defaultCollapsed(bool $defaultCollapsed): static
     {
         return $this->set('defaultCollapsed', $defaultCollapsed);
     }

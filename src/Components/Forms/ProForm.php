@@ -1,19 +1,21 @@
 <?php
 namespace Edith\Admin\Components\Forms;
 
-use Edith\Admin\Components\Amis\Service;
-use Edith\Admin\Components\Displays\Tabs;
+use Edith\Admin\Components\Actions\Action;
+use Edith\Admin\Components\EngineRenderer;
 use Edith\Admin\Components\Fields\Field;
-use Edith\Admin\Components\Renderer;
+use Edith\Admin\Components\Pages\Tabs;
 use Edith\Admin\Components\Traits\FormActions;
 use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  * Antd ProForm 表单
  * 参考文档： https://procomponents.ant.design/components/form
  * @method $this dateFormatter($dateFormatter)                自动格式数据,主要是 moment 的表单,支持 string 和 number 两种模式，此外还支持指定函数进行格式化。 string| number | ((value: Moment, valueType: string) => string | number) | false
  * @method $this params($params)                              发起网络请求的参数,与 request 配合使用
+ * @method $this title(string $title)                         表单标题
  * @method $this request(string $request)                     发起网络请求的参数,返回值会覆盖给 initialValues
  * @method $this rowProps(array $rowProps)                    开启 grid 模式时传递给 Row, 仅在ProFormGroup, ProFormList, ProFormFieldSet 中有效 默认：{ gutter: 8 }
  * @method $this labelAlign(string $labelAlign)               label 标签的文本对齐方式 left | right
@@ -21,11 +23,12 @@ use Illuminate\Support\Collection;
  * @method $this name(string $name)                           表单名称，会作为表单字段 id 前缀使用
  * @method $this wrapperCol(array $wrapperCol)                需要为输入控件设置布局样式时，使用该属性，用法同 labelCol
  * @method $this width($width)                                表单宽度
- * @method $this api($api)                                    表单后端 API 接口 格式 : {"method": "POST", "url: "/api/edith/store", "dataType": "form-data" }  dataType 非必须,默认 json
+ * @method $this api($api)                                    表单后端 API 接口, 如：post:auth/admin 无需 api 前缀
  * @method $this redirect(string $redirect)                   表单保存后跳转链接
+ * @method $this reload(string $reload)                       表单保存后刷新组件
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  */
-class ProForm extends Renderer
+class ProForm extends EngineRenderer
 {
     use FormActions;
 
@@ -36,6 +39,12 @@ class ProForm extends Renderer
     protected string $renderer = 'pro-form';
 
     /**
+     * ProForm 的 Layout 切换
+     * @var string
+     */
+    protected string $component = 'ProForm';
+
+    /**
      * 表单列
      * @var Collection
      */
@@ -43,17 +52,30 @@ class ProForm extends Renderer
 
     /**
      * 表单初始化数据
-     * @var array|null
+     * @var array|null|object
      */
-    protected ?array $initialValues = [];
+    protected array|object|null $initialValues = [];
 
     /**
+     * modal drawer 表单按钮类型
+     * @var Action|null
+     */
+    protected ?Action $trigger;
+
+    /**
+     * @param string|Action|null $button
      * construct ProForm
      */
-    public function __construct()
+    public function __construct(string|Action|null $button = null)
     {
         parent::__construct();
         $this->columns = new Collection();
+        if ($button) {
+            $this->trigger = is_string($button) ? (new Action($button))
+                ->type('primary')
+                ->size('small')
+                ->actionType($this->renderer) : $button;
+        }
     }
 
 
@@ -62,7 +84,7 @@ class ProForm extends Renderer
      * @param array|Collection $columns
      * @return ProForm
      */
-    public function columns($columns): ProForm
+    public function columns(array|Collection $columns): ProForm
     {
         if ($columns instanceof Collection) {
             $this->columns = $columns;
@@ -70,6 +92,15 @@ class ProForm extends Renderer
             $this->columns = new Collection($columns);
         }
         return $this;
+    }
+
+    /**
+     * @param array $body
+     * @return $this
+     */
+    public function body(array $body): self
+    {
+        return $this->columns($body);
     }
 
     /**
@@ -162,6 +193,16 @@ class ProForm extends Renderer
     }
 
     /**
+     * 固定页脚
+     * @param bool $value
+     * @return self
+     */
+    public function footerToolbar(bool $value = true): self
+    {
+        return $this->set('footerToolbar', $value);
+    }
+
+    /**
      * 同步结果到 initialValues,默认为 true 如果为 false，form.reset 的时将会忽略从 url 上获取的数据
      * @param bool $syncToInitialValues
      * @default true
@@ -245,16 +286,40 @@ class ProForm extends Renderer
     }
 
     /**
-     * 初始化默认提交 Api
-     * @param int|string|null $id 编辑索引 ID
+     * @param string|null $id
+     * @return self
+     */
+    public function initApi(?string $id = null): self
+    {
+        if (Str::contains($id, '/')) {
+            $initApi = $id;
+        } else {
+            $initApi = Str::replaceLast('/index', '', Str::replaceFirst('api/', '', \request()->path()));
+            if (!empty($id)) {
+                $initApi .= '/' . $id;
+            }
+        }
+        return $this->set('initApi', $initApi);
+    }
+
+    /**
+     * @param bool|array $value
      * @return $this
      */
-    public function initApi($id = null): ProForm
+    public function submitter(bool|array $value): self
+    {
+        return $this->set('submitter', $value);
+    }
+
+    /**
+     * 初始化默认提交 Api
+     * @param numeric-string|null $id 编辑索引 ID
+     * @return $this
+     */
+    public function initSaveApi(?string $id = null): self
     {
         $api = $this->makeActionApi($id);
-        $this->onAction()->redirect($this->redirect ?? null)->api($api);
-        $this->set('name', $this->uniqid); // class_basename(get_called_class())
-        return $this;
+        return $this->api($api);
     }
 
     /**
@@ -264,7 +329,7 @@ class ProForm extends Renderer
     public function render(): array
     {
         if (!isset($this->api)) {
-            $this->initApi();
+            $this->initSaveApi();
         }
         if ($this->renderer == 'tabs-form') {
             foreach ($this->tabs as $tab) {
@@ -280,7 +345,8 @@ class ProForm extends Renderer
                 $this->extracted($column);
             }
         }
-        return (new Service())->body(parent::render())->data($this->initialValues)->render();
+        $this->initialValues = (object) $this->initialValues;
+        return parent::render();
     }
 
     /**

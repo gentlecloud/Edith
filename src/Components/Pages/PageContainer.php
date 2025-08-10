@@ -1,6 +1,7 @@
 <?php
 namespace Edith\Admin\Components\Pages;
 
+use Edith\Admin\Components\EngineRenderer;
 use Edith\Admin\Components\Renderer;
 
 /**
@@ -10,7 +11,7 @@ use Edith\Admin\Components\Renderer;
  * @method $this subTitle(string $subTitle)                           二级标题
  * @method $this extraContent($extraContent)                          额外内容区，位于 content 的右侧
  * @method $this extra($extra)                                        操作区
- * @method $this content(array $content)                              内容区
+ * @method $this content(array|object $content)                       内容区
  * @method $this tabList(array $tabList)                              tab 标题列表  [{key: string, tab: ReactNode}]
  * @method $this tabActiveKey(string $tabActiveKey)                   当前高亮的 tab 项
  * @method $this tabBarExtraContent(array $tabBarExtraContent)        tab bar 上额外的元素
@@ -23,19 +24,13 @@ use Edith\Admin\Components\Renderer;
  * @method $this tabProps(array $tabProps)                            Tabs 的相关属性，只有卡片样式的页签支持新增和关闭选项。使用 closable={false} 禁止关闭
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  */
-class PageContainer extends Renderer
+class PageContainer extends EngineRenderer
 {
-    /**
-     * Amis 渲染类型
-     * @var string
-     */
-    protected string $type = 'page-container';
-
     /**
      * Edith 渲染组件
      * @var string
      */
-    protected string $renderer = 'edith';
+    protected string $renderer = 'page-container';
 
     /**
      * construct PageContainer

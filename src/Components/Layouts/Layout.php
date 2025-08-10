@@ -1,20 +1,20 @@
 <?php
 namespace Edith\Admin\Components\Layouts;
 
-use Edith\Admin\Components\Renderer;
+use Edith\Admin\Components\EngineRenderer;
 
 /**
  * Ant ProLayout
  * 翼搭 Ant Layout 组件
  * @method $this cache(bool $cache)                                  Basic Layout Cache
- * @method $this name(string $name)                                  layout 的左上角 的 title
+ * @method $this title(string $title)                                layout 的左上角 的 title
  * @method $this logo(string $logo)                                  layout 的左上角 logo 的 url
  * @method $this location(string $location)                          当前位置路由
  * @method $this headerActions(array $headerActions)                 layout 的头部行为
- * @method $this contentStyle($contentStyle)                         layout 的内容区 style
+ * @method $this contentStyle(array $contentStyle)                   layout 的内容区 style
  * @method $this primaryColor(string $primaryColor)                  layout 的主题色
- * @method $this iconfont(string $iconfontUrl)                       使用 IconFont 的图标配置
- * @method $this locale(int $locale)                                 当前 layout 的语言设置
+ * @method $this iconfontUrl(string $iconfontUrl)                    使用 IconFont 的图标配置
+ * @method $this locale(string $locale)                              当前 layout 的语言设置
  * @method $this siderWidth(int $siderWidth)                         侧边菜单宽度
  * @method $this defaultCollapsed(bool $defaultCollapsed)            是否默认展开菜单
  * @method $this waterMarkProps(array $waterMarkProps)               layout 页面水印设置
@@ -29,13 +29,8 @@ use Edith\Admin\Components\Renderer;
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  * @copyright Xiamen Gentle Technology Co., Ltd
  */
-class Layout extends Renderer
+class Layout extends EngineRenderer
 {
-    /**
-     * Amis 渲染类型
-     * @var string
-     */
-    protected string $type = 'edith';
 
     /**
      * Edith 渲染组件
@@ -98,6 +93,18 @@ class Layout extends Renderer
     protected bool $splitMenus = false;
 
     /**
+     * 是否固定导航
+     * @var bool
+     */
+    protected bool $fixSiderbar = true;
+
+    /**
+     * 暗黑模式
+     * @var bool
+     */
+    protected bool $dark = true;
+
+    /**
      * Layout 菜单 API
      * @var string
      */
@@ -113,6 +120,14 @@ class Layout extends Renderer
      * @var string
      */
     protected string $redirect = '/dashboard/index';
+
+    /**
+     * 定义内容区样式
+     * @var array|string[]
+     */
+    protected array $contentStyle = [
+        'minHeight' => 'auto'
+    ];
 
     /**
      * 调试模式
@@ -142,16 +157,6 @@ class Layout extends Renderer
         }
         $this->layout = $layout;
         return $this;
-    }
-
-    /**
-     * layout 的左上角 的 title
-     * @param string $title
-     * @return Layout
-     */
-    public function title(string $title): Layout
-    {
-        return $this->set('name', $title);
     }
 
     /**
@@ -227,6 +232,16 @@ class Layout extends Renderer
     public function fixSiderbar(bool $fixSiderbar = true): Layout
     {
         return $this->set('fixSiderbar', $fixSiderbar);
+    }
+
+    /**
+     * 是否暗黑模式
+     * @param bool $dark
+     * @return Layout
+     */
+    public function dark(bool $dark = true): Layout
+    {
+        return $this->set('dark', $dark);
     }
 
     /**

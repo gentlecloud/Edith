@@ -36,7 +36,7 @@ return [
         ],
 
         // Redirect to the specified URI when user is not authorized.
-        'redirect_to' => 'edith/auth/login',
+        'redirect_to' => 'api/edith/auth/login',
 
         // The URIs that should be excluded from authorization.
         'excepts' => [

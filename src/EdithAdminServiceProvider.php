@@ -6,6 +6,7 @@ use Edith\Admin\Contracts\EdithModuleCoreInterface;
 use Edith\Admin\Core\Auth;
 use Edith\Admin\Facades\EdithAdmin;
 use Edith\Admin\Modules\Core;
+use Edith\Admin\Providers\ExceptionServiceProvider;
 use Edith\Admin\Support\Context;
 use Edith\Admin\Support\Database\Helper;
 use Illuminate\Support\Arr;
@@ -66,6 +67,7 @@ class EdithAdminServiceProvider extends ServiceProvider
             Helper::listen();
         }
         $this->app->register(\Edith\Admin\Modules\ServiceProvider::class);
+        $this->app->register(ExceptionServiceProvider::class);
     }
 
     /**

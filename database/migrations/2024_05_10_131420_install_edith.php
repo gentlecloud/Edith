@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('type')->comment('配置类型');
             $table->string('name', 64)->comment('配置名称')->unique();
             $table->string('group_name')->comment('分组名称');
+            $table->integer('is_required')->default(0);
             $table->longText('value')->nullable()->comment('配置值');
             $table->longText('remark')->nullable()->comment('备注');
             $table->timestamps();
@@ -30,7 +31,7 @@ return new class extends Migration {
             $table->string('email')->index()->comment('邮箱')->nullable();
             $table->string('phone')->index()->comment('手机')->nullable();
             $table->string('password')->comment('密码');
-            $table->string('avatar')->nullable()->comment('头像');
+            $table->text('avatar')->nullable()->comment('头像');
             $table->boolean('google_open')->default(0)->comment('GOOGLE验证器');
             $table->string('google_secret', 64)->nullable()->comment('GOOGLE SECRET');
             $table->timestamp('lasted_at')->nullable()->comment('最后登录时间');
@@ -63,7 +64,7 @@ return new class extends Migration {
 
         Schema::create('edith_action_logs', function (Blueprint $table) {
             $table->id();
-            $table->integer('obj_id')->nullable()->comment('操作人');
+            $table->bigInteger('obj_id')->nullable()->comment('操作人');
             $table->string('url')->comment('操作URL');
             $table->string('method')->nullable()->comment('操作方式');
             $table->longText('content')->comment('操作内容')->nullable();
@@ -77,7 +78,7 @@ return new class extends Migration {
         Schema::create('edith_attachment_categories', function (Blueprint $table) {
             $table->id();
             $table->string('obj_type')->default('ADMIN')->comment('分类归属角色的类型（ADMIN/PLATFORM）');
-            $table->integer('obj_id')->default(0)->comment('分类归属角色id');
+            $table->bigInteger('obj_id')->default(0)->comment('分类归属角色id');
             $table->string('title')->comment('分类名称');
             $table->integer('sort')->default(0)->comment('排序');
             $table->string('description')->nullable()->comment('分类描述');
@@ -91,8 +92,8 @@ return new class extends Migration {
         Schema::create('edith_attachments', function (Blueprint $table) {
             $table->id();
             $table->string('obj_type')->default('ADMIN')->comment('附件归属角色的类型（ADMIN/PLATFORM）');
-            $table->integer('obj_id')->default(0)->nullable()->comment('附件归属角色id');
-            $table->integer('category_id')->default(0)->nullable()->comment('类目id');
+            $table->bigInteger('obj_id')->default(0)->nullable()->comment('附件归属角色id');
+            $table->bigInteger('category_id')->default(0)->nullable()->comment('类目id');
             $table->string('name')->comment('名称');
             $table->string('size')->comment('大小');
             $table->integer('width')->default(0)->nullable()->comment('图片宽度');

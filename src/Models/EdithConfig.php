@@ -19,6 +19,6 @@ class EdithConfig extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'title', 'type', 'name', 'group_name', 'value', 'remark', 'status'
+        'id', 'title', 'type', 'name', 'group_name', 'value', 'is_required', 'remark', 'status'
     ];
 }

@@ -1,8 +1,9 @@
 <?php
 namespace Edith\Admin\Components;
 
-use Edith\Admin\Components\Contracts\RendererInterface;
-use Edith\Admin\Components\Traits\RendererAttribute;
+use Edith\Admin\Components\Traits\Attributes\RendererAttribute;
+use Edith\Admin\Exceptions\RendererException;
+use Illuminate\Support\Str;
 
 /**
  * Edith Basic Renderer
@@ -13,6 +14,20 @@ use Edith\Admin\Components\Traits\RendererAttribute;
 abstract class BaseRenderer implements \JsonSerializable
 {
     use RendererAttribute;
+
+    /**
+     * 各类 Antd 适合的场景均可用 如 fields columns 等
+     * @param numeric-string|int $width 宽度, 支持了一些枚举 "xs" | "sm" | "md" | "lg" | "xl"
+     * @return $this
+     * @throws RendererException
+     */
+    public function width(string|int $width): static
+    {
+        if (!is_numeric($width) && !Str::contains($width, '%') && !Str::contains($width, 'px') && !in_array($width, ["xs" , "sm" , "md" ,"lg" , "xl"])) {
+            throw new RendererException("Width only supports setting 'xs', 'sm', 'md', 'lg', 'xl'");
+        }
+        return $this->set('width', $width);
+    }
 
     /**
      *

@@ -54,7 +54,7 @@ class EdithAttachment extends Model
      */
     public function getCategoryNameAttribute(): string
     {
-        return EdithAttachmentCategory::where('id',$this->category_id)->value('title') ?: '默认分类';
+        return EdithAttachmentCategory::where('id', $this->category_id)->value('title') ?: '默认分类';
     }
 
     /**
@@ -79,7 +79,7 @@ class EdithAttachment extends Model
     {
         static::deleted(function (EdithAttachment $attachment) {
             if ($attachment->driver == 'local') {
-                Storage::delete($attachment->path);
+                Storage::disk('public')->delete($attachment->path);
             }
         });
     }

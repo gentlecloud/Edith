@@ -1,15 +1,25 @@
 <?php
 namespace Edith\Admin\Components\Forms;
 
-/**
- * Ant drawer form 表单
- * 仅支持 schema json
- */
-class DrawerForm extends SchemaForm
+use Edith\Admin\Components\Actions\Action;
+use Edith\Admin\Components\Traits\Attributes\DrawerFormAttribute;
+
+class DrawerForm extends ProForm
 {
+    use DrawerFormAttribute;
+
     /**
-     * Ant ProForm 渲染类型
+     * ProForm 的 Layout 切换
      * @var string
      */
-    protected string $layoutType = 'DrawerForm';
+    protected string $component = 'DrawerForm';
+
+    /**
+     * @param Action|string|null $button
+     */
+    public function __construct(Action|string|null $button = null)
+    {
+        parent::__construct($button);
+        $this->initFormAttribute();
+    }
 }

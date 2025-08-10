@@ -1,8 +1,8 @@
 <?php
 namespace Edith\Admin\Traits;
 
-use Edith\Admin\Exceptions\ServiceException;
-use Edith\Admin\Services\ModelService;
+use Edith\Admin\Exceptions\DaoException;
+use Edith\Admin\Dao\ModelDao;
 
 trait Datasource
 {
@@ -10,7 +10,7 @@ trait Datasource
     /**
      * @var string|null
      */
-    protected ?string $serviceName = ModelService::class;
+    protected ?string $daoName = ModelDao::class;
 
     /**
      * 控制器关联模型
@@ -20,33 +20,33 @@ trait Datasource
 
     /**
      * 控制器服务层
-     * @return ModelService
-     * @throws ServiceException
+     * @return ModelDao
+     * @throws DaoException
      */
-    protected function service(): ModelService
+    protected function dao(): ModelDao
     {
-        if (empty($this->serviceName) && empty($this->modelName)) {
-            throw new ServiceException("当前不存在服务层或未定义模型", -30000);
+        if (empty($this->daoName) && empty($this->modelName)) {
+            throw new DaoException("当前不存在服务层或未定义模型", -30000);
         }
 
-        $service = new $this->serviceName;
-        if (!($service instanceof ModelService)) {
-            throw new ServiceException('服务模型有误', -30002);
+        $dao = new $this->daoName;
+        if (!($dao instanceof ModelDao)) {
+            throw new DaoException('服务模型有误', -30002);
         }
         if (!empty($this->modelName)) {
-            $service->setModel(new $this->modelName);
+            $dao->setModel(new $this->modelName);
         }
-        return $service;
+        return $dao;
     }
 
     /**
      * 获取当前控制器模型数据
      * @return array
-     * @throws ServiceException
+     * @throws DaoException
      */
     protected function datasource(): array
     {
-        return $this->service()->builder();
+        return $this->dao()->builder();
     }
 }
 

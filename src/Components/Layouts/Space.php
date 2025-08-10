@@ -1,7 +1,7 @@
 <?php
 namespace Edith\Admin\Components\Layouts;
 
-use Edith\Admin\Components\Renderer;
+use Edith\Admin\Components\EngineRenderer;
 
 /**
  * Ant Space 间距
@@ -14,14 +14,8 @@ use Edith\Admin\Components\Renderer;
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  * @link https://www.3ii.cn
  */
-class Space extends Renderer
+class Space extends EngineRenderer
 {
-    /**
-     * Amis 渲染类型
-     * @var string
-     */
-    protected string $type = 'edith';
-
     /**
      * Edith 渲染部件
      * @var string 

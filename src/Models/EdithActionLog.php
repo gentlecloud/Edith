@@ -31,6 +31,6 @@ class EdithActionLog extends Model
 
     public function admin()
     {
-        return $this->hasOne('Edith\Admin\Models\EdithAdmin', 'id', 'obj_id');
+        return $this->hasOne('Edith\Admin\Models\EdithAdmin', 'id', 'obj_id')->without('log')->select('id', 'nickname', 'username');
     }
 }

@@ -1,8 +1,9 @@
 <?php
 namespace Edith\Admin\Components\Forms;
 
-use Edith\Admin\Components\Amis\Action\Button;
-use Edith\Admin\Components\Fields\Uploader;
+use Edith\Admin\Components\Actions\Action;
+use Edith\Admin\Components\Columns\Column;
+use Edith\Admin\Components\Columns\Item\UploaderColumn;
 use Edith\Admin\Exceptions\RendererException;
 
 /**
@@ -13,8 +14,8 @@ use Edith\Admin\Exceptions\RendererException;
  * @method $this title(string $title)                                     modal 和 drawer 表单可设置标题
  * @method Column text(string $dataIndex, ?string $title = null)          图片表单 FormItem
  * @method Column password(string $dataIndex, ?string $title = null)      生成表单 FormItem.Password
- * @method Uploader uploader(string $dataIndex, ?string $title = null)    生成表单 FormItem.uploader 图片上传组件
- * @method Uploader file(string $dataIndex, ?string $title = null)        生成表单 FormItem.file 文件上传组件
+ * @method UploaderColumn uploader(string $dataIndex, ?string $title = null)    生成表单 FormItem.uploader 图片上传组件
+ * @method UploaderColumn file(string $dataIndex, ?string $title = null)        生成表单 FormItem.file 文件上传组件
  * @method Column image(string $dataIndex, ?string $title = null)         生成表单 FormItem.image 图片预览组件
  * @method Column radio(string $dataIndex, ?string $title = null)         生成表单 FormItem.Radio 单选框
  * @method Column switch(string $dataIndex, ?string $title = null)        生成表单 FormItem.Switch 开关
@@ -36,9 +37,9 @@ class SchemaForm extends ProForm
 
     /**
      * modal drawer 表单按钮类型
-     * @var
+     * @var Action|null
      */
-    protected $button;
+    protected ?Action $trigger;
 
     /**
      * @var array|string[]
@@ -65,10 +66,18 @@ class SchemaForm extends ProForm
         'segmented'
     ];
 
-    public function __construct()
+    /**
+     * @param string|Action|null $button
+     */
+    public function __construct(string|Action|null $button = null)
     {
         parent::__construct();
-        $this->button = (new Button())->type('button')->level('link')->label('提交')->block()->actionType("custom");
+        if ($button) {
+            $this->trigger = is_string($button) ? (new Action($button))
+                ->type('primary')
+                ->size('small')
+                ->actionType($this->renderer) : $button;
+        }
     }
 
     /**
@@ -102,13 +111,13 @@ class SchemaForm extends ProForm
 
     /**
      * 添加表格列
-     * @param string|null $dataIndex 关联字段
+     * @param string|null $name 关联字段
      * @param string|null $label 表头
      * @return Column
      */
-    public function column(?string $dataIndex = null, ?string $label = null): Column
+    public function column(?string $name = null, ?string $label = null): Column
     {
-        return tap(new Column($dataIndex, $label), function ($value) {
+        return tap(new Column($name, $label), function ($value) {
             $this->columns->push($value);
         });
     }
@@ -132,7 +141,7 @@ class SchemaForm extends ProForm
      */
     public function labelLevel($level = 'link')
     {
-        $this->button['type'] = $level;
+        $this->trigger['type'] = $level;
         return $this;
     }
 
@@ -143,7 +152,7 @@ class SchemaForm extends ProForm
      */
     public function label(string $label)
     {
-        $this->button['label'] = $label;
+        $this->trigger->label($label);
         return $this;
     }
 
@@ -156,7 +165,7 @@ class SchemaForm extends ProForm
     {
         if (in_array($name, self::$columnInputs)) {
             if (in_array($name, ['uploader', 'file'])) {
-                $column = new Uploader(...$arguments);
+                $column = new UploaderColumn(...$arguments);
             } else {
                 $column = new Column(...$arguments);
                 if ($name == 'switch') {

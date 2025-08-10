@@ -61,7 +61,7 @@ class Auth implements EdithAuthInterface
 
     /**
      * 检测 Token 是否过期
-     * @param bool $refresh 是否刷新 Token 检测，若为 Refresh Token 则过期时间将提前1小时为用户刷新 Token
+     * @param bool $refresh 是否刷新 Token 检测，若为 Refresh Token 则过期时间将提前2小时为用户刷新 Token
      * @return bool
      */
     public function tokenIsExpires(bool $refresh = false): bool
@@ -71,7 +71,7 @@ class Auth implements EdithAuthInterface
             return true;
         }
         if ($refresh) {
-            $expireTime -= 60 * 60;
+            $expireTime -= 60 * 60 * 2;
         }
         return $expireTime <= time();
     }

@@ -1,25 +1,22 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Components\Amis\Action\Action;
-use Edith\Admin\Components\Amis\Action\Button;
-use Edith\Admin\Components\Amis\Action\Dialog;
-use Edith\Admin\Components\Amis\Container;
-use Edith\Admin\Components\Amis\Crud;
-use Edith\Admin\Components\Amis\Form\Form;
-use Edith\Admin\Components\Amis\Form\FormItem;
-use Edith\Admin\Components\Amis\Form\Group;
-use Edith\Admin\Components\Amis\Form\Hidden;
-use Edith\Admin\Components\Amis\Form\InputFile;
-use Edith\Admin\Components\Amis\Form\InputStatic;
-use Edith\Admin\Components\Amis\Form\Select;
-use Edith\Admin\Components\Amis\Grid;
-use Edith\Admin\Components\Amis\Page;
-use Edith\Admin\Events\UploadAfter;
-use Edith\Admin\Events\UploadBefore;
+use Edith\Admin\Components\Actions\Action;
+use Edith\Admin\Components\Columns\Column;
+use Edith\Admin\Components\Displays\Each;
+use Edith\Admin\Components\Displays\Text;
+use Edith\Admin\Components\Fields\Field;
+use Edith\Admin\Components\Fields\Item\UploadDragger;
+use Edith\Admin\Components\Forms\ModalForm;
+use Edith\Admin\Components\Layouts\Space;
+use Edith\Admin\Components\Pages\PageContainer;
+use Edith\Admin\Components\Pages\ProCard;
+use Edith\Admin\Components\Tables\Table;
 use Edith\Admin\Exceptions\RendererException;
-use Edith\Admin\Exceptions\ServiceException;
+use Edith\Admin\Exceptions\DaoException;
 use Edith\Admin\Facades\EdithAdmin;
+use Edith\Admin\Http\Actions\CreateSchemaModalAction;
+use Edith\Admin\Http\Actions\DeleteAction;
 use Edith\Admin\Models\EdithAttachment;
 use Edith\Admin\Models\EdithAttachmentCategory;
 use Illuminate\Http\JsonResponse;
@@ -33,110 +30,114 @@ class AttachmentController extends Controller
      */
     protected ?string $title = '附件';
 
-    protected ?string $serviceName = 'Edith\Admin\Services\AttachmentService';
+    /**
+     * @var string|null
+     */
+    protected ?string $daoName = 'Edith\Admin\Dao\AttachmentDao';
 
     /**
      * 自定义渲染页面
-     * @return Page
-     * @throws RendererException
+     * @return PageContainer
      */
     public function render()
     {
-        $page = new Page();
-        $page->aside($this->categoryPage());
-        $page->body($this->crud(new Crud));
-        return $page->asideClassName('category')->css([
-            '.category' => [
-                'width' => '300px'
-            ]
-        ])->silentPolling();
+        $page = (new ProCard())->split('vertical');
+        $page->body([
+            (new ProCard())->colSpan('384px')->ghost()->body($this->categoryPage()),
+            (new ProCard())->title('${categoryName}')->body($this->table(new Table))
+        ]);
+        return (new PageContainer())->data([
+            'categoryId' => 0,
+            'categoryName' => '默认目录',
+        ])->body($page);
     }
 
     /**
-     * @param Crud $crud
-     * @return Crud
-     * @throws RendererException
+     * @param Table $table
+     * @return Table
      */
-    public function crud(Crud $crud): Crud
+    public function table(Table $table): Table
     {
-        $crud->column('category_name', '目录')->width(120);
-        $crud->column('name', '附件名称');
-        $crud->column('size', '大小')->sortable()->toggled();
-        $crud->column('url', '外链')->copyable();
-        $crud->column('ext', '扩展名')->sortable();
-        $crud->column('preview', '预览')->type('image')->src('${preview}');
-        $crud->column('created_at', '上传时间');
+        $table->column('category_name', '目录')->width(120)->hideInSearch();
+        $table->column('name', '附件名称');
+        $table->column('size', '大小')->sorter()->hidden()->hideInSearch();
+        $table->column('url', '外链')->copyable()->hideInSearch()->width(300);
+        $table->column('ext', '扩展名')->sorter()->hideInSearch();
+        $table->column('preview', '预览')->valueType('image')->hideInSearch();
+        $table->column('created_at', '上传时间')->hideInSearch();
+        $table->column('created_at', '上传时间')->valueType('dateRange')->hideInTable();
 
-        $crud->operation()->rowOnlyDestroyAction();
-        $crud->onlyBulkDeleteAction()->basicHeaderToolbar($this->uploadForm())->name('attachment');
+        $table->operation()->rowOnlyDestroyAction();
+        $table->toolbar([
+            $this->uploadForm()
+        ]);
 
-        return $crud;
+        return $table->scopeName('attachment')->initApi('attachments/list?category_id=${categoryId}');
     }
 
     /**
      * 附件目录浏览
-     * @return Crud
-     * @throws RendererException
+     * @return Table
      */
     protected function categoryPage()
     {
-        $crud = (new Crud())->perPage(80)->api('api/attachments/category?_action=datasource');
-        $crud->column('title', '所属目录');
-        $crud->operation()->button('浏览', function(Button $button) {
-            $button->actionType('reload')
-                ->target('attachment?category_id=${id}')
-                ->level('success');
-        })->button('删除', function(Button $button) {
-            $button->api('delete:api/attachments/category/${id}')
-                ->actionType('ajax')
-                ->level('danger')
-                ->confirmText('请确认是否要删除所选目录？')
-                ->visibleOn('${id !== 0}');
-        });
-        return $crud->basicHeaderToolbar($this->categoryForm(), 'modal', '创建目录')->footerToolbar([]);
+        $table = (new Table())->pageSize(80)->initApi('attachments/category');
+        $table->column('title', '目录名称');
+
+        $table->operation()
+            ->width(130)
+            ->items([
+                (new Action('浏览'))->carryData([
+                    'categoryId' => '${id}',
+                    'categoryName' => '${title}'
+                ])->reload('attachment')->type('link'),
+                (new DeleteAction('删除', '是否确定要删除${title}目录？'))
+                    ->api('delete:attachments/category/${id}')
+                    ->visibleOn('${id != 0}')
+            ]);
+        $table->toolbar([
+            (new CreateSchemaModalAction('创建目录', $this->categoryForm()))->api('post:attachments/category')
+        ]);
+        $table->rowSelection(false);
+        return $table->set('search', false);
     }
 
     /**
      * 附件目录表单
-     * @return Form
+     * @return array
      */
-    protected function categoryForm()
+    protected function categoryForm(): array
     {
-        $form = (new Form())->api('post:api/attachments/category')->controls([
-            (new FormItem('title', '目录名称'))->required(),
-        ]);
-        return $form;
+        return [
+            (new Column('title', '目录名称'))->required(),
+        ];
     }
 
     /**
-     * @return Action
+     * @return ModalForm
      * @throws RendererException
      */
     protected function uploadForm()
     {
-        $action = (new Action)->level('primary')->label('上传附件')->icon('fa-sharp fa-solid fa-cloud-arrow-up');
-        $categories = EdithAttachmentCategory::pluck('title as label', 'id as value')->toArray();
-        $form = (new Form)->controls([
-            (new Select('category_id', '附件目录'))->options(array_merge([['value' => 0, 'label' => '默认目录']], $categories))->value(0),
-            (new InputFile())->receiver('api/attachments/upload')
-                ->drag()
-                ->accept('*')
-                ->autoUpload(false)
-                ->autoFill([
-                    'link' => '${url}'
-                ]),
-            (new Group())->body([
-                new InputStatic('link', '外链地址'),
-                (new Button('复制外链地址'))
-                    ->icon('fa-sharp fa-solid fa-copy')
-                    ->actionType('copy')
-                    ->content('${link}')
-                    ->visibleOn('${link}')
-                    ->columnRatio(2)
-            ])
-        ]);
+        $button =  (new Action('上传附件'))
+            ->type('primary')
+            ->size('xl')
+            ->icon('icon-plus-circle')
+            ->actionType('pro-form');
+        $categories = EdithAttachmentCategory::select('title as label', 'id as value')->get()->toArray();
 
-        return $action->dialog((new Dialog())->size('lg')->title('上传附件')->body($form)->actions([]));
+        return (new ModalForm($button))->columns([
+            (new Field('category_id', '附件目录'))->component('select')->options(array_merge([['value' => 0, 'label' => '默认目录']], $categories))->initialValue(0)->required(),
+            (new UploadDragger('attachments', '上传附件'))
+                ->maxCount(9)
+                ->reload('attachment')
+                ->valueType('file')
+                ->action('/api/attachments/upload?category_id=${category_id}'),
+            (new Each)->name('${attachments}')
+                ->visibleOn('${attachments}')
+                ->items((new Text('${url}'))->copyable())
+                ->withSpace((new Space())->direction('vertical')->style(['marginBottom' => '20px']))
+        ])->width(960)->submitter(false)->title('上传附件');
     }
 
     /**
@@ -194,11 +195,11 @@ class AttachmentController extends Controller
             $pagination['total'] = $getPictures['total'];
         }
 
-        $categorys = EdithAttachmentCategory::where('obj_type', 'ADMINID')->where($where)->get();
+        $categories = EdithAttachmentCategory::where('obj_type', 'ADMIN')->where($where)->get();
 
         $attachment['lists'] = $data;
         $attachment['pagination'] = $pagination;
-        $attachment['categorys'] = $categorys;
+        $attachment['categories'] = $categories;
 
         return success('获取成功！', $attachment);
     }
@@ -207,13 +208,13 @@ class AttachmentController extends Controller
      * 上传文件
      * @param Request $request
      * @return JsonResponse
-     * @throws ServiceException
+     * @throws DaoException
      */
-    public function upload()
+    public function upload(Request $request)
     {
         $platform_id = app('edith.auth')->platformId();
         try {
-            $result = $this->service()->upfile($platform_id);
+            $result = $this->dao()->upfile($request, $platform_id);
         } catch (\Exception $e) {
             return error($e->getMessage());
         }

@@ -17,7 +17,7 @@ class Authenticate
      * @param $guard
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $guard = '')
+    public function handle(Request $request, Closure $next, $guard = 'manage')
     {
         if ($this->shouldPassThrough($request)) {
             return $next($request);
@@ -31,13 +31,12 @@ class Authenticate
         if (empty($authorization)) {
             abort(401, 'Unauthenticated.', $retHeader);
         }
-
-        $authorizations = explode(' ',$authorization);
-        if (count($authorizations) != 2 || $authorizations[0] != 'Bearer') {
-            abort(401, 'Unauthenticated.', $retHeader);
+        $token = null;
+        if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
+            $token = $matches[1];
         }
 
-        $token = base64_decode($authorizations[1]);
+        $token = base64_decode($token);
         if (empty($token) || !($info = EdithAuthToken::findToken($token))) {
             abort(401, 'Unauthenticated.', $retHeader);
         }
@@ -53,19 +52,14 @@ class Authenticate
         }
 
         if (!$admin->isSuperAdministrator() && !$this->shouldUserPassThrough($request, $admin)) {
-            if ($request->isMethod('get')) {
-                return engine(['type' => 'result', 'status' => 401, 'statusText' => 'Not permission.', 'errMessage' => '无访问权限']);
-            } else {
-                unset($retHeader['X-Redirect-Engine']);
-                abort(401, 'Not permission.', $retHeader);
-            }
+            abort(403, 'Not permission.' . Route::currentRouteName() ?? $request->path(), $retHeader);
         }
 
         app('edith.auth')
             ->setToken($token)
             ->setUser($info);
 
-        app('auth')->guard('manage')->setUser($admin);
+        app('auth')->guard($guard)->setUser($admin);
 
         return $next($request);
     }
@@ -79,9 +73,9 @@ class Authenticate
     {
         // 下面这些路由不验证权限
         $excepts = array_merge(config('edith.auth.excepts', []), [
-            'auth/login',
-            'auth/logout',
-            'auth/query'
+            'edith.auth.login',
+            'edith.auth.logout',
+            'edith.auth.query'
         ]);
 
         return collect($excepts)
@@ -89,7 +83,7 @@ class Authenticate
                 if ($except !== '/') {
                     $except = trim($except, '/');
                 }
-                return $request->is($except);
+                return $request->routeIs($except);
             });
     }
 
@@ -107,10 +101,10 @@ class Authenticate
                 if ($semi !== '/') {
                     $semi = trim($semi, '/');
                 }
-                if ($request->is($semi)) {
+                if ($request->routeIs($semi)) {
                     return true;
                 }
-                return $admin->can(Route::currentRouteName());
+                return $admin->can(Route::currentRouteName() ?? $request->path());
             });
     }
 }

@@ -33,7 +33,6 @@ trait HasPermissions
         if (empty($abilities)) {
             return false;
         }
-
         return $this->allPermissions()->pluck('uri')->contains($abilities);
     }
 

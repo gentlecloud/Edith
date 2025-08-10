@@ -27,6 +27,11 @@ class EdithRole extends Model
         'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
+    public function menus()
+    {
+        return $this->hasMany(EdithRoleMenu::class, 'role_id');
+    }
+
     public function permissions()
     {
         return $this->hasMany(EdithRolePermission::class, 'role_id');

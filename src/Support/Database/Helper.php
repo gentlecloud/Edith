@@ -2,6 +2,7 @@
 namespace Edith\Admin\Support\Database;
 
 use Illuminate\Support\Facades\DB;
+
 class Helper
 {
     /**

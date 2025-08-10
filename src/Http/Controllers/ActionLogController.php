@@ -1,10 +1,7 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Components\Amis\Crud;
-use Edith\Admin\Components\Amis\Form\InputDatetimeRange;
-use Edith\Admin\Exceptions\RendererException;
-use Illuminate\Http\Request;
+use Edith\Admin\Components\Tables\Table;
 
 class ActionLogController extends Controller
 {
@@ -17,30 +14,23 @@ class ActionLogController extends Controller
      * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Edith\Admin\Services\ActionLogService";
+    protected ?string $daoName = "Edith\Admin\Dao\ActionLogDao";
 
     /**
-     * @param Crud $crud
-     * @return Crud
-     * @throws RendererException
+     * @param Table $table
+     * @return Table
      */
-    public function crud(Crud $crud): Crud
+    public function table(Table $table): Table
     {
-        $crud->column('id', '序号')->width(120)->sortable();
-        $crud->column('admin.username', '用户')->width(120)->sortable();
-        $crud->column('method', '请求方式')->width(80)->sortable();
-        $crud->column('url', '行为链接')->copyable();
-        $crud->column('ip', 'IP')->copyable()->sortable();
-        $crud->column('region', '属地')->copyable();
-        $crud->column('created_at', '发生时间');
+        $table->column('id', '序号')->width(120)->sorter()->hideInSearch();
+        $table->column('admin.nickname', '用户')->width(120)->sorter();
+        $table->column('method', '请求方式')->width(80)->sorter();
+        $table->column('url', '行为链接')->copyable();
+        $table->column('ip', 'IP')->copyable()->sorter();
+        $table->column('region', '属地')->copyable();
+        $table->column('created_at', '发生时间');
 
-        $crud->operation()->rowOnlyDestroyAction();
-        $crud->onlyBulkDeleteAction();
-
-        $crud->filter([
-            (new InputDatetimeRange('created_at', '发生时间'))
-        ]);
-
-        return $crud;
+        $table->operation()->rowOnlyDestroyAction();
+        return $table;
     }
 }

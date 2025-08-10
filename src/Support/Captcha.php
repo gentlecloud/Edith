@@ -48,7 +48,7 @@ class Captcha
      */
     public function verify(string $uuid, string $captcha): bool
     {
-        return strtolower(Cache::get('edith_captcha_' . $uuid)) == strtolower($captcha);
+        return strtolower(Cache::pull('edith_captcha_' . $uuid)) == strtolower($captcha);
     }
 
     /**

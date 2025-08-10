@@ -1,17 +1,21 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Components\Amis\Action\Action;
-use Edith\Admin\Components\Amis\Crud;
-use Edith\Admin\Components\Amis\Form\FormItem;
-use Edith\Admin\Components\Amis\Form\Select;
-use Edith\Admin\Components\Amis\Form\Textarea;
+use Edith\Admin\Components\Actions\Action;
+use Edith\Admin\Components\Columns\Column;
+use Edith\Admin\Components\Columns\Item\RadioButtonColumn;
+use Edith\Admin\Components\Columns\Item\SwitchColumn;
+use Edith\Admin\Components\Columns\Item\TextareaColumn;
 use Edith\Admin\Components\Fields\Field;
+use Edith\Admin\Components\Fields\Item\Uploader;
 use Edith\Admin\Components\Forms\TabsForm;
+use Edith\Admin\Components\Layouts\WaterMark;
 use Edith\Admin\Components\Pages\ProCard;
+use Edith\Admin\Components\Tables\Table;
 use Edith\Admin\Events\ConfigRendererAfter;
 use Edith\Admin\Events\ConfigRendererBefore;
 use Edith\Admin\Exceptions\RendererException;
+use Edith\Admin\Http\Actions\CreateSchemaModalAction;
 use Edith\Admin\Models\EdithConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -27,49 +31,53 @@ class SystemController extends Controller
      * 控制器服务层
      * @var string|null
      */
-    protected ?string $serviceName = "Edith\Admin\Services\ConfigService";
+    protected ?string $daoName = "Edith\Admin\Dao\ConfigDao";
 
     /**
-     * @param Crud $crud
-     * @return Crud
+     * @param Table $table
+     * @return Table
      * @throws RendererException
      */
-    public function crud(Crud $crud): Crud
+    public function table(Table $table): Table
     {
-        $crud->column('title', '标题')->width(120);
-        $crud->column('group_name', '分组')->copyable();
-        $crud->column('name', '字段')->copyable();
-        $crud->column('remark', '备注')->quickEdit();
+        $table->column('title', '配置项')->width(180);
+        $table->column('group_name', '分组')->hideInSearch()->width(120);
+        $table->column('name', '字段')->copyable();
+        $table->column('remark', '备注')->editable()->hideInSearch();
 
-        $crud->operation()->rowOnlyEditDestroyAction($this->controls());
-        $crud->onlyBulkDeleteAction()->basicHeaderToolbar($this->controls(), 'modal', '创建配置');
+        $table->operation()->rowOnlyEditDestroyAction($this->fields(), 'modal')->width(180);
+        $table->toolbar([
+            new CreateSchemaModalAction('添加配置项', $this->fields())
+        ]);
 
         $this->title = '配置项';
-        return $crud->quickSaveApi();
+        return $table;
     }
 
     /**
      * 表单列
      * @return array
+     * @throws RendererException
      */
-    public function controls(): array
+    public function fields(): array
     {
         $options = [
             'text' => '输入框',
             'digit' => '数字输入框',
             'textarea' => '文本域',
-            'picture' => '图片',
+            'uploader' => '图片',
             'file' => '文件',
             'switch' => '开关'
         ];
 
         return [
-            (new FormItem('title', '标题'))->required(),
+            (new Column('title', '标题'))->required(),
 
-            (new Select('type', '类型'))->options($options)->value('text'),
-            (new FormItem('group_name', '配置分组'))->required(),
-            (new FormItem('name', '字段名称'))->required(),
-            (new Textarea('remark', '备注'))
+            (new RadioButtonColumn('type', '类型'))->valueEnum($options)->initialValue('text'),
+            (new Column('group_name', '配置分组'))->required(),
+            (new Column('name', '字段名称'))->required(),
+            (new SwitchColumn('is_required', '是否必填项'))->initialValue(0)->checkedChildren('是')->unCheckedChildren('否'),
+            (new TextareaColumn('remark', '备注'))
         ];
     }
 
@@ -80,7 +88,7 @@ class SystemController extends Controller
      */
     public function website()
     {
-        $tab = (new TabsForm)->api('api/system/website/store');
+        $tab = (new TabsForm())->api('put:system/website/store')->footerToolbar();
 
         $event = new ConfigRendererBefore();
         event($event);
@@ -90,7 +98,7 @@ class SystemController extends Controller
         $groups = [];
         foreach ($group as $row) {
             $groups[$row] = EdithConfig::where('group_name',$row)
-                ->select('title', 'name', 'type', 'value', 'remark')
+                ->select('title', 'name', 'type', 'value', 'is_required', 'remark')
                 ->get()
                 ->toArray();
         }
@@ -102,9 +110,9 @@ class SystemController extends Controller
 
         $page = (new ProCard)
             ->title('网站设置')
-            ->extra((new Action('刷新'))->refresh())
+            ->extra((new Action('刷新'))->reload('pro-form'))
             ->body($tab->initialValues($event->initialValues));
-        return engine($page);
+        return engine((new WaterMark())->content(edith_config('WEB_SITE_NAME', 'Edith Admin'))->body($page));
     }
 
     /**
@@ -149,34 +157,27 @@ class SystemController extends Controller
             }
             switch ($item['type']) {
                 case 'textarea':
-                    $items[] = Field::renderer('textarea')
+                    $current = Field::make()->component('textarea')
                         ->label($item['title'] ?? $item['name'])
                         ->name($item['name'])
                         ->initialValue($item['value'] ?? null)
-                        ->showCount(true)
+                        ->showCount()
                         ->placeholder("请输入" . ($item['title'] ?? ''))
                         ->width(600)
                         ->help($item['remark']);
                     break;
                 case 'switch':
-                    $items[] = Field::renderer('switch')
+                    $current = Field::make()->component('switch')
                         ->label($item['title'] ?? $item['name'])
                         ->name($item['name'])
                         ->initialValue($item['value'] == '1')
                         ->help($item['remark'] ?? null);
                     break;
-                case 'image':
-                    $items[] = Field::name($item['name'])
-                        ->label($item['title'] ?? $item['name'])
-                        ->upload()
+                case 'uploader':
+                    $current = (new Uploader($item['name'], $item['title']))
                         ->initialValue($item['value'])
-                        ->title('上传' . $item['title'])
+                        ->button('上传' . $item['title'])
                         ->help($item['remark'] ?? null);
-//                $form->image($items['name'],$items['title'] ?? $items['name'])
-//                    ->button('上传'.$items['title'])
-//                    ->help($items['remark'] ?? null)
-//                    ->default($image);
-
                     break;
                 case 'list':
 //                $form->formList($items['name'],$items['title'] ?? $items['name'])->columns(function ($form) use ($items) {
@@ -184,19 +185,24 @@ class SystemController extends Controller
 //                        $this->distForm($form,$row);
 //                    }
 //                })->width(600);
+                    $current = Field::make()->component('list');
                     break;
                 case 'hidden':
-                    $items[] = Field::renderer('hidden')->name($item['name'])->placeholder("请输入")->initialValue($item['value']);
+                    $current = Field::make()->component('hidden')->name($item['name'])->placeholder("请输入")->initialValue($item['value']);
                     break;
                 default:
-                    $items[] = (new Field($item['name'], $item['title'] ?? $item['name']))
-                        ->renderer($item['type'])
+                    $current = (new Field($item['name'], $item['title'] ?? $item['name']))
+                        ->component($item['type'])
                         ->initialValue($item['value'] ?? null)
                         ->placeholder("请输入" . ($item['title'] ?? ''))
                         ->width(600)
                         ->help($item['remark']);
                     break;
             }
+            if ($item['is_required']) {
+                $current->required();
+            }
+            $items[] = $current;
         }
         return $items;
     }

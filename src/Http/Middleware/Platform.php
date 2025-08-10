@@ -7,7 +7,6 @@ class Platform
 {
     public function handle($request, Closure $next, $guard = '')
     {
-
         return $next($request);
     }
 }

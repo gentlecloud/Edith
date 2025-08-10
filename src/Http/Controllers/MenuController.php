@@ -1,15 +1,16 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
-use Edith\Admin\Components\Amis\Crud;
-use Edith\Admin\Components\Amis\Form\FormItem;
-use Edith\Admin\Components\Amis\Form\Group;
-use Edith\Admin\Components\Amis\Form\Hidden;
-use Edith\Admin\Components\Amis\Form\InputNumber;
-use Edith\Admin\Components\Amis\Form\InputSwitch;
-use Edith\Admin\Components\Amis\Form\InputText;
-use Edith\Admin\Components\Amis\Form\ListSelect;
-use Edith\Admin\Components\Amis\Form\TreeSelect;
+use Edith\Admin\Components\Columns\Column;
+use Edith\Admin\Components\Columns\GroupColumn;
+use Edith\Admin\Components\Columns\Item\DigitColumn;
+use Edith\Admin\Components\Columns\Item\HiddenColumn;
+use Edith\Admin\Components\Columns\Item\IconSelect;
+use Edith\Admin\Components\Columns\Item\RadioButtonColumn;
+use Edith\Admin\Components\Columns\Item\SwitchColumn;
+use Edith\Admin\Components\Columns\Item\TreeSelectColumn;
+use Edith\Admin\Components\Tables\Table;
+use Edith\Admin\Http\Actions\CreateSchemaDrawerAction;
 
 class MenuController extends Controller
 {
@@ -21,67 +22,106 @@ class MenuController extends Controller
     /**
      * @var string|null
      */
-    protected ?string $serviceName = "Edith\Admin\Services\MenuService";
+    protected ?string $daoName = "Edith\Admin\Dao\MenuDao";
 
     /**
      * 生成 Crud 列表页面
-     * @param Crud $crud
-     * @return Crud
+     * @return Table
      * @throws \Exception
      */
-    public function crud(Crud $crud): Crud
+    public function table(Table $table)
     {
-        $crud->column('id', '序号')->width(60);
-        $crud->column('icon', '菜单图标');
-        $crud->column('name', '菜单名称');
-        $crud->column('path', '菜单路由')->copyable();
-        $crud->column('target', '菜单类型');
-        $crud->column('sort', '排序')->quickEdit(['saveImmediately' => true]);
-        $crud->column('status', '状态')->quickEdit([
-            "mode" => "inline",
+        $table->column('id', 'ID')->width(100)->hideInSearch();
+        $table->column('icon', '菜单图标')->hideInSearch();
+        $table->column('name', '菜单名称');
+        $table->column('path', '菜单路由')->copyable();
+        $table->column('type', '菜单类型')->valueEnum([
+            'engine' => '翼搭引擎',
+            'default' => '路由',
+            '_blank' => '外链',
+            'iframe' => 'iframe'
+        ]);
+        $table->column('sort', '排序')->editable([
+            'type' => 'input-number'
+        ])->hideInSearch();
+        $table->column('status', '状态')->editable([
             'type' => 'switch',
             'onText' => '启用',
-            'offText' => '禁用',
-            'saveImmediately' => true
+            'offText' => '禁用'
+        ])->valueEnum([
+            1 => '启用',
+            0 => '禁用'
+        ])->valueType('select');
+        $table->column('created_at', '创建时间')->hideInSearch();
+        $table->column('updated_at', '更新时间')->hideInSearch();
+
+        $table->operation()->rowOnlyEditDestroyAction($this->fields(), $this->title);
+        $table->toolbar([
+            new CreateSchemaDrawerAction('添加' . $this->title, $this->fields())
         ]);
-        $crud->column('created_at', '创建时间');
-        $crud->column('updated_at', '更新时间');
 
-        if (env('APP_DEBUG', false)) {
-            $crud->operation()->rowOnlyEditDestroyAction($this->controls());
-            $crud->onlyBulkStatusDeleteAction()->basicHeaderToolbar($this->controls(), 'modal', "创建{$this->title}");
-        } else {
-            $crud->onlyBulkStatusAction();
-        }
+        $table->enableBatchStatus();
 
-	$crud->model()->orderBy('sort');
-
-        return $crud->footerToolbar(['statistics'])->draggable()->loadDataOnce()->quickSaveApi()->quickSaveItemApi();
+        return $table->pagination(false);
     }
 
     /**
      * 表单列
      * @return array
-     * @throws \Edith\Admin\Exceptions\ServiceException
+     * @throws \Edith\Admin\Exceptions\DaoException
      */
-    public function controls(): array
+    public function fields(): array
     {
-        $menus = list_to_tree($this->service()->getModel()->select('id', 'parent_id', 'name as label', 'icon')->get(), 'id', 'parent_id', 'children');
+        $menus = list_to_tree($this->dao()->getModel()->select('id as value', 'parent_id', 'name as label', 'icon')->get(), 'value', 'parent_id', 'children');
         return [
-            (new Group)->body([
-                (new FormItem('icon', '菜单图标')),
-                (new InputText('name', '菜单名称'))->required()
+            (new HiddenColumn('id')),
+            (new GroupColumn())->columns([
+                (new IconSelect('icon', '图标'))->width(180)->showSearch(),
+                (new Column('name', '菜单名称'))->required()->width('md'),
             ]),
-            (new TreeSelect('parent_id', '上级菜单'))->options(array_merge([['id' => 0, 'label' => '一级菜单']], $menus))->showIcon(false)->valueField('id')->required(),
-            (new InputText('path', '链接路径'))->description('一级菜单以 "/" 开头，子菜单不以 "/"开头')->required(),
-            (new ListSelect('target', '类型'))->options([
-                'default' => '路由',
-                'engine' => '翼搭引擎',
-                '_blank' => '外链'
-            ])->value('default'),
-            (new Group)->body([
-                (new InputNumber('sort', '排序'))->description('由小到大排列')->placeholder('请输入排序，由小到大排列'),
-                (new InputSwitch('status', '状态'))->onText('启用')->offText('禁用')->value(1)
+            (new TreeSelectColumn('parent_id', '上级菜单'))
+                ->defaultValue(0)
+                ->options(array_merge([['value' => 0, 'label' => '一级菜单']], $menus))
+                ->treeDefaultExpandAll(),
+            (new GroupColumn())->columns([
+                (new RadioButtonColumn('guard_name', '权限组'))
+                    ->defaultValue('basic')
+                    ->valueEnum([
+                        'basic' => '基础',
+                        'admin' => '主站',
+                        'platform' => 'SAAS'
+                    ])
+                    ->tooltip('基础则主应用及SAAS共用，主站为翼搭主后台。SAAS仅在租户后台显示')
+                    ->width('md'),
+                (new RadioButtonColumn('type', '类型'))
+                    ->tooltip('插件请使用翼搭引擎生辰JsonSchema，外链：会打开标签页跳转;iframe：嵌套于翼搭Layout内。')
+                    ->extra('路由仅支持前端内置路由！')
+                    ->valueEnum([
+                        'engine' => '翼搭引擎',
+                        'default' => '路由',
+                        '_blank' => '外链',
+                        'iframe' => 'iframe'
+                    ])
+                    ->defaultValue('engine')
+                    ->width('md'),
+            ]),
+            (new Column('path', '路由'))->required([
+                [
+                    'unique' => 'edith_menus,path',
+                    'update_unique' => 'edith_menus,path,{id}',
+                    'message' => '路由已存在'
+                ]
+            ]),
+            (new Column('component', '组件'))
+                ->tooltip('仅支持翼搭前端集成的组件，若非必要或非自定义前端页面则无需更改！')
+                ->extra('默认为：Engine，翼搭引擎组件，支持各类JsonSchema')
+                ->defaultValue('Engine'),
+            (new GroupColumn())->columns([
+                (new DigitColumn('sort', '排序'))->width('md'),
+                (new SwitchColumn('status', '状态'))->checkedChildren('启用')->unCheckedChildren('禁用')->valueEnum([
+                    1 => '启用',
+                    0 => '禁用'
+                ])->defaultChecked(1)->width('xs')
             ])
         ];
     }
