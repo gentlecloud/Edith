@@ -139,6 +139,16 @@ class Module implements EdithModuleInterface
     }
 
     /**
+     * Get Title.
+     * @return string
+     * @throws \Exception
+     */
+    public function getTitle(): string
+    {
+        return $this->moduleJson->get('title', $this->getName());
+    }
+
+    /**
      * Get description.
      * @return string
      * @throws \Exception

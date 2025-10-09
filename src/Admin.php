@@ -6,6 +6,7 @@ use Edith\Admin\Contracts\EdithAuthInterface;
 use Edith\Admin\Contracts\EdithModuleCoreInterface;
 use Edith\Admin\Support\Composer;
 use Edith\Admin\Support\Context;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -19,7 +20,7 @@ class Admin
     /**
      * Edith version
      */
-    const version = 'v2.0.0';
+    const version = '2.0.0';
 
     /**
      * load current Composer
@@ -45,6 +46,16 @@ class Admin
     public function version(): string
     {
         return self::version;
+    }
+
+    /**
+     * @return string
+     */
+    public function publicKey(): string
+    {
+        return Cache::remember("edith_public-key", 60 * 60 * 24 * 30, function () {
+            return file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'cert' . DIRECTORY_SEPARATOR . 'public_key.pem');
+        });
     }
 
     /**
@@ -102,6 +113,9 @@ class Admin
             $router->get('edith/auth/info', 'AuthController@info')->name("edith.auth.info");
             $router->get('edith/auth/menu', 'AuthController@menu')->name("edith.auth.menu");
             $router->get('edith/manage', 'EdithController@manage')->name('edith.manage');
+            $router->get('edith/micro-apps', 'EdithController@micro')->name('edith.micro');
+            // 翼搭云
+            $router->post('edith/cloud/register', "EdithController@register")->name("edith.cloud.register");
 
             $router->apiResource('auth/admin', \AdminController::class);
         });

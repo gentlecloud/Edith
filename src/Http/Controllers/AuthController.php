@@ -171,6 +171,7 @@ abstract class AuthController extends Controller
     {
         $type = app('edith.auth')->platformId() == 0 ? 'admin' : 'platform';
         $user = auth('manage')->user();
+        $extra = [];
         if (!$user->isSuperAdministrator()) {
             $ids = $user->menus()->pluck('menu_id')->toArray();
             $parents = EdithMenu::where('id', $ids)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
@@ -179,7 +180,7 @@ abstract class AuthController extends Controller
             $menus = EdithMenu::where('status', 1)
                 ->whereIn('guard_name', ['basic', $type])
                 ->whereIn('id', $ids)
-                ->select('id', 'name', 'icon', 'guard_name', 'path', 'parent_id', 'sort', 'type', 'module', 'component')
+                ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'sort', 'type', 'module', 'component')
                 ->orderBy('sort', 'asc')
                 ->orderBy('id', 'asc')
                 ->get()
@@ -193,11 +194,37 @@ abstract class AuthController extends Controller
                 ->when(env('EDITH_DEV') == false, function ($query) {
                     $query->where('is_dev', 0);
                 })
-                ->select('id', 'name', 'icon', 'guard_name', 'path', 'parent_id', 'sort', 'type', 'module', 'component')
+                ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'sort', 'type', 'module', 'component')
                 ->orderBy('sort', 'asc')
                 ->orderBy('id', 'asc')
                 ->get()
                 ->toArray();
+            $extra = [
+                [
+                    'id' => -888,
+                    'key' => uniqid(),
+                    'name' => '翼搭云',
+                    'path' => '/cloud',
+                    'icon' => 'icon-yunfuwuqi',
+                    'component' => 'qiankun',
+                    'parent_id' => 0,
+                    'hideInMenu' => false,
+                    'routes' => [
+                        [
+                            'id' => -889,
+                            'component' => 'qiankun',
+                            'parent_id' => -889,
+                            'layout' => 1,
+                            'name' => '应用模块',
+                            'hideInMenu' => false,
+                            'type' => 'engine',
+                            'path' => '/cloud/ieda',
+                            'entry' => 'http://10.0.0.8:8080',
+                            'status' => 1
+                        ]
+                    ]
+                ]
+            ];
         }
 
         $list = [];
@@ -220,6 +247,7 @@ abstract class AuthController extends Controller
                 'routes' => $menu['routes'],
             ];
         }
+        $list = array_merge($list, $extra);
         return success('query succeed.', $list);
     }
 

@@ -152,7 +152,15 @@ class Core implements EdithModuleCoreInterface
             foreach ($scans as $row) {
                 try {
                     $name = str_replace(str_replace('%s', '',$this->getPath()), '', $row);
-                    $modules[$name] = $this->findOrFail($name, true)->getVersion();
+                    $module = $this->findOrFail($name, true);
+                    $modules[$name] = [
+                        'name' => $module->getName(),
+                        'title' => $module->getTitle(),
+                        'description' => $module->getDescription(),
+                        'version' => $module->getVersion(),
+                        'is_download' => true,
+                        'is_install' => false
+                    ];
                 } catch (\Exception $e) {
 
                 }
@@ -173,7 +181,7 @@ class Core implements EdithModuleCoreInterface
             ->orderByDesc('priority')
             ->get();
         foreach ($modules as $key => $module) {
-            $name = $module['name'] ?? str_replace(str_replace('%s', '',$this->getPath()), '', $key);
+            $name = $module['name'] ?? str_replace(str_replace('%s', '', $this->getPath()), '', $key);
             $path = sprintf($this->getPath(), $name);
             if (is_dir($path)) {
                 try {

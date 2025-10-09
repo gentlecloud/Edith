@@ -1,7 +1,9 @@
 <?php
 namespace Edith\Admin\Http\Controllers;
 
+use Edith\Admin\Models\EdithModule;
 use Edith\Admin\Support\File;
+use Illuminate\Http\Request;
 
 class ModulesController extends Controller
 {
@@ -10,12 +12,25 @@ class ModulesController extends Controller
      */
     protected ?string $title = '应用模块';
 
-    public function render()
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request)
     {
-        if (!file_exists((new File)->getCachedServicesPath('edith_admin_cloud.php'))) {
-
-        } else {
-
+        $all = app('edith.modules')->scan();
+        $installs = EdithModule::select('name', 'title', 'version', 'status')->get();
+        $installed = [];
+        $disabled = [];
+        foreach ($installs as $row) {
+            $installs[$row['name']]['is_install'] = $row['status'] == 1;
+            if ($row['status'] == 1) {
+                $installed[$row['name']] = $row;
+            } else if ($row['status'] == 2) {
+                $disabled[$row['name']] = $row;
+            }
         }
+
+        return success(compact('installed', 'disabled', 'all'));
     }
 }

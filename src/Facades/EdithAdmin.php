@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string routerPrefix()                    Edith Router prefix
  * @method static void routes()                            Loader Edith Routers
  * @method static string version()                         Edith version
+ * @method static string publicKey()                       翼搭公钥证书
  * @method static EdithAuthInterface auth()                Edith Auth
  * @method static Context context()                        上下文管理
  * @method static EdithModuleCoreInterface modules()       模块管理

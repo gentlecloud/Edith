@@ -2,7 +2,6 @@
 namespace Edith\Admin\Support;
 
 use Edith\Admin\Exceptions\RequestErrorException;
-use Edith\Admin\Support\FileUtil;
 
 class Http
 {
@@ -25,14 +24,29 @@ class Http
     protected ?array $proxyAuth = null;
 
     /**
+     * @var array|null
+     */
+    protected ?array $basicAuth = null;
+
+    /**
+     * @var array
+     */
+    protected array $cookie = [];
+
+    /**
      * @var string|null|bool
      */
-    protected $response = null;
+    protected string|bool|null $response = null;
 
     /**
      * @var string|null
      */
     protected ?string $responseHeader = null;
+
+    /**
+     * @var int
+     */
+    protected int $statusCode = 200;
 
     /**
      * 发起 GET 请求
@@ -55,14 +69,14 @@ class Http
                 }
                 $params = substr($content, 0, -1);
             }
-            if (strpos($url, '?') === false) {
+            if (!str_contains($url, '?')) {
                 $url .= "?{$params}";
             } else {
                 $url .= "&{$params}";
             }
         }
 
-        $this->curl($url);
+        $this->request($url, null);
         if (!$this->response) {
             throw new RequestErrorException('请求失败！');
         }
@@ -75,7 +89,7 @@ class Http
      * @return $this
      * @throws RequestErrorException
      */
-    public function post(string $url, $data): Http
+    public function post(string $url, array|string|null $data): Http
     {
         $this->request($url, $data);
         return $this;
@@ -87,9 +101,10 @@ class Http
      * @return $this
      * @throws RequestErrorException
      */
-    public function postJson(string $url, $data = null): Http
+    public function postJson(string $url, array|string|null $data = null): Http
     {
-        is_array($data) && $data = json_encode($data);
+        $this->setHeader('Content-Type', 'application/json; charset=utf-8');
+        is_array($data) && $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         $this->request($url, $data);
         return $this;
     }
@@ -102,14 +117,14 @@ class Http
      * @return $this
      * @throws RequestErrorException
      */
-    public function request(string $url, $parameter, string $method = 'POST'): Http
+    public function request(string $url, array|string|null $parameter = null, string $method = 'POST'): Http
     {
         switch ($method) {
             case 'GET':
                 $this->get($url, $parameter);
                 break;
             default:
-                $this->curl($url, $parameter);
+                $this->curl($url, $parameter, $method);
                 break;
         }
         if (!$this->response) {
@@ -120,12 +135,17 @@ class Http
 
     /**
      * 设置页头
-     * @param array $header
+     * @param array|string $header
+     * @param string|null $value
      * @return $this
      */
-    public function setHeader(array $header): Http
+    public function setHeader(array|string $header, string|null $value = null): Http
     {
-        $this->header = $header;
+        if (is_array($header)) {
+            $this->header = $header;
+        } else {
+            $this->header[] = "{$header}: {$value}";
+        }
         return $this;
     }
 
@@ -164,38 +184,85 @@ class Http
     }
 
     /**
+     * @param string $app_id
+     * @param string $app_key
+     * @return $this
+     */
+    public function setAuth(string $app_id, string $app_key): Http
+    {
+        $this->basicAuth = [
+            'app_id' => $app_id,
+            'app_key' => $app_key
+        ];
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function setCookie(string $name, string $value): Http
+    {
+        $this->cookie[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @param array $cookies
+     * @return $this
+     */
+    public function setCookies(array $cookies): Http
+    {
+        $this->cookie = $cookies;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    /**
      * 发起 Curl 请求
      * @param string $url
      * @param array|string|null $data
-     * @param array|string|false $cookie
+     * @param string $method
      * @return $this
      */
-    public function curl(string $url, $data = null, $cookie = false)
+    public function curl(string $url, array|string|null $data = null, string $method = 'GET'): Http
     {
         $header = $this->header;
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, strpos($url,'https'));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, strpos($url,'https'));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        if (strtoupper($method) == 'POST') {
+            curl_setopt($ch, CURLOPT_POST, 1);
+        } else {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
+        }
 
         if ($data) {
-            curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
             if (is_string($data) && !$header) {
                 $header = ['Content-Type: application/json', 'User-Agent: Edith/2.0.0'];
             }
         }
 
-        if (is_array($header)) {
+        if (count($header)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
             curl_setopt($ch, CURLOPT_HEADER, true);
         }
 
-        if (isset($basicAuth['app_id']) && isset($basicAuth['app_key'])) {
+        if (isset($this->basicAuth['app_id']) && isset($this->basicAuth['app_key'])) {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_USERPWD, "{$basicAuth['app_id']}:{$basicAuth['app_key']}");
+            curl_setopt($ch, CURLOPT_USERPWD, "{$this->basicAuth['app_id']}:{$this->basicAuth['app_key']}");
         }
 
         if (!empty($this->proxy)) {
@@ -209,22 +276,26 @@ class Http
            }
         }
 
-        if ($cookie) {
-            if (is_array($cookie)) {
-                $cookie = implode(';', $cookie);
+        if (count($this->cookie)) {
+            $cookies = [];
+            foreach ($this->cookie as $name => $value) {
+                $cookies[] = "{$name}={$value}";
             }
-            curl_setopt($ch, CURLOPT_COOKIE, $cookie);
+            curl_setopt($ch, CURLOPT_COOKIE, implode(';', $cookies));
         }
 
         curl_setopt($ch, CURLOPT_TIMEOUT,60);
         curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         $response = curl_exec($ch);
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $this->responseHeader = substr($response, 0, $headerSize);
         $this->response = substr($response, $headerSize);
-
+        $this->statusCode = $statusCode;
         curl_close($ch);
+
         return $this;
     }
 
@@ -252,19 +323,5 @@ class Http
     public function toArray(): ?array
     {
         return json_decode($this->response, true);
-    }
-
-    /**
-     * 获取主体内容
-     * @param string $response 请求返回主体
-     * @return string|null
-     */
-    public function getBody(string $response): ?string
-    {
-        if (!$response) {
-            return $response;
-        }
-        list($header, $body) = explode("\r\n\r\n", $response, 2);
-        return $body;
     }
 }

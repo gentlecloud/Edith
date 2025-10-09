@@ -90,6 +90,7 @@ class AttachmentDao extends ModelDao
             // 数据
             $data = [
                 'obj_id' => $platformId,
+                'category_id' => \request()->input('category_id', 0),
                 'name' => $name,
                 'size' => $size,
                 'md5' => $md5,

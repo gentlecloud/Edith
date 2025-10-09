@@ -95,7 +95,7 @@ class Rsa
     public function sign(string $dataString): string
     {
         $signature = null;
-        openssl_sign($dataString, $signature, $this->private_key);
+        openssl_sign($dataString, $signature, $this->private_key, OPENSSL_ALGO_SHA256);
         return base64_encode($signature);
     }
 
@@ -108,7 +108,7 @@ class Rsa
     public function verify(string $dataString, string $signString): bool
     {
         $signature = base64_decode($signString);
-        return (bool) openssl_verify($dataString, $signature, $this->public_key);
+        return (bool) openssl_verify($dataString, $signature, $this->public_key, OPENSSL_ALGO_SHA256);
     }
 
     /**

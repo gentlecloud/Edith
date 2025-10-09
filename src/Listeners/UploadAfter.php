@@ -13,7 +13,7 @@ class UploadAfter
     public function handle(Events\UploadAfter $event) {
         if (!isset($event->file['id'])) {
             $data = $event->file;
-            if (!$data['obj_id']) {
+            if (!$data['obj_id'] && app('edith.auth')->id()) {
                 $data['obj_id'] = app('edith.auth')->id();
                 $data['obj_type'] = 'ADMIN';
             } else {

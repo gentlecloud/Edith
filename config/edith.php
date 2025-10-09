@@ -46,6 +46,7 @@ return [
             'api/edith/auth/captcha',
             'api/edith/auth/query',
             'api/edith/auth/login',
+            'api/edith/micro-apps',
         ],
 
         'semi_permissions' => [

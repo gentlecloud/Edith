@@ -147,7 +147,7 @@ class Controller extends BaseController
         if ($request->input('_action') == 'datasource') {
             return success('fetch succeed.', $this->dao()->get($id));
         }
-        return engine();
+        return success('fetch succeed.', $this->dao()->get($id));
     }
 
     /**

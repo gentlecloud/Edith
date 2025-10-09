@@ -29,6 +29,11 @@ interface EdithModuleInterface
     /**
      * @return string
      */
+    public function getTitle(): string;
+
+    /**
+     * @return string
+     */
     public function getDescription(): string;
 
     /**
