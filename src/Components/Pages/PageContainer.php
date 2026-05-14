@@ -2,7 +2,6 @@
 namespace Edith\Admin\Components\Pages;
 
 use Edith\Admin\Components\EngineRenderer;
-use Edith\Admin\Components\Renderer;
 
 /**
  * Ant PageContainer - 页容器
@@ -35,9 +34,9 @@ class PageContainer extends EngineRenderer
     /**
      * construct PageContainer
      * @param string|null $title
-     * @param string|array|null $body
+     * @param object|string|array|null $body
      */
-    public function __construct(?string $title = null, $body = null)
+    public function __construct(?string $title = null, object|array|string|null $body = null)
     {
         parent::__construct();
         !is_null($title) && $this->set('title', $title);

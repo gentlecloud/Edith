@@ -10,11 +10,14 @@ class EventServiceProvider extends BaseServiceProvider
      * @var array
      */
     protected $listen = [
+        \Edith\Admin\Events\AuthLoginAfter::class => [
+            \Edith\Admin\Listeners\AuthLoginAfter::class
+        ],
         \Edith\Admin\Events\AuthLoginBefore::class => [
             \Edith\Admin\Listeners\AuthLoginBefore::class
         ],
-        \Edith\Admin\Events\AuthLoginAfter::class => [
-            \Edith\Admin\Listeners\AuthLoginAfter::class
+        \Edith\Admin\Events\FrontLoginBefore::class => [
+            \Edith\Admin\Listeners\FrontLoginBefore::class
         ],
         \Edith\Admin\Events\UploadAfter::class => [
             \Edith\Admin\Listeners\UploadAfter::class

@@ -2,6 +2,7 @@
 
 use Edith\Admin\Widgets\Layout\Layout;
 use Edith\Admin\Widgets\Page\Content;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -145,14 +146,13 @@ if (!function_exists('public_path')) {
  * @author Gentle Edith <gentle@3ii.cn>
  */
 if(!function_exists('get_attachment')) {
-    function get_attachment($id, $field='path') {
+    function get_attachment(string|int|array|null $id, string $field = 'path') {
         // 本身为地址，直接返回
-        
-        if (url()->isValidUrl($id)) {
+        if (empty($id) || url()->isValidUrl($id)) {
             return $id;
-        } else if(strpos($id, 'public') !== false) {
+        } else if (str_contains($id, 'public')) {
             $path = Storage::url($id);
-            return env('WEB_SITE_SSL',false) !== false ? secure_asset($path) : asset($path);
+            return !intval(edith_config('SSL_OPEN', 0)) ? secure_asset($path) : asset($path);
         }
 
         if (is_object($id) || !intval($id) && is_json($id)) {
@@ -173,7 +173,7 @@ if(!function_exists('get_attachment')) {
                         $url = $picture['path'];
                     } else {
                         $path = Storage::url($picture['path']);
-                        $url = env('WEB_SITE_SSL', false) !== false ? secure_asset($path) : asset($path);
+                        $url = !intval(edith_config('SSL_OPEN', 0)) ? secure_asset($path) : asset($path);
                     }
                     $result = $url;
                     break;
@@ -185,7 +185,7 @@ if(!function_exists('get_attachment')) {
                         $url = $picture['path'];
                     } else {
                         $path = Storage::url($picture['path']);
-                        $url = env('WEB_SITE_SSL', false) !== false ? secure_asset($path) : asset($path);
+                        $url = !intval(edith_config('SSL_OPEN', 0)) ? secure_asset($path) : asset($path);
                     }
                     $picture['url'] = $url;
                     $result = $picture;
@@ -283,6 +283,25 @@ if (!function_exists('modify_env')) {
             }
         }
         $content = implode("\n", $contentArray->toArray());
-        \File::put($envPath, $content);
+        File::put($envPath, $content);
+    }
+}
+
+if (!function_exists('modify_config_file')) {
+    function modify_config_file(string $name, array|string $key, ?string $value = null) {
+        $path = config_path(str_ends_with($name, '.php') ? $name : "{$name}.php");
+        $config = include $path;
+
+        // 更新配置数组
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $config[$k] = $v;
+            }
+        } else {
+            $config[$key] = $value;
+        }
+        // 写入文件
+        $content = '<?php return ' . "\r\n" . var_export($config, true) . ';';
+        File::put($path, $content);
     }
 }

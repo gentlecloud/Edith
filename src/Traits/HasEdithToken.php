@@ -26,6 +26,7 @@ trait HasEdithToken
                     'expires' => time() + 60 * 60 * intval(edith_config('LOGIN_VALID_TIME', 12))
                 ]);
             } else {
+                EdithAuthToken::where('expires', '<=', time())->delete();
                 EdithAuthToken::create([
                     'type' => 'ADMIN',
                     'uid' => $this->id,

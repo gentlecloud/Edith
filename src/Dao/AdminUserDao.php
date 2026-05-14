@@ -1,6 +1,9 @@
 <?php
 namespace Edith\Admin\Dao;
 
+use Edith\Admin\Events\AdminUserFormRenderAfter;
+use Edith\Admin\Events\AdminUserFormSaveAfter;
+use Edith\Admin\Events\AdminUserFormSaveBefore;
 use Edith\Admin\Exceptions\DaoException;
 use Edith\Admin\Models\EdithRole;
 use Edith\Admin\Models\EdithRoleUser;
@@ -18,7 +21,12 @@ class AdminUserDao extends ModelDao
     /**
      * @var array|string[]
      */
-    protected array $guard = ['log', 'google_qrcode', 'old_password', 'password_confirmation', 'role_ids'];
+    protected array $guard = ['log', 'old_password', 'password_confirmation', 'role_ids'];
+
+    /**
+     * @var array|string[]
+     */
+    protected array $attachmentFields = ['avatar'];
 
     /**
      * @var string 
@@ -49,6 +57,7 @@ class AdminUserDao extends ModelDao
         $items = $paginate->makeVisible(['google_secret']);
         foreach ($items as &$item) {
             $item['roles'] = $item->roles()->pluck('name')->toArray();
+            $item['avatar'] = get_attachment($item['avatar'], 'all');
         }
         return ['items' => $items, 'total' => $paginate->total(), 'page' => $paginate->lastPage(), 'current' => $paginate->currentPage()];
     }
@@ -71,18 +80,22 @@ class AdminUserDao extends ModelDao
                 unset($data['password']);
             }
         }
+        $event = new AdminUserFormSaveBefore();
+        event($event);
+        $this->guard = array_merge($this->guard, $event->fields->toArray());
+        parent::saving($data, $id);
     }
 
     /**
      * @param $data
-     * @param $id
+     * @param $model
      * @return void
      * @throws DaoException
      */
-    protected function saved($data, $id = null)
+    protected function saved($data, $model = null)
     {
-        if (isset($data['role_ids'])) {
-            EdithRoleUser::where('user_id', $id)->delete();
+        if (isset($data['role_ids']) && $model) {
+            EdithRoleUser::where('user_id', $model->id)->delete();
             $ids = is_array($data['role_ids']) ? $data['role_ids'] : explode(',', $data['role_ids']);
             foreach ($ids as $roleId) {
                 if (EdithRole::where('id', $roleId)->doesntExist()) {
@@ -90,10 +103,12 @@ class AdminUserDao extends ModelDao
                 }
                 EdithRoleUser::create([
                     'role_id' => $roleId,
-                    'user_id' => $id
+                    'user_id' => $model->id
                 ]);
             }
         }
+        $after = new AdminUserFormSaveAfter($model, $data);
+        event($after);
     }
 
     /**
@@ -103,8 +118,17 @@ class AdminUserDao extends ModelDao
      */
     public function get($id = null)
     {
-        $info = $this->getModel()->withOut('log')->findOrFail($id ?: \request()->input('id'))->append('google_qrcode')->toArray();
+        $info = $this->getModel()->withOut('log')->findOrFail($id ?: \request()->input('id'));
         $info['role_ids'] = EdithRoleUser::where('user_id', $id)->pluck('role_id');
+        $info['avatar'] = get_attachment($info['avatar'], \request()->header('x-edith-version') ? 'all' : 'path');
+
+        $after = new AdminUserFormRenderAfter($id);
+        event($after);
+
+        foreach ($after->data as $key => $value) {
+            $info[$key] = $value;
+        }
+
         return $info;
     }
 

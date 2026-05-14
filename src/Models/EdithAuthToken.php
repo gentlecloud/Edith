@@ -29,9 +29,14 @@ class EdithAuthToken extends Model
      * @param string $token
      * @return array|bool
      */
-    public static function findToken(string $token)
+    public static function findToken(string $token): array|bool
     {
-        if (!$info = static::where('token', $token)->first()){
+        $info = static::where('token', $token)
+            ->where(function ($query) {
+                $query->where('expires', '>=', time())->orWhereNull('expires')->orWhere('expires', '0');
+            })
+            ->first();
+        if (!$info){
             return false;
         }
         $userInfo = (new Rsa(config('edith.rsa.public_key', env("RSA_PUBLIC_KEY")), config('edith.rsa.private_key', env("RSA_PRIVATE_KEY"))))->decrypt($token);
@@ -43,10 +48,11 @@ class EdithAuthToken extends Model
 
     /**
      * 退出登录 设置Token状态
-     * @param $token
+     * @param string $token
      * @return mixed
      */
-    public static function removeToken($token){
-        return static::where('token', $token)->update(['expires' => time()]);
+    public static function removeToken(string $token)
+    {
+        return static::where('token', $token)->delete();
     }
 }

@@ -45,7 +45,7 @@ class Tabs extends EngineRenderer
      * @var string
      * @default top
      */
-    protected string $tabPosition = 'top';
+    protected string $tabPlacement = 'top';
 
 
     /**
@@ -123,12 +123,12 @@ class Tabs extends EngineRenderer
      * @return $this
      * @throws \Exception
      */
-    public function tabPosition(string $position): Tabs
+    public function tabPlacement(string $position): Tabs
     {
         if (!in_array($position, ['top', 'right', 'bottom', 'left'])) {
             throw new \Exception("Position only supports setting 'top', 'right', 'bottom', 'left'");
         }
-        $this->tabPosition = $position;
+        $this->tabPlacement = $position;
         return $this;
     }
 

@@ -107,7 +107,7 @@ class Column extends BaseRenderer
      */
     public function hideInSearch(bool $hideInSearch = true): Column
     {
-        return $this->set('hideInSearch', $hideInSearch);
+        return $this->set('search', !$hideInSearch);
     }
 
     /**
@@ -214,11 +214,15 @@ class Column extends BaseRenderer
      * @return $this
      * @throws RendererException
      */
-    public function dependencies(string $field, ?string $value = null, string $condition = '='): self
+    public function when(string $field, ?string $value = null, string $condition = '='): self
     {
-        is_null($value) && $value = $condition && $condition = '=';
+//        is_null($value) && $value = $condition && $condition = '=';
         if (!in_array($condition, ['=', '>', '<', '>=', '<=', 'has', '!=', 'in', 'notIn'])) {
             throw new RendererException("Dependency conditions must be in '=', '>', '<', '>=', '<=', 'has', '!=', 'in', 'notIn'");
+        }
+        if (!is_null($value)) {
+            $condition = $value;
+            $value = null;
         }
         if (in_array($condition, ['in', 'notIn']) && !is_array($value)) {
             throw new RendererException("When the Dependencies Condition is 'in' or 'notIn', the value must be array");
@@ -229,11 +233,27 @@ class Column extends BaseRenderer
     }
 
     /**
+     * @param string|array $field
+     * @return $this
+     */
+    public function dependencies(string|array $field): self
+    {
+        if (is_string($field)) {
+            $this->dependencies->push($field);
+        } else {
+            foreach ($field as $item) {
+                $this->dependencies->push($item);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function render(): array
     {
-        if (!$this->fieldProps->get('placeholder') && !in_array($this->valueType, ['switch']) && (!isset($this->hideInSearch) || !$this->hideInSearch || !isset($this->hideInForm) || !$this->hideInForm)) {
+        if (!$this->fieldProps->get('placeholder') && !in_array($this->valueType, ['switch', 'dependency']) && (!isset($this->hideInSearch) || !$this->hideInSearch || !isset($this->hideInForm) || !$this->hideInForm)) {
             $title = $this->title ?? $this->dataIndex;
             if (in_array($this->valueType, ['select', 'checkbox', 'radio', 'radioButton', 'tree', 'cascader', 'treeSelect', 'time', 'timeRange', 'rate', 'avatar', 'iconSelect']) || Str::startsWith('date', $this->valueType)) {
                 $tip = '选择';

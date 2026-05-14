@@ -3,7 +3,6 @@ namespace Edith\Admin\Models;
 
 use Edith\Admin\Casts\Hash;
 use Edith\Admin\Contracts\HasEdithToken as HasEdithTokenContract;
-use Edith\Admin\Support\GoogleAuthenticator;
 use Edith\Admin\Traits\DateTimeFormatter;
 use Edith\Admin\Traits\HasEdithToken;
 use Edith\Admin\Traits\HasPermissions;
@@ -29,7 +28,7 @@ class EdithAdmin extends Model implements AuthenticatableContract, HasEdithToken
      * @var string[]
      */
     protected $hidden = [
-        'password', 'remember_token', 'google_secret'
+        'password', 'remember_token'
     ];
 
     protected $appends = [];
@@ -53,12 +52,6 @@ class EdithAdmin extends Model implements AuthenticatableContract, HasEdithToken
         'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
-    /**
-     * @return string|null
-     */
-    public function getGoogleQrcodeAttribute() {
-        return empty($this->google_secret) ? null : (new GoogleAuthenticator)->getQRCodeGoogleUrl($this->google_secret);
-    }
 
     /**
      * the User has and belongs to many roles.

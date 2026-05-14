@@ -60,19 +60,6 @@ trait FieldAttribute
 
     /**
      * 表单项帮助提示
-     * @param string|null $help
-     * @return $this
-     */
-    public function help(?string $help): static
-    {
-        if (empty($help)) {
-            return $this;
-        }
-        return $this->formItemProp('help', $help);
-    }
-
-    /**
-     * 表单项帮助提示
      * @param string $content
      * @return $this
      */

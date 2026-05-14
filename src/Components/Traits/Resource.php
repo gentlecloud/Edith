@@ -1,8 +1,7 @@
 <?php
 namespace Edith\Admin\Components\Traits;
 
-use Edith\Admin\Components\Amis\Action\Button;
-use Edith\Admin\Components\Amis\Form\Form;
+use Edith\Admin\Components\Actions\Button;
 use Edith\Admin\Components\Forms\ProForm;
 use Edith\Admin\Components\Forms\SchemaForm;
 use Edith\Admin\Components\Pages\ProCard;
@@ -19,9 +18,7 @@ trait Resource
      */
     protected function renderFormPage($id = null)
     {
-        if (method_exists($this, 'controls')) {
-            $form = (new Form)->controls($this->controls());
-        } else if (method_exists($this, 'fields')) {
+        if (method_exists($this, 'fields')) {
             $form = (new ProForm)->columns($this->fields());
         } else if (method_exists($this, 'columns')) {
             $form = (new SchemaForm)->columns($this->columns());

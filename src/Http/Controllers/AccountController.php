@@ -33,7 +33,9 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth('manage')->user()->makeHidden(['google_secret', 'google_qrcode', 'lasted_at', 'created_at', 'updated_at', 'log', 'platforms'])->toArray();
+        $user = (new AdminUserDao())->get(auth('manage')->id())
+            ->makeHidden(['google_secret', 'google_qrcode', 'lasted_at', 'created_at', 'updated_at', 'log', 'platforms'])
+            ->toArray();
 
         $menu = (new Menu())
             ->items([

@@ -40,28 +40,31 @@ class RoleDao extends ModelDao
 
     /**
      * @param $data
-     * @param $id
+     * @param $model
      * @return void
      */
-    protected function saved($data, $id = null)
+    protected function saved($data, $model = null)
     {
-        $permissions = $data['permission_ids'];
-        EdithRolePermission::where('role_id', $id)->delete();
-        EdithRoleMenu::where('role_id', $id)->delete();
-        $menuIds = [];
-        foreach ($permissions as $permissionId) {
-            if (str_contains($permissionId, 'permission') && preg_match('/permission\{(\d+)\}/', $permissionId, $matches)) {
-                EdithRolePermission::updateOrCreate([
-                    'role_id' => $id,
-                    'permission_id' => $matches[1]
-                ]);
-            } else if (!in_array($permissionId, $menuIds)) {
-                $menuIds[] = $permissionId;
-                EdithRoleMenu::create([
-                    'role_id' => $id,
-                    'menu_id' => $permissionId
-                ]);
+        if ($model) {
+            $permissions = $data['permission_ids'];
+            EdithRolePermission::where('role_id', $model->id)->delete();
+            EdithRoleMenu::where('role_id', $model->id)->delete();
+            $menuIds = [];
+            foreach ($permissions as $permissionId) {
+                if (str_contains($permissionId, 'permission') && preg_match('/permission\{(\d+)\}/', $permissionId, $matches)) {
+                    EdithRolePermission::updateOrCreate([
+                        'role_id' => $model->id,
+                        'permission_id' => $matches[1]
+                    ]);
+                } else if (!in_array($permissionId, $menuIds)) {
+                    $menuIds[] = $permissionId;
+                    EdithRoleMenu::create([
+                        'role_id' => $model->id,
+                        'menu_id' => $permissionId
+                    ]);
+                }
             }
         }
+
     }
 }

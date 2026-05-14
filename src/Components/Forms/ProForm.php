@@ -298,6 +298,7 @@ class ProForm extends EngineRenderer
             if (!empty($id)) {
                 $initApi .= '/' . $id;
             }
+            $this->omitNil(false);
         }
         return $this->set('initApi', $initApi);
     }
@@ -354,7 +355,7 @@ class ProForm extends EngineRenderer
      */
     protected function extracted($column): void
     {
-        if (!isset($column->dataIndex) && !isset($column->name)) {
+        if (!isset($column->dataIndex) && (!isset($column->name) || !is_string($column->name))) {
             return;
         }
         $dataIndex = $column->dataIndex ?? $column->name;

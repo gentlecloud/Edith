@@ -2,6 +2,7 @@
 namespace Edith\Admin\Contracts;
 
 use Illuminate\Filesystem\Filesystem;
+use Modules\Core\Contracts\EdithModuleInterface;
 
 interface EdithModuleCoreInterface
 {

@@ -45,7 +45,7 @@ trait FormValidator
      * @param bool $isUpdate
      * @return void
      */
-    protected function handleFormValidation(array $data, bool $isUpdate = false)
+    protected function handleFormValidation(array $data, bool $isUpdate = false): void
     {
         $rules = [];
         $messages = [];
@@ -79,6 +79,9 @@ trait FormValidator
                         }
                         $messages["{$name}.{$curKey}"] = $ruleItem['message'];
                     }
+                }
+                if (!in_array('required', $current)) {
+                    $current[] = 'nullable';
                 }
                 $rules[$name] = implode('|', $current);
             }

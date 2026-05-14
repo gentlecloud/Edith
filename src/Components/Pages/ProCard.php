@@ -29,6 +29,8 @@ class ProCard extends EngineRenderer
      */
     protected string $renderer = 'pro-card';
 
+    protected string $variant = 'elevated';
+
     /**
      * 是否有边框
      * @param bool $bordered

@@ -1,6 +1,7 @@
 <?php
 namespace Edith\Admin\Events;
 
+use Edith\Admin\Models\EdithAdmin;
 use Illuminate\Http\Request;
 
 /**
@@ -15,6 +16,11 @@ class AuthLoginBefore
      * @var \Illuminate\Http\Request
      */
     public Request $request;
+
+    /**
+     * @var EdithAdmin|null
+     */
+    public ?EdithAdmin $user = null;
 
     /**
      * 构造方法

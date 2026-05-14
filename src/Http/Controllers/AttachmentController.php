@@ -55,13 +55,14 @@ class AttachmentController extends Controller
     /**
      * @param Table $table
      * @return Table
+     * @throws RendererException
      */
     public function table(Table $table): Table
     {
-        $table->column('category_name', '目录')->width(120)->hideInSearch();
+//        $table->column('category_name', '目录')->width(120)->hideInSearch();
         $table->column('name', '附件名称');
-        $table->column('size', '大小')->sorter()->hidden()->hideInSearch();
         $table->column('url', '外链')->copyable()->hideInSearch()->width(300);
+        $table->column('size', '大小')->sorter()->hidden()->hideInSearch();
         $table->column('ext', '扩展名')->sorter()->hideInSearch();
         $table->column('preview', '预览')->valueType('image')->hideInSearch();
         $table->column('created_at', '上传时间')->hideInSearch();
@@ -78,6 +79,7 @@ class AttachmentController extends Controller
     /**
      * 附件目录浏览
      * @return Table
+     * @throws RendererException
      */
     protected function categoryPage()
     {
@@ -105,6 +107,7 @@ class AttachmentController extends Controller
     /**
      * 附件目录表单
      * @return array
+     * @throws RendererException
      */
     protected function categoryForm(): array
     {
@@ -156,15 +159,15 @@ class AttachmentController extends Controller
             $query->where('mime', 'like', $mime . '%' );
         });
 
-        if($pictureCategoryId) {
+        if ($pictureCategoryId) {
             $query->where('category_id',$pictureCategoryId);
         }
 
-        if($pictureSearchName) {
+        if ($pictureSearchName) {
             $query->where('name','like',"%$pictureSearchName%");
         }
 
-        if($pictureSearchDate) {
+        if ($pictureSearchDate) {
             $query->whereBetween('created_at', [$pictureSearchDate[0], $pictureSearchDate[1]]);
         }
 

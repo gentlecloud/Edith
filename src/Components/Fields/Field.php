@@ -43,7 +43,8 @@ class Field extends EngineRenderer
         'initApi',
         'autoComplete',
         'captcha',
-        'engine'
+        'engine',
+        'extra'
     ];
 
     /**

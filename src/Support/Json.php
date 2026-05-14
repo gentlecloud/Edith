@@ -35,7 +35,7 @@ class Json
     public function __construct(string $path, ?Filesystem $filesystem = null)
     {
         $this->path = $path;
-        $this->filesystem = $filesystem ?: new Filesystem();
+        $this->filesystem = $filesystem ?? new Filesystem();
         $this->attributes = Collection::make($this->getAttributes());
     }
 

@@ -7,11 +7,11 @@ use Edith\Admin\Components\Columns\Item\SwitchColumn;
 use Edith\Admin\Components\Columns\Item\UploaderColumn;
 use Edith\Admin\Components\Forms\SchemaForm;
 use Edith\Admin\Components\Tables\Table;
+use Edith\Admin\Events\AdminUserFormRenderBefore;
 use Edith\Admin\Http\Actions\CreateSchemaDrawerAction;
 use Edith\Admin\Http\Actions\DeleteAction;
 use Edith\Admin\Http\Actions\EditSchemaDrawerAction;
 use Edith\Admin\Models\EdithRole;
-use Edith\Admin\Support\GoogleAuthenticator;
 use Illuminate\Http\Request;
 
 abstract class AdminController extends Controller
@@ -45,11 +45,13 @@ abstract class AdminController extends Controller
         $table->column('log.lasted_ip', '最后登录IP')->hideInSearch();
         $table->column('created_at', '创建时间')->valueType('datetime')->sorter()->hideInSearch()->width(180);
         $table->column('created_at', '创建时间')->valueType('dateRange')->hideInTable()->placeholder(['起始创建时间', '截止创建时间']);
-        $table->column('status', '状态')->valueType('select')->valueEnum([1 => '启用', 0 => '禁用'])->editable([
-            'type' => 'switch',
-            'onText' => '启用',
-            'offText' => '禁用'
-        ])->quickEditEnabledOn('${id != 1}');
+        $table->column('status', '状态')
+            ->valueType('select')
+            ->valueEnum([1 => '启用', 0 => '禁用'])->editable([
+                'type' => 'switch',
+                'onText' => '启用',
+                'offText' => '禁用'
+            ])->quickEditEnabledOn('${id != 1}');
 
         $table->toolbar([
             new CreateSchemaDrawerAction('添加管理员', $this->fields())
@@ -71,14 +73,14 @@ abstract class AdminController extends Controller
      */
     public function fields(): array
     {
-        $google = new GoogleAuthenticator;
-        $secret = $google->createSecret();
-        $qrcode = $google->getQRCodeGoogleUrl('${google_secret}');
-
         $roles = EdithRole::select('name as label', 'id as value')->get()->toArray();
-        return [
+        $columns =  [
             (new Column('id'))->hidden(),
-            (new SelectColumn('role_ids', '角色'))->options($roles)->multiple()->disabledOn('${id == 1}'),
+            (new SelectColumn('role_ids', '角色'))
+                ->options($roles)
+                ->multiple()
+                ->visibleOn('${id != 1}'),
+            (new UploaderColumn('avatar', '头像'))->button('上传头像'),
             (new Column('username', '账号'))->required('账号必须输入', [
                 [
                     'unique' => 'edith_admins,username',
@@ -90,17 +92,23 @@ abstract class AdminController extends Controller
                     'message' => '账号最少5位数'
                 ]
             ]),
-            (new UploaderColumn('avatar', '头像'))->button('上传头像'),
             (new Column('nickname', '昵称'))->required(),
-            (new Column('phone', '手机号'))->required('手机号必须输入', [
+            (new Column('phone', '手机号'))->rules([
                 [
                     'regex' => '/^1[3-9]\d{9}$/',
                     'message' => '手机号不正确'
                 ]
             ]),
-            (new Column('password', '密码'))->help('新增时留空默认为：a12345678，修改时留空则不修改。'),
-            new Column('email', '邮箱'),
-            (new Column('google_open', '谷歌验证')),
+            (new Column('password', '密码'))
+                ->valueType('password')
+                ->extra('新增时留空默认为：a12345678，修改时留空则不修改。'),
+            (new Column('email', '邮箱'))
+        ];
+
+        $event = new AdminUserFormRenderBefore();
+        event($event);
+
+        return array_merge($columns, $event->columns->toArray(), [
             (new SwitchColumn('status', '状态'))
                 ->initialValue(1)
                 ->disabledOn('${id == 1}')
@@ -110,7 +118,7 @@ abstract class AdminController extends Controller
                     1 => '启用',
                     0 => '禁用'
                 ])
-        ];
+        ]);
     }
 
     /**
@@ -141,12 +149,12 @@ abstract class AdminController extends Controller
         $form->column('email', '邮箱');
         $form->radio('sex', '性别')->valueEnum([1 => '男', 2 => '女'])->initialValue(1);
         $form->switch('google_open', '谷歌验证')->initialValue(false);
-        $form->column('google_secret')->hidden()->dependencies('google_open', true)->initialValue($secret ?? null);
+        $form->column('google_secret')->hidden()->when('google_open', true)->initialValue($secret ?? null);
         $form->image('google_qrcode', '谷歌二维码')
             ->readonly()
             ->ignore()
             ->width(150)
-            ->dependencies('google_open', true)
+            ->when('google_open', true)
             ->initialValue($qrcode ?? null);
         $form->switch('status', '状态');
 

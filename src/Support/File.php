@@ -108,7 +108,7 @@ class File
     {
         if (!file_exists($dir)) {
             self::mkdirs(dirname($dir));
-            mkdir($dir, 0777);
+            mkdir($dir, 0755);
         }
         return true;
     }

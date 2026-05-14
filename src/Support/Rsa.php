@@ -1,26 +1,29 @@
 <?php
 namespace Edith\Admin\Support;
 
+/**
+ * Rsa 加密工具类
+ */
 class Rsa
 {
     /**
-     * 支付宝公钥
-     * @var string
+     * RSA 公钥
+     * @var string | null
      */
-    private string $public_key = "";
+    private ?string $public_key = null;
 
     /**
-     * 支付宝私钥
-     * @var string
+     * RSA 私钥
+     * @var string | null
      */
-    private string $private_key = "";
+    private ?string $private_key = null;
 
     /**
      * 加载 Rsa 证书
      * @param string|null $publicKey
      * @param string|null $privateKey
      */
-    public function __construct(?string $publicKey = null,?string $privateKey = null)
+    public function __construct(?string $publicKey = null, ?string $privateKey = null)
     {
         if (empty($publicKey)) {
             $publicKey = env("RSA_PUBLIC_KEY");
@@ -59,7 +62,7 @@ class Rsa
      * @param array|string $content
      * @return string|null
      */
-    public function encrypt($content): ?string
+    public function encrypt(string|array $content): ?string
     {
         if (is_array($content)) {
             $content = json_encode($content);
@@ -68,7 +71,7 @@ class Rsa
         if (!$public_key || !is_string($content)) {
             return null; // 公钥或加密字符串不可用
         }
-        openssl_public_encrypt($content,$encrypted,$public_key);
+        openssl_public_encrypt($content,$encrypted, $public_key);
         return base64_encode($encrypted);
     }
 
@@ -83,7 +86,7 @@ class Rsa
         if (!$private_key) {
             return null;
         }
-        openssl_private_decrypt(base64_decode($content),$decrypted,$private_key);
+        openssl_private_decrypt(base64_decode($content),$decrypted, $private_key);
         return $decrypted;
     }
 
@@ -121,8 +124,8 @@ class Rsa
     {
         $config = array(
             "digest_alg" => "sha512",
-            "private_key_bits" => $bits, //字节数  512 1024 2048  4096 等
-            "private_key_type" => OPENSSL_KEYTYPE_RSA // 加密类型
+            "private_key_bits" => $bits,
+            "private_key_type" => OPENSSL_KEYTYPE_RSA
         );
         $res = openssl_pkey_new($config);
         if (!$res) {

@@ -2,18 +2,21 @@
 namespace Edith\Admin\Modules;
 
 use Edith\Admin\Contracts\EdithModuleCoreInterface;
-use Edith\Admin\Contracts\EdithModuleInterface;
 use Edith\Admin\Exceptions\RuntimeException;
 use Edith\Admin\Facades\EdithAdmin;
-use Edith\Admin\Models\EdithModule;
 use Edith\Admin\Support\Json;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Core\Contracts\EdithModuleInterface;
+use Modules\Core\Models\EdithModule;
+use Modules\Core\Module;
 
-class Core implements EdithModuleCoreInterface
+final class Core implements EdithModuleCoreInterface
 {
     /**
      * @var Container
@@ -43,8 +46,6 @@ class Core implements EdithModuleCoreInterface
     /**
      * The constructor.
      * @param Container $app
-     * @param string $name
-     * @param string $path
      */
     public function __construct(Container $app)
     {
@@ -61,7 +62,7 @@ class Core implements EdithModuleCoreInterface
      */
     public function register(): void
     {
-        if (env('EDITH_INSTALL') == true && EdithAdmin::hasTable('edith_modules')) {
+        if (env('EDITH_INSTALL') && EdithAdmin::hasTable('edith_modules')) {
             $this->loadModules();
             $this->modules->each->register();
         }
@@ -72,7 +73,7 @@ class Core implements EdithModuleCoreInterface
      */
     public function boot(): void
     {
-        if (env('EDITH_INSTALL') == true) {
+        if (env('EDITH_INSTALL')) {
             $this->modules->each->boot();
         }
     }
@@ -105,6 +106,9 @@ class Core implements EdithModuleCoreInterface
      */
     public function enabled(string $name): bool
     {
+        if (!class_exists(EdithModule::class)) {
+            return false;
+        }
         return EdithModule::where('name', $name)->firstOrFail()->status == 1;
     }
 
@@ -151,15 +155,23 @@ class Core implements EdithModuleCoreInterface
         if (is_array($scans)) {
             foreach ($scans as $row) {
                 try {
-                    $name = str_replace(str_replace('%s', '',$this->getPath()), '', $row);
-                    $module = $this->findOrFail($name, true);
+                    $name = str_replace(str_replace('%s', '', $this->getPath()), '', $row);
+                    if (class_exists(Module::class)) {
+                        $module = $this->findOrFail($name, true);
+                    }
+                    $moduleJsonFile = sprintf($this->getPath(), $name). '/module.json';
+                    if (!file_exists($moduleJsonFile)) {
+                        continue;
+                    }
+                    $json = new Json($moduleJsonFile);
                     $modules[$name] = [
-                        'name' => $module->getName(),
-                        'title' => $module->getTitle(),
-                        'description' => $module->getDescription(),
-                        'version' => $module->getVersion(),
+                        'name' => isset($module) ? $module->getName() : $json->get('name'),
+                        'title' => isset($module) ? $module->getTitle() : $json->get('title'),
+                        'description' => isset($module) ? $module->getDescription() : $json->get('description'),
+                        'version' => isset($module) ? $module->getVersion() : $json->get('version'),
                         'is_download' => true,
-                        'is_install' => false
+                        'is_install' => DB::table('edith_modules')->where('name', $name)->value('status') == 1,
+                        'code' => $json->get('code'),
                     ];
                 } catch (\Exception $e) {
 
@@ -172,16 +184,20 @@ class Core implements EdithModuleCoreInterface
     /**
      * load Edith Modules
      */
-    protected function loadModules() {
-        $modules = EdithModule::query()->where('status', 1)
-            ->where(function ($query) {
-                $query->whereNull('expired_at')->orWhere('expired_at', '>', date('Y-m-d H:i:s'));
-            })
-            ->select('id', 'name', 'title', 'status', 'priority', 'expired_at')
-            ->orderByDesc('priority')
-            ->get();
+    protected function loadModules(): void
+    {
+        $modules = Cache::remember('edith_modules', 60 * 60 * 24, function () {
+            return DB::table('edith_modules')
+                ->where('status', 1)
+                ->where(function ($query) {
+                    $query->whereNull('expired_at')->orWhere('expired_at', '>', date('Y-m-d H:i:s'));
+                })
+                ->select('id', 'name', 'title', 'status', 'priority', 'expired_at')
+                ->orderBy('priority')
+                ->get();
+        });
         foreach ($modules as $key => $module) {
-            $name = $module['name'] ?? str_replace(str_replace('%s', '', $this->getPath()), '', $key);
+            $name = $module->name ?? str_replace(str_replace('%s', '', $this->getPath()), '', $key);
             $path = sprintf($this->getPath(), $name);
             if (is_dir($path)) {
                 try {
@@ -204,7 +220,7 @@ class Core implements EdithModuleCoreInterface
     protected function createModule(string $name, string $path, bool $addPsr4 = true): EdithModuleInterface
     {
         $psr4 = [];
-        if (env('EDITH_DEV') == true && !file_exists($path . '/module.json')) {
+        if (env('EDITH_DEV') && !file_exists($path . '/module.json')) {
             if (!file_exists($path . '/composer.json')) {
                 throw new RuntimeException('The ' . $name . ' module configuration [module.json|composer.json] file does not exist.');
             }
@@ -225,6 +241,9 @@ class Core implements EdithModuleCoreInterface
             foreach ($psr4 as $namespace => $loadPath) {
                 EdithAdmin::classLoader()->addPsr4($namespace, $path . '/' . $loadPath);
             }
+        }
+        if (!class_exists(Module::class)) {
+            throw new RuntimeException("Module Provider does not exist!");
         }
         $module = new Module($this->app, $name, $path);
         if (isset($composerProperty)) {

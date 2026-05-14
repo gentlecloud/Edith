@@ -163,21 +163,18 @@ class SystemController extends Controller
                         ->initialValue($item['value'] ?? null)
                         ->showCount()
                         ->placeholder("请输入" . ($item['title'] ?? ''))
-                        ->width(600)
-                        ->help($item['remark']);
+                        ->width(600);
                     break;
                 case 'switch':
                     $current = Field::make()->component('switch')
                         ->label($item['title'] ?? $item['name'])
                         ->name($item['name'])
-                        ->initialValue($item['value'] == '1')
-                        ->help($item['remark'] ?? null);
+                        ->initialValue($item['value'] == '1');
                     break;
                 case 'uploader':
                     $current = (new Uploader($item['name'], $item['title']))
                         ->initialValue($item['value'])
-                        ->button('上传' . $item['title'])
-                        ->help($item['remark'] ?? null);
+                        ->button('上传' . $item['title']);
                     break;
                 case 'list':
 //                $form->formList($items['name'],$items['title'] ?? $items['name'])->columns(function ($form) use ($items) {
@@ -195,12 +192,14 @@ class SystemController extends Controller
                         ->component($item['type'])
                         ->initialValue($item['value'] ?? null)
                         ->placeholder("请输入" . ($item['title'] ?? ''))
-                        ->width(600)
-                        ->help($item['remark']);
+                        ->width(600);
                     break;
             }
             if ($item['is_required']) {
                 $current->required();
+            }
+            if (!empty($item['remark'])) {
+                $current->extra($item['remark']);
             }
             $items[] = $current;
         }

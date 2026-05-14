@@ -3,8 +3,7 @@ namespace Edith\Admin\Listeners;
 
 use Edith\Admin\Events;
 use Edith\Admin\Exceptions\AuthException;
-use Edith\Admin\Support\Captcha;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class AuthLoginBefore
 {
@@ -15,9 +14,12 @@ class AuthLoginBefore
      */
     public function handle(Events\AuthLoginBefore $event)
     {
-        $captcha = $event->request->post('captcha');
-        if (edith_config('LOGIN_CAPTCHA') == '1' && $event->request->post('mode', 'captcha') == 'captcha' && (empty($captcha) || !(new Captcha)->verify($event->request->input('uuid'), $captcha))) {
-            throw new AuthException('验证码错误.');
+        if (($username = $event->request->get('username'))) {
+            $maxNum = config('edith.auth.fail_num', 5);
+            $errNum = Cache::get("manage_user_fail_{$username}");
+            if ($errNum && $errNum >= $maxNum) {
+                throw new AuthException("登录失败次数过多，请5分钟后再试");
+            }
         }
     }
 }

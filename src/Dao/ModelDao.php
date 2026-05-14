@@ -53,6 +53,12 @@ class ModelDao
     protected array $guard = [];
 
     /**
+     * 使用附件字段，添加后可快速资源，附件删除保护等
+     * @var array
+     */
+    protected array $attachmentFields = [];
+
+    /**
      * Construct model service
      */
     public function __construct()
@@ -129,6 +135,14 @@ class ModelDao
         $query = $this->query();
 
         $paginate = $query->paginate(\request()->input('pageSize', 50), ['*'], 'page', \request()->input('current', 1));
+
+        if (!empty($this->attachmentFields)) {
+            foreach ($paginate->items() as $item) {
+                foreach ($this->attachmentFields as $field) {
+                    $item[$field] = get_attachment($item[$field]);
+                }
+            }
+        }
         return ['items' => $paginate->items(), 'total' => $paginate->total(), 'page' => $paginate->lastPage(), 'current' => $paginate->currentPage()];
     }
 
@@ -139,7 +153,13 @@ class ModelDao
      */
     public function get($id = null)
     {
-        return $this->getModel()->findOrFail($id ?: \request()->input('id'));
+        $info = $this->getModel()->findOrFail($id ?: \request()->input('id'));
+        if (!empty($this->attachmentFields)) {
+            foreach ($this->attachmentFields as $field) {
+                $info[$field] = get_attachment($info[$field], \request()->header('x-edith-version') ? 'all' : 'path');
+            }
+        }
+        return $info;
     }
 
     /**
@@ -154,7 +174,7 @@ class ModelDao
         DB::transaction(function () use (&$result, $data) {
             $this->saving($data);
             $result = $this->getModel()->create($this->fillData($data));
-            $this->saved($data, $result->id);
+            $this->saved($data, $result);
         }, 3);
         return $result;
     }
@@ -175,7 +195,7 @@ class ModelDao
                 $model->setAttribute($key, $value);
             }
             $result = $model->save();
-            $this->saved($data, $id);
+            $this->saved($data, $model);
         }, 3);
         return $result;
     }
@@ -235,16 +255,30 @@ class ModelDao
      */
     protected function saving(&$data, $id = null)
     {
+        if (!empty($this->attachmentFields)) {
+            foreach ($this->attachmentFields as $field) {
+                if (isset($data[$field])) {
+                    $value = is_string($data[$field]) ? json_decode($data[$field], true) : $data[$field];
+                    if (is_numeric($value)) {
+                        $data[$field] = intval($value);
+                    } else if (isset($value['id'])) {
+                        $data[$field] = $value['id'];
+                    } else if (is_array($value)) {
+                        $data[$field] = array_column($data[$field], 'id');
+                    }
 
+                }
+            }
+        }
     }
 
     /**
      * 保存后置操作 保存钩子 包含新增和更新
      * @param array $data
-     * @param $id
+     * @param $model
      * @return void
      */
-    protected function saved($data, $id = null)
+    protected function saved(array $data, $model = null)
     {
 
     }

@@ -43,8 +43,6 @@ return [
             'api/edith/_routes',
             'api/edith/init',
             'api/edith/manage',
-            'api/edith/auth/captcha',
-            'api/edith/auth/query',
             'api/edith/auth/login',
             'api/edith/micro-apps',
         ],

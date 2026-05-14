@@ -42,8 +42,7 @@ class Authenticate
         }
 
         if ($info['expires'] <= time()){
-            EdithAuthToken::where('expires', '<=', time())->delete();
-            abort(401, 'Token has expired.', $retHeader);
+            abort(401, 'Login has expired.', $retHeader);
         }
 
         $admin = EdithAdmin::where('id', $info['id'])->first();
@@ -74,7 +73,6 @@ class Authenticate
         // 下面这些路由不验证权限
         $excepts = array_merge(config('edith.auth.excepts', []), [
             'edith.auth.login',
-            'edith.auth.logout',
             'edith.auth.query'
         ]);
 

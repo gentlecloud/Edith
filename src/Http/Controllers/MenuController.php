@@ -89,18 +89,18 @@ class MenuController extends Controller
                     ->valueEnum([
                         'basic' => '基础',
                         'admin' => '主站',
-                        'platform' => 'SAAS'
+                        'platform' => '子站'
                     ])
-                    ->tooltip('基础则主应用及SAAS共用，主站为翼搭主后台。SAAS仅在租户后台显示')
+                    ->tooltip('基础则主站/子站共用，主站为翼搭主后台。子站仅在租户子后台显示')
                     ->width('md'),
                 (new RadioButtonColumn('type', '类型'))
-                    ->tooltip('插件请使用翼搭引擎生辰JsonSchema，外链：会打开标签页跳转;iframe：嵌套于翼搭Layout内。')
+                    ->tooltip('翼搭引擎：支持各类JsonSchema组件，iframe：嵌套于翼搭Layout内。')
                     ->extra('路由仅支持前端内置路由！')
                     ->valueEnum([
                         'engine' => '翼搭引擎',
-                        'default' => '路由',
                         '_blank' => '外链',
-                        'iframe' => 'iframe'
+                        'iframe' => 'iframe',
+                        'default' => '路由',
                     ])
                     ->defaultValue('engine')
                     ->width('md'),
@@ -115,7 +115,8 @@ class MenuController extends Controller
             (new Column('component', '组件'))
                 ->tooltip('仅支持翼搭前端集成的组件，若非必要或非自定义前端页面则无需更改！')
                 ->extra('默认为：Engine，翼搭引擎组件，支持各类JsonSchema')
-                ->defaultValue('Engine'),
+                ->defaultValue('Engine')
+                ->when('type', 'default'),
             (new GroupColumn())->columns([
                 (new DigitColumn('sort', '排序'))->width('md'),
                 (new SwitchColumn('status', '状态'))->checkedChildren('启用')->unCheckedChildren('禁用')->valueEnum([

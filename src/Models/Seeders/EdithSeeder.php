@@ -27,7 +27,6 @@ class EdithSeeder extends Seeder
             ['title' => '开启SSL', 'type' => 'switch', 'name' => 'SSL_OPEN', 'group_name' => '基本', 'value' => '0', 'remark' => ''],
             ['title' => '开启网站', 'type' => 'switch', 'name' => 'WEB_SITE_OPEN', 'group_name' => '基本', 'value' => '1', 'remark' => ''],
             ['title' => '单点登录', 'type' => 'switch', 'name' => 'WEB_LOGIN_SSO', 'group_name' => '基本', 'value' => '1', 'remark' => ''],
-            ['title' => '登录验证码', 'type' => 'switch', 'name' => 'LOGIN_CAPTCHA', 'group_name' => '基本', 'value' => '1', 'remark' => ''],
             ['title' => '登录有效期', 'type' => 'digit', 'name' => 'LOGIN_VALID_TIME', 'group_name' => '基本', 'value' => '12', 'remark' => ''],
             ['title' => '调试模式', 'type' => 'switch', 'name' => 'APP_DEBUG', 'group_name' => '基本', 'value' => '0', 'remark' => ''],
             ['title' => '开发模式', 'type' => 'switch', 'name' => 'EDITH_DEV', 'group_name' => '基本', 'value' => '0', 'remark' => '']

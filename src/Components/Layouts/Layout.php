@@ -42,7 +42,7 @@ class Layout extends EngineRenderer
      * layout 的菜单模式, side：右侧导航，top：顶部导航
      * @var string
      */
-    protected string $layout = 'mix';
+    protected string $layout = 'side';
 
     /**
      * layout 的内容模式, Fluid：定宽 1200px，Fixed：自适应
@@ -142,6 +142,9 @@ class Layout extends EngineRenderer
     {
         parent::__construct();
         $this->debug = env('APP_DEBUG', false);
+        $this->fixedHeader($this->layout == 'top');
+        $this->fixSiderbar(in_array($this->layout, ['side', 'mix']));
+        $this->splitMenus($this->layout == 'mix');
     }
 
     /**
@@ -156,6 +159,8 @@ class Layout extends EngineRenderer
             throw new \Exception("Layout only supports setting 'side', 'top' and 'mix'");
         }
         $this->layout = $layout;
+        $this->fixSiderbar = in_array($layout, ['side', 'mix']);
+        $this->fixedHeader($layout == 'top');
         return $this;
     }
 

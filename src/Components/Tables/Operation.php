@@ -29,7 +29,7 @@ class Operation extends Renderer
     /**
      * @var bool 
      */
-    protected bool $hideInSearch = true;
+    protected bool $search = false;
 
     /**
      * @var bool

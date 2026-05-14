@@ -56,6 +56,7 @@ class MenuDao extends ModelDao
                 $data['path'] = ltrim($data['path'], '/');
             }
         }
+        parent::saving($data, $id);
     }
 
     /**

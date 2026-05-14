@@ -32,8 +32,6 @@ return new class extends Migration {
             $table->string('phone')->index()->comment('手机')->nullable();
             $table->string('password')->comment('密码');
             $table->text('avatar')->nullable()->comment('头像');
-            $table->boolean('google_open')->default(0)->comment('GOOGLE验证器');
-            $table->string('google_secret', 64)->nullable()->comment('GOOGLE SECRET');
             $table->timestamp('lasted_at')->nullable()->comment('最后登录时间');
             $table->boolean('status')->default(1)->comment('状态1启用');
             $table->rememberToken();
