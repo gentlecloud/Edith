@@ -5,8 +5,10 @@ use Edith\Admin\Facades\EdithAdmin;
 use Edith\Admin\Models\Seeders\EdithSeeder;
 use Edith\Admin\Models\EdithAdmin as EdithAdminModel;
 use Edith\Admin\Support\File;
+use Edith\Admin\Support\Rsa;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InstallCommand extends Command
 {
@@ -41,6 +43,9 @@ class InstallCommand extends Command
         $this->initAdminDirectory();
         $this->initModulesDirectory();
 
+        // 初始化Token相关
+        $this->initAdminRsaKey();
+
         // 创建软连接
         $this->call('storage:link');
 
@@ -57,6 +62,16 @@ class InstallCommand extends Command
     {
         $this->call('migrate');
         $this->runDatabaseSeeders();
+    }
+
+    public function initAdminRsaKey()
+    {
+        try {
+            $rsaInfo = (new Rsa())->generate();
+            modify_config_file('edith.php', 'rsa', $rsaInfo);
+        } catch (\Exception $e) {
+            Log::error("Edith Admin install Failed. Init Rsa ErrMsg:" . $e->getMessage());
+        }
     }
 
     /**

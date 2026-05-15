@@ -288,7 +288,7 @@ if (!function_exists('modify_env')) {
 }
 
 if (!function_exists('modify_config_file')) {
-    function modify_config_file(string $name, array|string $key, ?string $value = null) {
+    function modify_config_file(string $name, array|string $key, string|array|null $value = null) {
         $path = config_path(str_ends_with($name, '.php') ? $name : "{$name}.php");
         $config = include $path;
 

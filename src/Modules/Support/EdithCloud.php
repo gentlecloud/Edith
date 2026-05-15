@@ -65,7 +65,10 @@ final class EdithCloud
         $siteCode = Cache::remember("edith_site-code", 60 * 60 * 24, function () use ($params) {
             return config('edith-site.code');
         });
-        $content = [$siteCode];
+        $content = [];
+        if ($siteCode) {
+            $content[] = $siteCode;
+        }
         foreach ($params as $key => $value) {
             if (!$value && !is_numeric($value)) {
                 continue;

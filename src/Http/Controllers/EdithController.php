@@ -111,6 +111,4 @@ final class EdithController extends Controller
             'routes' => $extra,
         ];
     }
-
-
 }

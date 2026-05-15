@@ -2,8 +2,9 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Migrations\Migration;
 
-return new class {
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('edith_attachment_uses', function (Blueprint $table) {

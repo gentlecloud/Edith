@@ -23,11 +23,8 @@ final class Cloud
         }
 
         $privateKey = Cache::remember("edith_site-private_key", 60 * 60 * 24 * 30, function () {
-            return config('edith-site.private_key', null);
+            return config('edith-site.private_key', EdithAdmin::privateKey());
         });
-        if (!$privateKey) {
-            $privateKey = EdithAdmin::privateKey();
-        }
         $rsaUtil = new Rsa(EdithAdmin::publicKey(), $privateKey);
         if ($request->isJson()) {
             $postData = $request->getContent();
