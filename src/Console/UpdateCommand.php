@@ -67,4 +67,14 @@ class UpdateCommand extends Command
             Log::error("Edith Admin install Failed. Init Rsa ErrMsg:" . $e->getMessage());
         }
     }
+
+    /**
+     * Get stub contents.
+     * @param $name
+     * @return string
+     */
+    protected function getStub($name): string
+    {
+        return $this->laravel['files']->get(__DIR__."/stubs/$name.stub");
+    }
 }
