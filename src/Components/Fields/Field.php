@@ -7,7 +7,6 @@ use Illuminate\Support\Collection;
 
 /**
  * @method $this name(string $name)                          Field name
- * @method $this label(string $label)                        Field label
  * @method $this min(int $min)                               最小位数 digit
  * @method $this max(int $max)                               最大位数 digit
  * @method $this valueEnum(array $valueEnum)                 当前列值的枚举 valueEnum (select...等使用)
@@ -29,7 +28,6 @@ class Field extends EngineRenderer
         'style',
         'name',
         'title',
-        'label',
         'tooltip',
         'rowProps',
         'colProps',
@@ -81,7 +79,7 @@ class Field extends EngineRenderer
         parent::__construct();
         !is_null($name) && $this->set('name', $name);
         if (!is_null($label)) {
-            $this->set('label', $label);
+            $this->label($label);
         }
         $this->rules = new Collection();
     }
@@ -94,6 +92,16 @@ class Field extends EngineRenderer
     public function component(string $component): self
     {
         return $this->set('component', $component);
+    }
+
+    /**
+     * @param string $label
+     * @return self
+     */
+    public function label(string $label): self
+    {
+        $this->placeholder("请输入{$label}");
+        return $this->set('label', $label);
     }
 
     /**
@@ -114,6 +122,15 @@ class Field extends EngineRenderer
     public function secondary(bool $secondary = true): Field
     {
         return $this->set('secondary', $secondary);
+    }
+
+    /**
+     * @param bool $ignore
+     * @return Field
+     */
+    public function ignore(bool $ignore = true): Field
+    {
+        return $this->set('ignore', $ignore);
     }
 
     /**

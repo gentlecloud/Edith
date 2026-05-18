@@ -95,7 +95,7 @@ class HomeController extends Controller
                                 (new Space())->body([
                                     (new Link())->text('Github')->href('https://github.com/gentlecloud/Edith')->target('_blank')->icon('icon-github')->style(['fontSize' => '15px']),
                                     (new Link())->text('湛拓科技')->className('mx-5')->href('https://www.gentle.org.cn')->target('_blank')->style(['fontSize' => '15px']),
-                                    (new Link())->text('翼搭官网')->className('mx-5')->href('https://www.3ii.cn')->target('_blank')->style(['fontSize' => '15px']),
+                                    (new Link())->text('翼搭官网')->className('mx-5')->href('https://www.ieda.cc')->target('_blank')->style(['fontSize' => '15px']),
                                 ])->size(30)
                             ])->vertical()->justify('center')->align('center')
                         ),
@@ -128,9 +128,9 @@ class HomeController extends Controller
         $mySql = DB::connection()->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
 
         $items = [
-            (new DescriptionsItem('系统名称'))->value('翼搭（Edith）'),
+            (new DescriptionsItem('系统名称'))->value(edith_config('WEB_SITE_NAME', 'Edith Admin')),
             (new DescriptionsItem('Edith版本'))->value(EdithAdmin::version()),
-            (new DescriptionsItem('Laravel版本'))->value(app()::VERSION),
+            (new DescriptionsItem('框架版本'))->value("Laravel " . app()::VERSION),
             (new DescriptionsItem('运行环境'))->value($os . ' ' . substr($_SERVER['SERVER_SOFTWARE'],0,50) . ' mysql/' . $mySql),
             (new DescriptionsItem)->label('上传限制')->value(ini_get('upload_max_filesize')),
         ];

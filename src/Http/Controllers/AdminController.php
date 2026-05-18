@@ -79,7 +79,9 @@ abstract class AdminController extends Controller
             (new SelectColumn('role_ids', '角色'))
                 ->options($roles)
                 ->multiple()
-                ->visibleOn('${id != 1}'),
+                ->requiredOn('${id != ' . config('edith.auth.admin_id', 1) . '}')
+                ->visibleOn('${id != 1}')
+                ->when('id', config('edith.auth.admin_id', 1), '!='),
             (new UploaderColumn('avatar', '头像'))->button('上传头像'),
             (new Column('username', '账号'))->required('账号必须输入', [
                 [
@@ -111,7 +113,7 @@ abstract class AdminController extends Controller
         return array_merge($columns, $event->columns->toArray(), [
             (new SwitchColumn('status', '状态'))
                 ->initialValue(1)
-                ->disabledOn('${id == 1}')
+                ->disabledOn('${id == ' . config('edith.auth.admin_id', 1) . '}')
                 ->checkedChildren('启用')
                 ->unCheckedChildren('禁用')
                 ->valueEnum([

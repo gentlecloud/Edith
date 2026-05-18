@@ -3,6 +3,7 @@
 namespace Edith\Admin\Console;
 
 use Edith\Admin\Facades\EdithAdmin;
+use Edith\Admin\Models\EdithConfig;
 use Edith\Admin\Support\Rsa;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -34,8 +35,29 @@ class UpdateCommand extends Command
         if (version_compare(ltrim(EdithAdmin::version(), 'v'), '2.0.1', '<=') || empty(config('edith.rsa.public_key'))) {
             $this->updateAdminRsaKey();
         }
+        $this->createHomeController();
+        EdithConfig::where('name', 'WEB_SITE_LOGO')->update([
+            'type' => 'uploader'
+        ]);
     }
 
+    /**
+     * @return void
+     */
+    public function createHomeController()
+    {
+        $this->directory = app_path('Edith/Controllers');
+        $controller = $this->directory . '/HomeController.php';
+        if (!file_exists($controller)) {
+            $contents = $this->getStub('HomeController');
+
+            $this->laravel['files']->put($controller, $contents);
+        }
+    }
+
+    /**
+     * @return void
+     */
     public function updateAdminRsaKey()
     {
         try {

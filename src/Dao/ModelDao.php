@@ -44,19 +44,19 @@ class ModelDao
      * 可批量更新字段 留空时则不限制
      * @var array
      */
-    protected array $fill = [];
+    public array $fill = [];
 
     /**
      * 不可批量更新字段
      * @var array
      */
-    protected array $guard = [];
+    public array $guard = [];
 
     /**
      * 使用附件字段，添加后可快速资源，附件删除保护等
      * @var array
      */
-    protected array $attachmentFields = [];
+    public array $attachmentFields = [];
 
     /**
      * Construct model service

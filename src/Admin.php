@@ -21,7 +21,7 @@ final class Admin
     /**
      * Edith version
      */
-    const version = '2.0.1';
+    const version = '2.0.2';
 
     /**
      * load current Composer
@@ -140,7 +140,7 @@ final class Admin
 
                 $router->get('edith/manage', 'EdithController@manage')->name('edith.manage');
                 $router->get('edith/micro-apps', 'EdithController@micro')->name('edith.micro');
-                $router->get('dashboard/index', 'HomeController@dashboard')->name('dashboard.index');
+                $router->get('dashboard/index', '\\App\\Edith\\Controllers\\HomeController@dashboard')->name('dashboard.index');
 
                 $router->apiResources([
                     'auth/menu' => \MenuController::class,

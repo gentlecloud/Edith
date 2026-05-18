@@ -185,7 +185,7 @@ class SystemController extends Controller
                     $current = Field::make()->component('list');
                     break;
                 case 'hidden':
-                    $current = Field::make()->component('hidden')->name($item['name'])->placeholder("请输入")->initialValue($item['value']);
+                    $current = Field::make()->component('hidden')->name($item['name'])->initialValue($item['value']);
                     break;
                 default:
                     $current = (new Field($item['name'], $item['title'] ?? $item['name']))

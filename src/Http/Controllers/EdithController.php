@@ -38,7 +38,7 @@ final class EdithController extends Controller
     {
         $loginApi = \config('edith.auth.redirect_to', 'edith/auth/login');
         return (new Layout)
-            ->title('翼搭管理后台')
+            ->title(edith_config('WEB_SITE_NAME', '翼搭管理后台'))
             ->authApi("edith/auth/info")
             ->loginApi($loginApi)
             ->style(['height' => '100vh'])

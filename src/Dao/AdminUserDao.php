@@ -21,12 +21,12 @@ class AdminUserDao extends ModelDao
     /**
      * @var array|string[]
      */
-    protected array $guard = ['log', 'old_password', 'password_confirmation', 'role_ids'];
+    public array $guard = ['log', 'old_password', 'password_confirmation', 'role_ids', 'google_qrcode'];
 
     /**
      * @var array|string[]
      */
-    protected array $attachmentFields = ['avatar'];
+    public array $attachmentFields = ['avatar'];
 
     /**
      * @var string 
@@ -128,7 +128,6 @@ class AdminUserDao extends ModelDao
         foreach ($after->data as $key => $value) {
             $info[$key] = $value;
         }
-
         return $info;
     }
 

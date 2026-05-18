@@ -301,7 +301,7 @@ if (!function_exists('modify_config_file')) {
             $config[$key] = $value;
         }
         // 写入文件
-        $content = '<?php return ' . "\r\n" . var_export($config, true) . ';';
+        $content = '<?php return ' . "\r\n" . json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ';';
         File::put($path, $content);
     }
 }

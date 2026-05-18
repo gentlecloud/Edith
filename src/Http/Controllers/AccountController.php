@@ -8,8 +8,12 @@ use Edith\Admin\Components\Layouts\Menu;
 use Edith\Admin\Components\Layouts\MenuItem;
 use Edith\Admin\Components\Pages\PageContainer;
 use Edith\Admin\Components\Pages\ProCard;
+use Edith\Admin\Events\AccountRenderAfter;
+use Edith\Admin\Events\AccountRenderBefore;
+use Edith\Admin\Exceptions\DaoException;
 use Edith\Admin\Exceptions\RendererException;
 use Edith\Admin\Dao\AdminUserDao;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -29,47 +33,55 @@ class AccountController extends Controller
     /**
      * 系统配置
      * @return \Illuminate\Http\JsonResponse
-     * @throws RendererException
+     * @throws RendererException|\Edith\Admin\Exceptions\DaoException
      */
     public function index(Request $request)
     {
+        $before = new AccountRenderBefore();
+        event($before);
+
         $user = (new AdminUserDao())->get(auth('manage')->id())
-            ->makeHidden(['google_secret', 'google_qrcode', 'lasted_at', 'created_at', 'updated_at', 'log', 'platforms'])
+            ->makeHidden(['lasted_at', 'created_at', 'updated_at', 'log', 'platforms'])
             ->toArray();
 
         $menu = (new Menu())
-            ->items([
+            ->items(array_merge([
                 (new MenuItem('账号设置', 'account')),
                 (new MenuItem('安全设置', 'security')),
-            ])
+            ], $before->tabs->toArray()))
             ->style(['minHeight' => 600, 'borderInlineEnd' => 'none'])
             ->mode('inline')
             ->selectedKeys(['account']);
 
+        $basicColumns = [
+            (new ProCard())
+                ->title('账号设置')
+                ->body(array_merge($this->fields(), $before->fields->toArray()))
+                ->visibleOn('includes(menu_select_key, \'account\')'),
+            (new ProCard())
+                ->title('安全设置')
+                ->body(array_merge([
+                    (new Field('old_password', '旧密码'))->component('password')->requiredOn('${!!old_password || !!password || !!password_confirmation}'),
+                    (new Field('password', '新密码'))->component('password')->requiredOn('${!!old_password || !!password || !!password_confirmation}'),
+                    (new Field('password_confirmation', '确认密码'))->component('password')->requiredOn('${!!old_password || !!password || !!password_confirmation}'),
+                ], $before->securities->toArray()))
+                ->visibleOn('includes(menu_select_key, \'security\')'),
+        ];
+
+        $after = new AccountRenderAfter($user);
+        event($after);
+
         $form = (new ProForm())
             ->scopeName('account_form')
-            ->initialValues($user)
-            ->columns([
-                (new ProCard())
-                    ->title('账号设置')
-                    ->body($this->fields())
-                    ->visibleOn('includes(menu_select_key, \'account\')'),
-                (new ProCard())
-                    ->title('安全设置')
-                    ->body([
-                        (new Field('old_password', '旧密码'))->component('password')->required(),
-                        (new Field('password', '新密码'))->component('password')->required(),
-                        (new Field('password_confirmation', '确认密码'))->component('password')->required(),
-                    ])
-                    ->visibleOn('includes(menu_select_key, \'security\')'),
-            ]);
+            ->initialValues(array_merge($user, $after->data->toArray()))
+            ->columns(array_merge($basicColumns, $before->columns->toArray()));
 
         $card = (new ProCard())->split('vertical')->body([
-            (new ProCard())->colSpan('20%')->body($menu),
+            (new ProCard())->colSpan(['xs' => '50%', 'sm' => '30%', 'xl' => '20%'])->body($menu),
             (new ProCard())->body($form),
         ]);
 
-        return engine((new PageContainer('账号设置'))->subTitle('账号设置/安全设置需分别提交保存！')->body($card));
+        return engine((new PageContainer('账号设置'))->body($card));
     }
 
     /**
@@ -95,11 +107,13 @@ class AccountController extends Controller
     /**
      * 保存账号设置
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws DaoException
      */
     public function store(Request $request)
     {
-        $data = $request->only(['nickname', 'phone', 'email', 'password', 'avatar']);
+        $data = $request->except($this->dao()->guard);
+        $this->checkFormRules($request, true);
         if (!empty($data['password'])) {
             Validator::make($request->all(), [
                 'old_password' => ['required', 'current_password:manage'],
@@ -110,8 +124,6 @@ class AccountController extends Controller
                 'confirmed' => '两次输入的密码不一致',
                 'password' => '新密码过于简单，请至少8位字符以上，并且需包含字母/数字'
             ])->validate();
-        } else {
-            $this->checkFormRules($request, true);
         }
         try {
             $this->dao()->update($data, auth('manage')->id());

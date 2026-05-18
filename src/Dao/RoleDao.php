@@ -15,7 +15,7 @@ class RoleDao extends ModelDao
      */
     protected ?string $modelName = EdithRole::class;
 
-    protected array $guard = ['permission_ids', 'permissions'];
+    public array $guard = ['permission_ids', 'permissions'];
 
     /**
      * @param $id

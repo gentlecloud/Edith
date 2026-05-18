@@ -1,0 +1,7 @@
+<?php
+namespace App\Edith\Controllers;
+
+use Edith\Admin\Http\Controllers\HomeController as BaseController;
+
+class HomeController extends BaseController
+{}

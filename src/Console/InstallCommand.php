@@ -122,6 +122,11 @@ class InstallCommand extends Command
         $contents = $this->getStub('EdithController');
 
         $this->laravel['files']->put($controller, $contents);
+
+        $controller = $this->directory . '/HomeController.php';
+        $contents = $this->getStub('HomeController');
+
+        $this->laravel['files']->put($controller, $contents);
         $this->line('<info>EdithController file was created:</info> '.str_replace(base_path(), '', $controller));
     }
 

@@ -21,7 +21,7 @@ class EdithSeeder extends Seeder
             ['title' => '网站名称', 'type' => 'text', 'name' => 'WEB_SITE_NAME', 'group_name' => '基本', 'value' => '翼搭（Edith）', 'remark' => ''],
             ['title' => '关键字', 'type' => 'text', 'name' => 'WEB_SITE_KEYWORDS', 'group_name' => '基本', 'value' => '翼搭（Edith）', 'remark' => ''],
             ['title' => '描述', 'type' => 'textarea', 'name' => 'WEB_SITE_DESCRIPTION', 'group_name' => '基本', 'value' => '翼搭（Edith）', 'remark' => ''],
-            ['title' => 'Logo', 'type' => 'picture', 'name' => 'WEB_SITE_LOGO', 'group_name' => '基本', 'value' => '', 'remark' => ''],
+            ['title' => 'Logo', 'type' => 'uploader', 'name' => 'WEB_SITE_LOGO', 'group_name' => '基本', 'value' => '', 'remark' => ''],
             ['title' => '统计代码', 'type' => 'textarea', 'name' => 'WEB_SITE_SCRIPT', 'group_name' => '基本', 'value' => '', 'remark' => ''],
             ['title' => '网站版权', 'type' => 'text', 'name' => 'WEB_SITE_COPYRIGHT', 'group_name' => '基本', 'value' => '© 翼搭 Company 2022', 'remark' => ''],
             ['title' => '开启SSL', 'type' => 'switch', 'name' => 'SSL_OPEN', 'group_name' => '基本', 'value' => '0', 'remark' => ''],

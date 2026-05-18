@@ -220,10 +220,10 @@ class Column extends BaseRenderer
         if (!in_array($condition, ['=', '>', '<', '>=', '<=', 'has', '!=', 'in', 'notIn'])) {
             throw new RendererException("Dependency conditions must be in '=', '>', '<', '>=', '<=', 'has', '!=', 'in', 'notIn'");
         }
-        if (!is_null($value)) {
-            $condition = $value;
-            $value = null;
-        }
+//        if (is_null($value)) {
+//            $condition = $value;
+//            $value = null;
+//        }
         if (in_array($condition, ['in', 'notIn']) && !is_array($value)) {
             throw new RendererException("When the Dependencies Condition is 'in' or 'notIn', the value must be array");
         }

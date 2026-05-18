@@ -249,6 +249,21 @@ trait FieldAttribute
         ], $otherRules));
     }
 
+    public function requiredOn(string $condition, string|array|null $message = null, array $otherRules = []): static
+    {
+        if (is_array($message)) {
+            $otherRules = $message;
+            $message = null;
+        }
+        is_null($message) && $message = ($this->title ?? '此项') . '为必填项';
+        return $this->rules(array_merge([
+            [
+                'requiredOn' => $condition,
+                'message' => $message
+            ]
+        ], $otherRules));
+    }
+
     /**
      * @param array $rules
      * @return $this

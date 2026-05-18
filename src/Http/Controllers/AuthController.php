@@ -156,33 +156,31 @@ abstract class AuthController extends Controller
                 ->get()
                 ->toArray();
 
-            if (EdithAdmin::hasTable('edith_modules')) {
-                $extra = [
-                    [
-                        'id' => -888,
-                        'key' => uniqid(),
-                        'name' => '翼搭云',
-                        'path' => '/cloud',
-                        'icon' => 'icon-yunfuwuqi',
-                        'component' => 'qiankun',
-                        'parent_id' => 0,
-                        'hideInMenu' => false,
-                        'routes' => [
-                            [
-                                'id' => -889,
-                                'component' => 'qiankun',
-                                'parent_id' => -889,
-                                'name' => '应用模块',
-                                'hideInMenu' => false,
-                                'type' => 'engine',
-                                'path' => 'ieda',
-                                'entry' => '/',
-                                'status' => 1
-                            ]
+            $extra = [
+                [
+                    'id' => -888,
+                    'key' => uniqid(),
+                    'name' => '翼搭云',
+                    'path' => '/cloud',
+                    'icon' => 'icon-yunfuwuqi',
+                    'component' => 'qiankun',
+                    'parent_id' => 0,
+                    'hideInMenu' => false,
+                    'routes' => [
+                        [
+                            'id' => -889,
+                            'component' => 'qiankun',
+                            'parent_id' => -889,
+                            'name' => '应用模块',
+                            'hideInMenu' => false,
+                            'type' => 'engine',
+                            'path' => 'ieda',
+                            'entry' => '/',
+                            'status' => 1
                         ]
                     ]
-                ];
-            }
+                ]
+            ];
         }
 
         $list = [];
