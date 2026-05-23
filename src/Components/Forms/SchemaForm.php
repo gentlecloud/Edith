@@ -20,7 +20,7 @@ use Edith\Admin\Exceptions\RendererException;
  * @method Column radio(string $dataIndex, ?string $title = null)         生成表单 FormItem.Radio 单选框
  * @method Column switch(string $dataIndex, ?string $title = null)        生成表单 FormItem.Switch 开关
  * @author Chico, Xiamen Gentle Technology Co., Ltd
- * @link https://www.3ii.cn
+ * @link https://www.ieda.cc
  */
 class SchemaForm extends ProForm
 {

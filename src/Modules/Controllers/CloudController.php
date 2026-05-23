@@ -113,13 +113,17 @@ final class CloudController extends Controller
             $str .= '];';
             file_put_contents($path, $str);
 
-            Cache::forget('edith_cloud_dock_info');
-            Cache::forget("edith_site-private_key");
-
             $content = EdithCloud::success([
                 'server_name' => $_SERVER['SERVER_NAME'],
-                'public_key' => $rsaInfo['public_key']
+                'server_ip' => $_SERVER['SERVER_ADDR'],
+                'public_key' => $rsaInfo['public_key'],
+                'version' => EdithAdmin::version(),
+                'site_title' => edith_config('WEB_SITE_NAME')
             ]);
+
+            Cache::forget('edith_cloud_dock_info');
+            Cache::forget("edith_site-code");
+            Cache::forget("edith_site-private_key");
         } catch (\Exception $e) {
             return error($e->getMessage());
         }

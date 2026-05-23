@@ -125,7 +125,14 @@ abstract class AuthController extends Controller
      */
     public function menu()
     {
-        $type = app('edith.auth')->platformId() == 0 ? 'admin' : 'platform';
+        $guards = ['basic'];
+
+        if (EdithAdmin::hasTable('edith_platforms')) {
+            $guards[] = app('edith.auth')->platformId() == 0 ? 'admin' : 'platform';
+        } else {
+            $guards[] = 'admin';
+            $guards[] = 'platform';
+        }
         $user = auth('manage')->user();
         $extra = [];
         if (!$user->isSuperAdministrator()) {
@@ -134,7 +141,7 @@ abstract class AuthController extends Controller
             $parentIds = EdithMenu::where('id', $parents)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
             $ids = array_unique(array_merge($parents, $parentIds, $ids));
             $menus = EdithMenu::where('status', 1)
-                ->whereIn('guard_name', ['basic', $type])
+                ->whereIn('guard_name', $guards)
                 ->whereIn('id', $ids)
                 ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'sort', 'type', 'module', 'component')
                 ->orderBy('sort', 'asc')
@@ -146,7 +153,7 @@ abstract class AuthController extends Controller
             $menus = EdithMenu::with('routes')
                 ->where('status', 1)
                 ->where('parent_id', 0)
-                ->whereIn('guard_name', ['basic', $type])
+                ->whereIn('guard_name', $guards)
                 ->when(env('EDITH_DEV') == false, function ($query) {
                     $query->where('is_dev', 0);
                 })

@@ -10,6 +10,7 @@ use Edith\Admin\Components\Columns\Item\RadioButtonColumn;
 use Edith\Admin\Components\Columns\Item\SwitchColumn;
 use Edith\Admin\Components\Columns\Item\TreeSelectColumn;
 use Edith\Admin\Components\Tables\Table;
+use Edith\Admin\Facades\EdithAdmin;
 use Edith\Admin\Http\Actions\CreateSchemaDrawerAction;
 
 class MenuController extends Controller
@@ -72,6 +73,13 @@ class MenuController extends Controller
      */
     public function fields(): array
     {
+        $guards = [
+            'basic' => '基础',
+            'admin' => '主站',
+        ];
+        if (EdithAdmin::hasTable('edith_platforms')) {
+            $guards['platform'] = '子站';
+        }
         $menus = list_to_tree($this->dao()->getModel()->select('id as value', 'parent_id', 'name as label', 'icon')->get(), 'value', 'parent_id', 'children');
         return [
             (new HiddenColumn('id')),
@@ -86,20 +94,16 @@ class MenuController extends Controller
             (new GroupColumn())->columns([
                 (new RadioButtonColumn('guard_name', '权限组'))
                     ->defaultValue('basic')
-                    ->valueEnum([
-                        'basic' => '基础',
-                        'admin' => '主站',
-                        'platform' => '子站'
-                    ])
-                    ->tooltip('基础则主站/子站共用，主站为翼搭主后台。子站仅在租户子后台显示')
+                    ->valueEnum($guards)
+                    ->tooltip('基础则主站/子站共用，主站为翼搭主后台。子站仅在租户Saas子后台显示 (通常为SAAS应用后台)')
                     ->width('md'),
                 (new RadioButtonColumn('type', '类型'))
                     ->tooltip('翼搭引擎：支持各类JsonSchema组件，iframe：嵌套于翼搭Layout内。')
                     ->extra('路由仅支持前端内置路由！')
                     ->valueEnum([
                         'engine' => '翼搭引擎',
-                        '_blank' => '外链',
                         'iframe' => 'iframe',
+                        '_blank' => '外链',
                         'default' => '路由',
                     ])
                     ->defaultValue('engine')

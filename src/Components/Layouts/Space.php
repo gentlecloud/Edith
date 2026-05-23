@@ -12,7 +12,7 @@ use Edith\Admin\Components\EngineRenderer;
  * @method $this size($size)                                         间距大小  Size | Size[]  ， 默认： small
  * @method $this split($split)                                       设置拆分
  * @author Chico, Xiamen Gentle Technology Co., Ltd
- * @link https://www.3ii.cn
+ * @link https://www.ieda.cc
  */
 class Space extends EngineRenderer
 {

@@ -28,11 +28,8 @@ final class EdithCloud
     public static function success(array $data): array
     {
         $privateKey = Cache::remember("edith_site-private_key", 60 * 60 * 24 * 30, function () {
-            return config('edith-site.private_key', null);
+            return config('edith-site.private_key', EdithAdmin::privateKey());
         });
-        if (!$privateKey) {
-            $privateKey = EdithAdmin::privateKey();
-        }
         $rsaUtil = new Rsa(EdithAdmin::publicKey(), $privateKey);
 
         try {
@@ -63,7 +60,7 @@ final class EdithCloud
         }
         ksort($params);
         $siteCode = Cache::remember("edith_site-code", 60 * 60 * 24, function () use ($params) {
-            return config('edith-site.code');
+            return config('edith-site.code', null);
         });
         $content = [];
         if ($siteCode) {

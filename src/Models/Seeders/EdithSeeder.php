@@ -48,10 +48,10 @@ class EdithSeeder extends Seeder
             ['name' => '配置管理', 'guard_name' => 'admin', 'icon' => 'icon-peizhi', 'type' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'config', 'component' => 'Engine', 'is_dev' => 1],
             ['name' => '操作日志', 'guard_name' => 'admin', 'icon' => 'icon-rizhi', 'type' => 'engine', 'parent_id' => 8, 'sort' => 0, 'path' => 'log', 'component' => 'Engine', 'is_dev' => 0],
 
-            ['name' => '附件空间', 'guard_name' => 'basic', 'icon' => 'icon-fujian', 'type' => 'default', 'parent_id' => 0, 'sort' => 8, 'path' => '/attachments', 'component' => null, 'is_dev' => 0],
+            ['name' => '附件空间', 'guard_name' => 'basic', 'icon' => 'icon-fujian', 'type' => 'default', 'parent_id' => 0, 'sort' => 98, 'path' => '/attachments', 'component' => null, 'is_dev' => 0],
             ['name' => '附件管理', 'guard_name' => 'basic', 'icon' => 'icon-icon-', 'type' => 'engine', 'parent_id' => 12, 'sort' => 0, 'path' => 'list', 'component' => 'Engine', 'is_dev' => 0],
 
-            ['name' => '管理设置', 'guard_name' => 'basic', 'icon' => 'icon-zhanghao', 'type' => 'default', 'parent_id' => 0, 'sort' => 10, 'path' => '/account', 'component' => null, 'is_dev' => 0],
+            ['name' => '管理设置', 'guard_name' => 'basic', 'icon' => 'icon-zhanghao', 'type' => 'default', 'parent_id' => 0, 'sort' => 99, 'path' => '/account', 'component' => null, 'is_dev' => 0],
             ['name' => '账号设置', 'guard_name' => 'basic', 'icon' => 'icon-profilesetting', 'type' => 'engine', 'parent_id' => 14, 'sort' => 0, 'path' => 'settings', 'component' => 'Engine', 'is_dev' => 0],
         ]);
     }

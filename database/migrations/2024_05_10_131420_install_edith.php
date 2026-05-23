@@ -120,7 +120,7 @@ return new class extends Migration {
             $table->boolean('status')->default(1)->comment('状态');
             $table->boolean('is_dev')->default(0)->comment('开发菜单');
             $table->string('component', 64)->nullable()->comment('前端部件');
-            $table->unique(['guard_name', 'name']);
+            $table->unique(['guard_name', 'name', 'module']);
             $table->timestamps();
         });
 

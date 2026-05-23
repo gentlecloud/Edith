@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
  * @method $this quickEditEnabledOn(string $quickEditEnabledOn)        快速编辑启用条件
 
  * @author Chico, Xiamen Gentle Technology Co., Ltd
- * @link https://www.3ii.cn
+ * @link https://www.ieda.cc
  */
 class Column extends BaseRenderer
 {
