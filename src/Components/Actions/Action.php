@@ -36,7 +36,7 @@ class Action extends EngineRenderer
     /**
      * @var string 
      */
-    protected string $renderer = 'action';
+    public string $renderer = 'action';
 
     /**
      * 按钮大小,large | middle | small | default

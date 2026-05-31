@@ -2,6 +2,9 @@
 namespace Edith\Admin\Components\Forms;
 
 use Edith\Admin\Components\EngineRenderer;
+use Edith\Admin\Components\Fields\Field;
+use Edith\Admin\Components\Pages\Tabs;
+use Edith\Admin\Components\Traits\FormInitialValues;
 
 /**
  * Edith Login Helmet 翼搭登录页面
@@ -21,12 +24,18 @@ use Edith\Admin\Components\EngineRenderer;
  */
 class LoginForm extends EngineRenderer
 {
+    use FormInitialValues;
 
     /**
      * 登录后舔砖 http(s):// or Edith Engine
      * @var string
      */
     protected string $redirect = '/dashboard/index';
+
+    /**
+     * @var array|object
+     */
+    protected array|object $initialValues = [];
 
     /**
      * 自定义样式
@@ -68,5 +77,17 @@ class LoginForm extends EngineRenderer
     {
         $this->style['backgroundImageUrl'] = $backgroundImageUrl;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function render(): array
+    {
+        if (!empty($this->body)) {
+            $this->handleFormFieldValues($this->body);
+        }
+        $this->initialValues = (object) $this->initialValues;
+        return parent::render();
     }
 }

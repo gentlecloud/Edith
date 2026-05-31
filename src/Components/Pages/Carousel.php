@@ -17,7 +17,7 @@ class Carousel extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'carousel';
+    public string $renderer = 'carousel';
 
     /**
      * 是否显示箭头

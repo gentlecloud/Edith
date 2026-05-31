@@ -15,7 +15,7 @@ class Row extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'row';
+    public string $renderer = 'row';
 
     /**
      * 是否自动换行

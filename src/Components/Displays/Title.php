@@ -12,7 +12,7 @@ class Title extends EngineRenderer
      * 翼搭 UI 渲染组件
      * @var string
      */
-    protected string $renderer = 'typography';
+    public string $renderer = 'typography';
 
     /**
      * @var string

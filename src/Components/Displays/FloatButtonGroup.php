@@ -16,7 +16,7 @@ class FloatButtonGroup extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'float-button-group';
+    public string $renderer = 'float-button-group';
 
     /**
      * 受控展开，需配合 trigger 一起使用

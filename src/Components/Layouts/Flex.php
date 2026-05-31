@@ -18,7 +18,7 @@ class Flex extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'flex';
+    public string $renderer = 'flex';
 
     /**
      * flex 主轴的方向是否垂直，使用 flex-direction: column

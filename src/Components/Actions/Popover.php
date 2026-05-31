@@ -17,5 +17,5 @@ class Popover extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'popover';
+    public string $renderer = 'popover';
 }

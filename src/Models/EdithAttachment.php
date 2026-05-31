@@ -14,6 +14,9 @@ class EdithAttachment extends Model
      * @var array
      */
     protected $fillable = [
+        'id',
+        'channel_id',
+        'platform_id',
         'obj_type',
         'obj_id',
         'category_id',
@@ -24,6 +27,7 @@ class EdithAttachment extends Model
         'ext',
         'mime',
         'path',
+        'url',
         'md5',
         'driver',
         'upload_ip'
@@ -44,7 +48,6 @@ class EdithAttachment extends Model
      */
     protected $appends = [
         'category_name',
-        'url',
         'preview'
     ];
 
@@ -58,23 +61,25 @@ class EdithAttachment extends Model
     }
 
     /**
-     * 获取附件外链
-     * @return string|null
-     */
-    public function getUrlAttribute(): ?string
-    {
-        return (isset($this->driver) && $this->driver != 'local' || substr($this->path, 0, 4) == 'http') ? $this->path : asset(Storage::url($this->path));
-    }
-
-    /**
      * 获取预览路径
      * @return string|null
      */
     public function getPreviewAttribute(): ?string
     {
-        return substr($this->path, 0, 4) == 'http' ? $this->path : get_attachment($this->id);
+        return str_starts_with($this->url, 'http') ? $this->url : get_attachment($this->id);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function channel(): BelongsTo
+    {
+        return $this->belongsTo(EdithAttachmentChannel::class, 'channel_id')->select('id', 'access_id', 'access_secret', 'endpoint', 'bucket', 'domain', 'remark');
+    }
+
+    /**
+     * @return void
+     */
     protected static function booted(): void
     {
         static::deleted(function (EdithAttachment $attachment) {

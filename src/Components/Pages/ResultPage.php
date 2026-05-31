@@ -18,5 +18,5 @@ class ResultPage extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'result';
+    public string $renderer = 'result';
 }

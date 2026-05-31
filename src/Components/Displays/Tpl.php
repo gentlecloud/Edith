@@ -12,7 +12,7 @@ class Tpl extends EngineRenderer
      * 翼搭 UI 渲染组件
      * @var string
      */
-    protected string $renderer = 'tpl';
+    public string $renderer = 'tpl';
 
     /**
      * @param string|null $tpl

@@ -19,7 +19,7 @@ class Collapse extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'collapse';
+    public string $renderer = 'collapse';
 
     /**
      * @var Collection|null

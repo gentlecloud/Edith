@@ -21,7 +21,7 @@ final class Admin
     /**
      * Edith version
      */
-    const version = '2.0.3';
+    const version = '2.0.5';
 
     /**
      * load current Composer
@@ -110,9 +110,7 @@ final class Admin
      */
     public function routes()
     {
-        $prefix = $this->routerPrefix();
         // 翼搭框架相关路由
-
         app('router')->namespace(config('edith.route.namespace', 'App\\Edith\\Controllers'))
             ->group(function ($router) {
                 $router->get('edith/_routes', '\\Edith\\Admin\\Http\\Controllers\\EdithController@routes')->name("edith._routes");
@@ -140,7 +138,7 @@ final class Admin
 
                 $router->get('edith/manage', 'EdithController@manage')->name('edith.manage');
                 $router->get('edith/micro-apps', 'EdithController@micro')->name('edith.micro');
-                $router->get('dashboard/index', '\\App\\Edith\\Controllers\\HomeController@dashboard')->name('dashboard.index');
+                $router->get('dashboard/index', 'HomeController@dashboard')->name('dashboard.index');
 
                 $router->apiResources([
                     'auth/menu' => \MenuController::class,

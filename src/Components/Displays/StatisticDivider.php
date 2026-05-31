@@ -11,5 +11,5 @@ class StatisticDivider extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'statistic-divider';
+    public string $renderer = 'statistic-divider';
 }

@@ -21,7 +21,7 @@ class Descriptions extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'descriptions';
+    public string $renderer = 'descriptions';
 
     /**
      * @var Collection|null

@@ -8,5 +8,5 @@ class StatisticCardOperation extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'statistic-card-operation';
+    public string $renderer = 'statistic-card-operation';
 }

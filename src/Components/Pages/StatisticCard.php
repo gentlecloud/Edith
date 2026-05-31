@@ -16,7 +16,7 @@ class StatisticCard extends ProCard
     /**
      * @var string
      */
-    protected string $renderer = 'statistic-card';
+    public string $renderer = 'statistic-card';
 
     /**
      * 数值统计配置，布局默认为 vertical

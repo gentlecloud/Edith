@@ -8,5 +8,5 @@ class BadgeRibbon extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'badge-ribbon';
+    public string $renderer = 'badge-ribbon';
 }

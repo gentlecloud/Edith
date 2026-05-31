@@ -16,7 +16,7 @@ class StepItem extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'step-item';
+    public string $renderer = 'step-item';
 
     /**
      * @param string|null $title

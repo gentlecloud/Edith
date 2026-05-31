@@ -19,8 +19,8 @@ class EventServiceProvider extends BaseServiceProvider
         \Edith\Admin\Events\FrontLoginBefore::class => [
             \Edith\Admin\Listeners\FrontLoginBefore::class
         ],
-        \Edith\Admin\Events\UploadAfter::class => [
-            \Edith\Admin\Listeners\UploadAfter::class
+        \Edith\Admin\Events\AttachmentUploadAfter::class => [
+            \Edith\Admin\Listeners\AttachmentUploadAfter::class
         ]
     ];
 

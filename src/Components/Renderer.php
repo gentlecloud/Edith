@@ -23,7 +23,7 @@ abstract class Renderer implements RendererInterface
      * 定义翼搭前端 UI 渲染器
      * @var string
      */
-    protected string $renderer = 'edith';
+    public string $renderer = 'edith';
 
     /**
      * 渲染器唯一标识

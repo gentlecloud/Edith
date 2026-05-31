@@ -19,7 +19,7 @@ class Operation extends Renderer
     /**
      * @var string
      */
-    protected string $renderer = 'operation';
+    public string $renderer = 'operation';
 
     /**
      * @var string 

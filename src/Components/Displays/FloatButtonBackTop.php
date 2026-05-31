@@ -14,5 +14,5 @@ class FloatButtonBackTop extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'float-button-backTop';
+    public string $renderer = 'float-button-backTop';
 }

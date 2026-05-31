@@ -1,19 +1,29 @@
 <?php
 namespace Edith\Admin\Events;
 
+use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
+
 class ConfigSaveAfter
 {
     /**
-     * @var array
+     * @var Request
      */
-    public array $data = [];
+    public Request $request;
+
+    /**
+     * 不更新字段
+     * @var Collection
+     */
+    public Collection $guard;
 
     /**
      * 构造方法
-     * @param array $data
+     * @param Request $request
      */
-    public function __construct(array $data = [])
+    public function __construct(Request $request)
     {
-        $this->data = $data;
+        $this->request = $request;
+        $this->guard = new Collection();
     }
 }

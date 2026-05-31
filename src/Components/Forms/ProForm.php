@@ -6,6 +6,7 @@ use Edith\Admin\Components\EngineRenderer;
 use Edith\Admin\Components\Fields\Field;
 use Edith\Admin\Components\Pages\Tabs;
 use Edith\Admin\Components\Traits\FormActions;
+use Edith\Admin\Components\Traits\FormInitialValues;
 use Edith\Admin\Exceptions\RendererException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -30,13 +31,13 @@ use Illuminate\Support\Str;
  */
 class ProForm extends EngineRenderer
 {
-    use FormActions;
+    use FormActions, FormInitialValues;
 
     /**
      * Amis 渲染类型
      * @var string
      */
-    protected string $renderer = 'pro-form';
+    public string $renderer = 'pro-form';
 
     /**
      * ProForm 的 Layout 切换
@@ -332,67 +333,21 @@ class ProForm extends EngineRenderer
         if (!isset($this->api)) {
             $this->initSaveApi();
         }
-        if ($this->renderer == 'tabs-form') {
-            foreach ($this->tabs as $tab) {
-                foreach ($tab->children as $column) {
-                    $this->extracted($column);
-                }
-            }
+        if ($this->renderer == 'tabs-form' && isset($this->tabs)) {
+            $this->handleFormFieldValues($this->tabs);
             $this->renderer = 'pro-form';
             $this->columns->push((new Tabs())->items($this->tabs));
             unset($this->tabs);
         } else {
             foreach ($this->columns as $column) {
-                $this->extracted($column);
+                if ($column instanceof Tabs) {
+                    $this->handleFormFieldValues($column);
+                } else {
+                    $this->extracted($column);
+                }
             }
         }
         $this->initialValues = (object) $this->initialValues;
         return parent::render();
-    }
-
-    /**
-     * @param $column
-     */
-    protected function extracted($column): void
-    {
-        if (!isset($column->dataIndex) && (!isset($column->name) || !is_string($column->name))) {
-            return;
-        }
-        $dataIndex = $column->dataIndex ?? $column->name;
-        if (!isset($this->initialValues[$dataIndex]) && isset($column->initialValue)) {
-            $this->initialValues[$dataIndex] = $column->initialValue;
-        }
-        if (isset($column->valueType) || isset($column->renderer)) {
-            $valueType = $column->valueType ?? $column->renderer;
-            if (isset($this->initialValues[$dataIndex]) && in_array($valueType, ['radio', 'tree'])) {
-                $this->initialValues[$dataIndex] = strval($this->initialValues[$dataIndex]);
-            }
-            if (isset($this->initialValues[$dataIndex]) && $valueType == 'switch') {
-                $this->initialValues[$dataIndex] = $this->initialValues[$dataIndex] == 1 || $this->initialValues[$dataIndex] == 'open';
-            }
-            if (!empty($this->initialValues[$dataIndex]) && in_array($valueType, ['upload', 'uploader'])) {
-                $value = [];
-                if (is_string($this->initialValues[$dataIndex])) {
-                    if ($attachment = get_attachment($this->initialValues[$dataIndex], 'all'))
-                        $value[] = $attachment;
-                } else {
-                    foreach ($this->initialValues[$dataIndex] as $row) {
-                        if (!$row) {
-                            continue;
-                        }
-                        if (is_string($row)) {
-                            $attachment = get_attachment($row, 'all');
-                            if ($attachment) {
-                                $value[] = $attachment;
-                            }
-                        } else {
-                            $value[] = $row;
-                        }
-                    }
-                }
-                $this->initialValues[$dataIndex] = $value;
-            }
-        }
-        unset($column->initialValue);
     }
 }

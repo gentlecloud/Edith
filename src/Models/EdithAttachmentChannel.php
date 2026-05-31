@@ -13,6 +13,7 @@ class EdithAttachmentChannel extends Model
      * @var string[]
      */
     protected $fillable = [
+        'id',
         'platform_id',
         'channel_type',
         'access_id',

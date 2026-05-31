@@ -26,6 +26,9 @@ class Upload extends Field
     {
         parent::__construct($name, $label);
         $this->initAttribute();
-        !is_null($label) && $this->title($label);
+        if (!empty($label)) {
+            $this->title($label);
+            $this->button($label);
+        }
     }
 }

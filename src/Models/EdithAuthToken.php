@@ -36,14 +36,15 @@ class EdithAuthToken extends Model
                 $query->where('expires', '>=', time())->orWhereNull('expires')->orWhere('expires', '0');
             })
             ->first();
-        if (!$info){
+        if (!$info) {
             return false;
         }
-        $userInfo = (new Rsa(config('edith.rsa.public_key', env("RSA_PUBLIC_KEY")), config('edith.rsa.private_key', env("RSA_PRIVATE_KEY"))))->decrypt($token);
+        $userInfo = (new Rsa(config('edith.rsa.public_key'), config('edith.rsa.private_key')))->decrypt($token);
         if ($userInfo) {
-            $userInfo = array_merge(json_decode($userInfo,true), ['expires' => $info['expires']]);
+            return array_merge(json_decode($userInfo,true), ['expires' => $info['expires']]);
+        } else {
+            return false;
         }
-        return $userInfo;
     }
 
     /**

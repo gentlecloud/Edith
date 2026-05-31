@@ -17,7 +17,7 @@ class Divider extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'divider';
+    public string $renderer = 'divider';
 
     /**
      * 是否虚线

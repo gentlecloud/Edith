@@ -20,7 +20,7 @@ class MenuItem extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'menu-item';
+    public string $renderer = 'menu-item';
 
     /**
      *

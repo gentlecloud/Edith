@@ -27,7 +27,7 @@ class Modal extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'modal';
+    public string $renderer = 'modal';
 
     /**
      * 按钮

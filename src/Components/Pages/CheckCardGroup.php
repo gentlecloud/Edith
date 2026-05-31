@@ -16,7 +16,7 @@ class CheckCardGroup extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'check-card-group';
+    public string $renderer = 'check-card-group';
 
     /**
      * 多选

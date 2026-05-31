@@ -13,5 +13,5 @@ class Helmet extends EngineRenderer
      * 翼搭 UI 渲染 Component
      * @var string
      */
-    protected string $renderer = 'helmet';
+    public string $renderer = 'helmet';
 }

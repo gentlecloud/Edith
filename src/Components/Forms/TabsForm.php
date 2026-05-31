@@ -9,7 +9,7 @@ class TabsForm extends ProForm
     /**
      * @var string
      */
-    protected string $renderer = 'tabs-form';
+    public string $renderer = 'tabs-form';
 
     /**
      * 子标签页

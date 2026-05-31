@@ -18,5 +18,5 @@ class MasonryItem extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'masonry-item';
+    public string $renderer = 'masonry-item';
 }

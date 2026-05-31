@@ -115,7 +115,7 @@ trait FieldAttribute
      */
     public function value($value): static
     {
-        return $this->set('value', $value);
+        return $this->set('initialValue', $value);
     }
 
     /**
@@ -286,7 +286,7 @@ trait FieldAttribute
      * @param object|bool|array|numeric-string $props
      * @return $this
      */
-    public function fieldProp(string $field, object|bool|array|string $props): static
+    public function fieldProp(string $field, object|bool|array|string|int $props): static
     {
         if (!isset($this->fieldProps)) {
             $this->fieldProps = new Collection();

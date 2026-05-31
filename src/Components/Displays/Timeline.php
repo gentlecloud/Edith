@@ -16,7 +16,7 @@ class Timeline extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'timeline';
+    public string $renderer = 'timeline';
 
     /**
      * @var Collection|null

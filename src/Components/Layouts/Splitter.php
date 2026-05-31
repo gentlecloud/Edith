@@ -13,7 +13,7 @@ class Splitter extends EngineRenderer
     /**
      * @var string 
      */
-    protected string $renderer = 'splitter';
+    public string $renderer = 'splitter';
 
     /**
      * 延迟渲染模式

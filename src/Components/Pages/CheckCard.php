@@ -19,7 +19,7 @@ class CheckCard extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'check-card';
+    public string $renderer = 'check-card';
 
     /**
      * 指定当前是否选中

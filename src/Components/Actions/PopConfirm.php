@@ -24,7 +24,7 @@ class PopConfirm extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'pop-confirm';
+    public string $renderer = 'pop-confirm';
 
     /**
      * @param bool $disabled

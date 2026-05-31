@@ -4,6 +4,7 @@ use Edith\Admin\Widgets\Layout\Layout;
 use Edith\Admin\Widgets\Page\Content;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -26,13 +27,11 @@ if (!function_exists('engine')) {
 if (!function_exists('success')) {
     function success(string|array|object $msg = 'ok~', $data = [], ?string $url = null, ?string $refresh_token = null): \Illuminate\Http\JsonResponse
     {
-        switch (func_num_args()) {
-            case 1:
-                if (!is_string($msg)) {
-                    $data = $msg;
-                    $msg = 'succeed.';
-                }
-                break;
+        if (func_num_args() == 1) {
+            if (!is_string($msg)) {
+                $data = $msg;
+                $msg = 'succeed.';
+            }
         }
         $header = null;
         if (!is_null($refresh_token)) {
@@ -151,11 +150,11 @@ if(!function_exists('get_attachment')) {
         if (empty($id) || url()->isValidUrl($id)) {
             return $id;
         } else if (str_contains($id, 'public')) {
-            $path = Storage::url($id);
-            return !intval(edith_config('SSL_OPEN', 0)) ? secure_asset($path) : asset($path);
+            $path = Storage::url(ltrim($id, DIRECTORY_SEPARATOR));
+            return !intval(edith_config('WEB_SITE_SSL', 0)) ? secure_asset($path) : asset($path);
         }
 
-        if (is_object($id) || !intval($id) && is_json($id)) {
+        if (is_object($id) || !is_numeric($id) && is_json($id)) {
             $json = json_decode($id,true);
             if ($field == 'path' && isset($json['url']) && url()->isValidUrl($json['url'])) {
                 return $json['url'];
@@ -172,22 +171,21 @@ if(!function_exists('get_attachment')) {
                     if (url()->isValidUrl($picture['path'])) {
                         $url = $picture['path'];
                     } else {
-                        $path = Storage::url($picture['path']);
-                        $url = !intval(edith_config('SSL_OPEN', 0)) ? secure_asset($path) : asset($path);
+                        $path = Storage::url(ltrim($picture['path'], '/'));
+                        $url = !intval(edith_config('WEB_SITE_SSL', 0)) ? secure_asset($path) : asset($path);
                     }
                     $result = $url;
                     break;
                 case 'realPath':
-                    $result = url()->isValidUrl($picture['path']) ? $picture['path'] : storage_path('app/') . $picture['path'];
+                    $result = url()->isValidUrl($picture['path']) ? $picture['path'] : storage_path('app/') . ltrim($picture['path'], '/');
                     break;
                 case 'all':
                     if (url()->isValidUrl($picture['path'])) {
-                        $url = $picture['path'];
+                        $picture['url'] = $picture['path'];
                     } else {
-                        $path = Storage::url($picture['path']);
-                        $url = !intval(edith_config('SSL_OPEN', 0)) ? secure_asset($path) : asset($path);
+                        $path = Storage::url(ltrim($picture['path'], '/'));
+                        $picture['url'] = !intval(edith_config('WEB_SITE_SSL', 0)) ? secure_asset($path) : asset($path);
                     }
-                    $picture['url'] = $url;
                     $result = $picture;
                     break;
                 default:
@@ -201,7 +199,7 @@ if(!function_exists('get_attachment')) {
             return null;
         }
 
-        return 'https://chuxin.res.huokequan.cn/pictures/o8t6ZrkWyIwL5eZigKonI65RD5nrOpsBvwyAgPag.png';
+        return 'https://oss.res.gentle.org.cn/attachments/uLkjvbpVmisfo8NjXLs7pyUOvoBZtRR4EAlj2J2H.png';
     }
 }
 
@@ -301,7 +299,10 @@ if (!function_exists('modify_config_file')) {
             $config[$key] = $value;
         }
         // 写入文件
-        $content = '<?php return ' . "\r\n" . json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . ';';
+        $content = '<?php return ' . var_export($config, true) . ';';
+
+        $content = str_replace('array (', '[', $content);
+        $content = preg_replace('/\)(\s*;\s*$)/', ']$1', $content);
         File::put($path, $content);
     }
 }

@@ -26,5 +26,5 @@ class Statistic extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'statistic';
+    public string $renderer = 'statistic';
 }

@@ -16,7 +16,7 @@ class Alert extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'alert';
+    public string $renderer = 'alert';
 
     /**
      * @param string|Iconfont $icon

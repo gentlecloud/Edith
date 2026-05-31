@@ -35,7 +35,7 @@ class UpdateCommand extends Command
         if (version_compare(ltrim(env('EDITH_VERSION', '1.0.0'), 'v'), '2.0.1', '<=') || empty(config('edith.rsa.public_key'))) {
             $this->updateAdminRsaKey();
         }
-        $this->createHomeController();
+        $this->deleteHomeController();
         EdithConfig::where('name', 'WEB_SITE_LOGO')->update([
             'type' => 'uploader'
         ]);
@@ -45,14 +45,12 @@ class UpdateCommand extends Command
     /**
      * @return void
      */
-    public function createHomeController()
+    public function deleteHomeController()
     {
         $this->directory = app_path('Edith/Controllers');
         $controller = $this->directory . '/HomeController.php';
-        if (!file_exists($controller)) {
-            $contents = $this->getStub('HomeController');
-
-            $this->laravel['files']->put($controller, $contents);
+        if (file_exists($controller)) {
+            $this->laravel['files']->delete($controller);
         }
     }
 

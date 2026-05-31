@@ -21,7 +21,7 @@ class Steps extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'steps';
+    public string $renderer = 'steps';
 
     /**
      * @var Collection|null

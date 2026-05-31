@@ -24,5 +24,5 @@ class Col extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'col';
+    public string $renderer = 'col';
 }

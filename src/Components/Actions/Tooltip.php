@@ -16,5 +16,5 @@ class Tooltip extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'tooltip';
+    public string $renderer = 'tooltip';
 }

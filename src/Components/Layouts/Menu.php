@@ -25,7 +25,7 @@ class Menu extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'menu';
+    public string $renderer = 'menu';
 
     /**
      * 菜单内容

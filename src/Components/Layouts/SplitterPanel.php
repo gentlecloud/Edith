@@ -16,7 +16,7 @@ class SplitterPanel extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'splitter-panel';
+    public string $renderer = 'splitter-panel';
 
     /**
      * 快速折叠

@@ -27,7 +27,7 @@ class ProCard extends EngineRenderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $renderer = 'pro-card';
+    public string $renderer = 'pro-card';
 
     protected string $variant = 'elevated';
 

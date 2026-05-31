@@ -35,23 +35,26 @@ abstract class AdminController extends Controller
      */
     public function table(Table $table): Table
     {
-        $table->column('id', 'ID')->sorter()->hideInSearch();
-        $table->column('avatar.url', '头像')->valueType('avatar')->hideInSearch()->size('64');
-        $table->column('username', '用户名')->sorter()->copyable();
-        $table->column('nickname', '昵称')->editable()->hideInSearch();
-        $table->column('phone', '手机号')->copyable();
-        $table->column('lasted_at', '最后登录时间')->valueType('datetime')->sorter()->width(180)->hideInSearch();
-        $table->column('lasted_at', '登录时间')->valueType('dateTimeRange')->hideInTable();
-        $table->column('log.lasted_ip', '最后登录IP')->hideInSearch();
-        $table->column('created_at', '创建时间')->valueType('datetime')->sorter()->hideInSearch()->width(180);
-        $table->column('created_at', '创建时间')->valueType('dateRange')->hideInTable()->placeholder(['起始创建时间', '截止创建时间']);
+        $table->column('id', 'ID')->sorter();
+        $table->column('avatar.url', '头像')->valueType('avatar')->size('64');
+        $table->column('username', '用户名')->sorter()->copyable()->showInSearch();
+        $table->column('nickname', '昵称')->editable();
+        $table->column('phone', '手机号')->copyable()->showInSearch();
+        $table->column('lasted_at', '最后登录时间')->valueType('datetime')->sorter()->width(180);
+        $table->column('lasted_at', '登录时间')->valueType('dateTimeRange')->showOnlyInSearch();
+        $table->column('log.lasted_ip', '最后登录IP');
+        $table->column('created_at', '创建时间')->valueType('datetime')->sorter()->width(180);
+        $table->column('created_at', '创建时间')->valueType('dateRange')->showOnlyInSearch()->placeholder(['起始创建时间', '截止创建时间']);
         $table->column('status', '状态')
             ->valueType('select')
-            ->valueEnum([1 => '启用', 0 => '禁用'])->editable([
+            ->valueEnum([1 => '启用', 0 => '禁用'])
+            ->editable([
                 'type' => 'switch',
                 'onText' => '启用',
                 'offText' => '禁用'
-            ])->quickEditEnabledOn('${id != 1}');
+            ])
+            ->showInSearch()
+            ->quickEditEnabledOn('${id != 1}');
 
         $table->toolbar([
             new CreateSchemaDrawerAction('添加管理员', $this->fields())

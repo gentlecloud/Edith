@@ -24,7 +24,7 @@ class EdithSeeder extends Seeder
             ['title' => 'Logo', 'type' => 'uploader', 'name' => 'WEB_SITE_LOGO', 'group_name' => '基本', 'value' => '', 'remark' => ''],
             ['title' => '统计代码', 'type' => 'textarea', 'name' => 'WEB_SITE_SCRIPT', 'group_name' => '基本', 'value' => '', 'remark' => ''],
             ['title' => '网站版权', 'type' => 'text', 'name' => 'WEB_SITE_COPYRIGHT', 'group_name' => '基本', 'value' => '© 翼搭 Company 2022', 'remark' => ''],
-            ['title' => '开启SSL', 'type' => 'switch', 'name' => 'SSL_OPEN', 'group_name' => '基本', 'value' => '0', 'remark' => ''],
+            ['title' => '开启SSL', 'type' => 'switch', 'name' => 'WEB_SITE_SSL', 'group_name' => '基本', 'value' => '0', 'remark' => ''],
             ['title' => '开启网站', 'type' => 'switch', 'name' => 'WEB_SITE_OPEN', 'group_name' => '基本', 'value' => '1', 'remark' => ''],
             ['title' => '单点登录', 'type' => 'switch', 'name' => 'WEB_LOGIN_SSO', 'group_name' => '基本', 'value' => '1', 'remark' => ''],
             ['title' => '登录有效期', 'type' => 'digit', 'name' => 'LOGIN_VALID_TIME', 'group_name' => '基本', 'value' => '12', 'remark' => ''],

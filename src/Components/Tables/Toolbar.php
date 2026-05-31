@@ -22,5 +22,5 @@ class Toolbar extends Renderer
     /**
      * @var string
      */
-    protected string $renderer = 'table-toolbar';
+    public string $renderer = 'table-toolbar';
 }

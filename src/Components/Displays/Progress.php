@@ -24,7 +24,7 @@ class Progress extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'progress';
+    public string $renderer = 'progress';
 
     /**
      * 是否显示进度数值或状态图标

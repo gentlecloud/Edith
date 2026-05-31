@@ -20,7 +20,7 @@ class Avatar extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'avatar';
+    public string $renderer = 'avatar';
 
     /**
      * @param string|null $src

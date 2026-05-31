@@ -19,5 +19,5 @@ class StatisticTimer extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'statistic_timer';
+    public string $renderer = 'statistic_timer';
 }

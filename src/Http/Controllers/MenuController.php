@@ -32,19 +32,19 @@ class MenuController extends Controller
      */
     public function table(Table $table)
     {
-        $table->column('id', 'ID')->width(100)->hideInSearch();
-        $table->column('icon', '菜单图标')->hideInSearch();
-        $table->column('name', '菜单名称');
-        $table->column('path', '菜单路由')->copyable();
+        $table->column('id', 'ID')->width(100);
+        $table->column('icon', '菜单图标');
+        $table->column('name', '菜单名称')->showInSearch();
+        $table->column('path', '菜单路由')->copyable()->showInSearch();
         $table->column('type', '菜单类型')->valueEnum([
             'engine' => '翼搭引擎',
             'default' => '路由',
             '_blank' => '外链',
             'iframe' => 'iframe'
-        ]);
+        ])->valueType('select')->showInSearch();
         $table->column('sort', '排序')->editable([
             'type' => 'input-number'
-        ])->hideInSearch();
+        ]);
         $table->column('status', '状态')->editable([
             'type' => 'switch',
             'onText' => '启用',
@@ -52,9 +52,9 @@ class MenuController extends Controller
         ])->valueEnum([
             1 => '启用',
             0 => '禁用'
-        ])->valueType('select');
-        $table->column('created_at', '创建时间')->hideInSearch();
-        $table->column('updated_at', '更新时间')->hideInSearch();
+        ])->valueType('select')->showInSearch();
+        $table->column('created_at', '创建时间');
+        $table->column('updated_at', '更新时间');
 
         $table->operation()->rowOnlyEditDestroyAction($this->fields(), $this->title);
         $table->toolbar([
@@ -63,7 +63,7 @@ class MenuController extends Controller
 
         $table->enableBatchStatus();
 
-        return $table->pagination(false);
+        return $table->initQuickSaveItemApi()->pagination(false);
     }
 
     /**

@@ -28,7 +28,7 @@ class SchemaForm extends ProForm
     /**
      * @var string
      */
-    protected string $renderer = 'schema-form';
+    public string $renderer = 'schema-form';
 
     /**
      * @var string

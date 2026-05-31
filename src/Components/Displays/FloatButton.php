@@ -21,5 +21,5 @@ class FloatButton extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'float-button';
+    public string $renderer = 'float-button';
 }

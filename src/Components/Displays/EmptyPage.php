@@ -15,5 +15,5 @@ class EmptyPage extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'empty';
+    public string $renderer = 'empty';
 }

@@ -29,11 +29,11 @@ class RoleController extends Controller
      */
     public function table(Table $table): Table
     {
-        $table->column('id', 'ID')->hideInSearch()->width(90);
-        $table->column('name', '角色名称')->editable();
-        $table->column('guard_name', '权限标识');
-        $table->column('created_at', '创建时间')->valueType('datetime')->hideInSearch()->width(180);
-        $table->column('updated_at', '更新时间')->valueType('datetime')->hideInSearch()->width(180);
+        $table->column('id', 'ID')->width(90);
+        $table->column('name', '角色名称')->editable()->showInSearch();
+        $table->column('guard_name', '权限标识')->showInSearch();
+        $table->column('created_at', '创建时间')->valueType('datetime')->width(180);
+        $table->column('updated_at', '更新时间')->valueType('datetime')->width(180);
 
         $table->operation([
             (new EditSchemaDrawerAction('角色', $this->fields()))->initApi('${id}'),
@@ -41,7 +41,7 @@ class RoleController extends Controller
         $table->toolbar([
             new CreateSchemaDrawerAction('添加角色', $this->fields())
         ]);
-        return $table;
+        return $table->initQuickSaveItemApi();
     }
 
     /**

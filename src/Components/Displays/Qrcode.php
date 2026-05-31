@@ -21,7 +21,7 @@ class Qrcode extends EngineRenderer
     /**
      * @var string 
      */
-    protected string $renderer = 'qrcode';
+    public string $renderer = 'qrcode';
 
     /**
      * 二维码纠错等级

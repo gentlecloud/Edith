@@ -1,7 +1,6 @@
 <?php
 namespace Edith\Admin\Components\Tables;
 
-use Edith\Admin\Components\Columns\Column;
 use Edith\Admin\Components\Displays\Dropdown;
 use Edith\Admin\Components\EngineRenderer;
 use Edith\Admin\Components\Layouts\Menu;
@@ -17,17 +16,17 @@ use Illuminate\Support\Str;
  *  ProTable 的诞生是为了解决项目中需要写很多 table 的样板代码的问题，所以在其中封装了很多常用的逻辑。这些封装可以简单的分类为预设行为与预设逻辑。
  * @link https://procomponents.ant.design/components/table
  * @method $this rowKey(string $rowKey)                             数据主键
- * @method $this headerTitle(string $headerTitle)                   顶部标题
+ * @method $this headerTitle(string|boolean $headerTitle)           顶部标题
  * @method $this tableLayout(string $tableLayout)                   表格元素的 table-layout 属性，设为 fixed 表示内容不会影响列的布局	- | auto | fixed
  * @method $this params(array $params)                              用于 request 查询的额外参数，一旦变化会触发重新加载
  * @method $this postData(array $postData)                          对通过 request 获取的数据进行处理
  * @method $this defaultData(array $defaultData)                    默认的数据
- * @method $this dataSource(array $dataSource)                      Table 的数据，ProTable 推荐使用 request 来加载
+ * @method $this dataSource(array|string $dataSource)               Table 的数据，ProTable 推荐使用 request 来加载
  * @method $this toolBarRender(array $toolBarRender)                渲染工具栏，支持返回一个 dom 数组，会自动增加 margin-right
  * @method $this onRequestError(string $onRequestError)             数据加载失败时触发
  * @method $this tableClassName(string $tableClassName)             封装的 table 的 className
  * @method $this tableStyle(array $tableStyle)                      封装的 table 的 style	CSSProperties
- * @method $this options(array $options)                            table 工具栏，设为 false 时不显示，传入 function 会点击时触发  { fullScreen: false, reload: true, density: true, setting: true }
+ * @method $this options(array|bool $options)                       table 工具栏，设为 false 时不显示，传入 function 会点击时触发  { fullScreen: false, reload: true, density: true, setting: true }
  * @method $this defaultSize(string $defaultSize)                   默认的 size
  * @method $this type(string $defaultSize)                          pro-table 类型
  * @method $this dateFormatter(string $dateFormatter)               转化 moment 格式数据为特定类型，false 不做转化
@@ -45,7 +44,7 @@ use Illuminate\Support\Str;
  * @method $this rowSelection(bool|array $rowSelection)             表格行是否可选择
  * @method $this scroll(array $scroll)                              表格是否可滚动，也可以指定滚动区域的宽、高，
  * @method $this sticky(array $sticky)                              设置粘性头部和滚动条
- * @method $this expandable(array $expandable)                      配置展开属性
+ * @method $this expandable(array|Table $expandable)                配置展开属性
  * @method $this striped(boolean $striped)                          行样式
  */
 class Table extends EngineRenderer
@@ -54,7 +53,7 @@ class Table extends EngineRenderer
      * 翼搭引擎渲染组件
      * @var string
      */
-    protected string $renderer = 'pro-table';
+    public string $renderer = 'pro-table';
 
     /**
      * 获取 dataSource 的 API
@@ -128,7 +127,6 @@ class Table extends EngineRenderer
         parent::__construct();
         $this->columns = new Collection();
         $this->batchActions = new Collection();
-        $this->initApi()->initQuickSaveItemApi();
     }
 
     /**
@@ -217,6 +215,24 @@ class Table extends EngineRenderer
     }
 
     /**
+     * @param bool $virtual
+     * @return self
+     */
+    public function virtual(bool $virtual = true): self
+    {
+        return $this->set('virtual', $virtual);
+    }
+
+    /**
+     * @param bool $search
+     * @return self
+     */
+    public function search(bool $search = false): self
+    {
+        return $this->set('search', $search);
+    }
+
+    /**
      * 关闭批量操作行
      * @param bool $disableBatchActions
      * @return $this
@@ -290,9 +306,7 @@ class Table extends EngineRenderer
      */
     public function columns(array $columns): self
     {
-        foreach ($columns as $column) {
-            $this->columns->push($column);
-        }
+        $this->columns = $this->columns->merge($columns);
         return $this;
     }
 
@@ -305,6 +319,9 @@ class Table extends EngineRenderer
         if ($this->operation instanceof Operation) {
             $this->columns->push($this->operation);
             unset($this->operation);
+        }
+        if (empty($this->api) && empty($this->dataSource)) {
+            $this->initApi();
         }
         if ($this->rowSelection) {
             if (!$this->disableBatchStatus) {

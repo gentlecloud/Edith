@@ -26,7 +26,7 @@ class Tabs extends EngineRenderer
      * Edith component
      * @var string
      */
-    protected string $renderer = 'tabs';
+    public string $renderer = 'tabs';
 
     /**
      * 标签居中展示
@@ -52,7 +52,7 @@ class Tabs extends EngineRenderer
      * 选项卡
      * @var Collection|null
      */
-    protected ?Collection $items;
+    public ?Collection $items;
 
     /**
      * construct Tabs

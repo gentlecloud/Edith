@@ -20,7 +20,7 @@ class Dropdown extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'dropdown';
+    public string $renderer = 'dropdown';
 
     /**
      * @var string

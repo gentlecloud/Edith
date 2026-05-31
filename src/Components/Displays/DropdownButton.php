@@ -13,7 +13,7 @@ class DropdownButton extends Dropdown
     /**
      * @var string
      */
-    protected string $renderer = 'dropdown-button';
+    public string $renderer = 'dropdown-button';
 
 
     /**

@@ -13,5 +13,5 @@ class Wrapper extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'wrapper';
+    public string $renderer = 'wrapper';
 }

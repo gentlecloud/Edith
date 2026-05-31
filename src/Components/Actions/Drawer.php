@@ -26,7 +26,7 @@ class Drawer extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'drawer';
+    public string $renderer = 'drawer';
 
     /**
      * 按钮

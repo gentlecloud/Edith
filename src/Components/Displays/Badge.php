@@ -21,7 +21,7 @@ class Badge extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'badge';
+    public string $renderer = 'badge';
 
     /**
      * 不展示数字，只有一个小红点

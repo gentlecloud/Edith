@@ -29,7 +29,7 @@ class PageContainer extends EngineRenderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $renderer = 'page-container';
+    public string $renderer = 'page-container';
 
     /**
      * construct PageContainer

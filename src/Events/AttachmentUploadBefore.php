@@ -4,11 +4,11 @@ namespace Edith\Admin\Events;
 use Illuminate\Http\Request;
 
 /**
- * Class UploadBefore
+ * Class AttachmentUploadBefore
  * 上传文件前触发事件
  * @package Edith\Admin\Events
  */
-class UploadBefore
+class AttachmentUploadBefore
 {
     /**
      * Request 实例
@@ -30,7 +30,7 @@ class UploadBefore
 
     /**
      * 构造方法
-     * UploadBefore constructor.
+     * AttachmentUploadBefore constructor.
      * @param Request $request
      * @param int $platform_id
      */

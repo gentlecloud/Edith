@@ -8,5 +8,5 @@ class StatisticCardGroup extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'statistic-card-group';
+    public string $renderer = 'statistic-card-group';
 }

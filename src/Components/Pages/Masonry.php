@@ -19,7 +19,7 @@ class Masonry extends EngineRenderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $renderer = 'masonry';
+    public string $renderer = 'masonry';
 
     /**
      * @var Collection

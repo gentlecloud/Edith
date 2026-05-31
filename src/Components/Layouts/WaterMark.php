@@ -26,7 +26,7 @@ class WaterMark extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'water-mark';
+    public string $renderer = 'water-mark';
 
     public function __construct(?string $content = null)
     {

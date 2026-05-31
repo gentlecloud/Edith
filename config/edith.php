@@ -82,6 +82,10 @@ return [
         'namespace' => 'Modules\\'
     ],
 
+    'ui' => [
+        'version' => '1.0.0',
+    ],
+
     'rsa' => [
         'public_key' => "",
         'private_key' => ''

@@ -36,7 +36,7 @@ class Layout extends EngineRenderer
      * Edith 渲染组件
      * @var string
      */
-    protected string $renderer = 'layout';
+    public string $renderer = 'layout';
 
     /**
      * layout 的菜单模式, side：右侧导航，top：顶部导航

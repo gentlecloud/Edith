@@ -16,7 +16,7 @@ class Each extends EngineRenderer
      * 翼搭 UI 渲染组件
      * @var string
      */
-    protected string $renderer = 'each';
+    public string $renderer = 'each';
 
     /**
      * @param Space $space

@@ -32,12 +32,12 @@ class PermissionController extends Controller
      */
     public function table(Table $table): Table
     {
-        $table->column('id', '序号')->width(60)->hideInSearch();
-        $table->column('menu_name', '菜单名称');
-        $table->column('name', '权限名称')->editable();
-        $table->column('uri', '权限路由');
-        $table->column('created_at', '创建时间')->hideInSearch();
-        $table->column('updated_at', '更新时间')->hideInSearch();
+        $table->column('id', '序号')->width(60);
+        $table->column('menu_name', '菜单名称')->showInSearch();
+        $table->column('name', '权限名称')->editable()->showInSearch();
+        $table->column('uri', '权限路由')->showInSearch();
+        $table->column('created_at', '创建时间');
+        $table->column('updated_at', '更新时间');
 
         $table->operation()->rowOnlyEditDestroyAction($this->fields(), $this->title, 'modal');
         $sync = (new Action('自动生成'))

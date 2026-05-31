@@ -9,10 +9,10 @@ return new class extends Migration {
     {
         Schema::create('edith_attachment_uses', function (Blueprint $table) {
             $table->id();
-            $table->string('attchment_id');
+            $table->string('attachment_id');
             $table->string('model');
             $table->string('model_id');
-            $table->unique(['attchment_id', 'model', 'model_id']);
+            $table->unique(['attachment_id', 'model', 'model_id']);
             $table->timestamps();
         });
     }

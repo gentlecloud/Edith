@@ -18,7 +18,7 @@ class Image extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'image';
+    public string $renderer = 'image';
 
     public function __construct(?string $src = null)
     {

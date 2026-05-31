@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
  * @method $this label(string $label)                               选项卡头显示文字
  * @method $this key(string $key)                                   对应 activeKey
  * @method $this closeIcon(string $closeIcon)                       自定义关闭图标，在 type="editable-card"时有效
- * @method $this children($body)                                    选项卡头显示内容
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  */
 class TabPane extends EngineRenderer
@@ -18,7 +17,12 @@ class TabPane extends EngineRenderer
      * 翼搭渲染类型
      * @var string
      */
-    protected string $renderer = 'tab-pane';
+    public string $renderer = 'tab-pane';
+
+    /**
+     * @var Collection
+     */
+    public Collection $children;
 
     /**
      * construct ant tabPane
@@ -27,11 +31,13 @@ class TabPane extends EngineRenderer
      */
     public function __construct(?string $label = null, ?string $key = null)
     {
+        parent::__construct();
         !is_null($label) && $this->set('label', $label);
         if (is_null($key)) {
             $key = uniqid('ant-tab-pane');
         }
         $this->set('key', $key);
+        $this->children = new Collection();
     }
 
     /**
@@ -78,5 +84,18 @@ class TabPane extends EngineRenderer
     public function forceRender(bool $forceRender = true): TabPane
     {
         return $this->set('forceRender', $forceRender);
+    }
+
+    /**
+     * @param array|Collection $children
+     * @return $this
+     */
+    public function children(array|Collection $children = []): self
+    {
+        if (is_array($children)) {
+            $children = new Collection($children);
+        }
+        $this->children = $children;
+        return $this;
     }
 }

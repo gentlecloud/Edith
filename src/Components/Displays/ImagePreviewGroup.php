@@ -8,5 +8,5 @@ class ImagePreviewGroup extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'image-preview-group';
+    public string $renderer = 'image-preview-group';
 }

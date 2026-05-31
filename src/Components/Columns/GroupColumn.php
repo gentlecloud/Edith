@@ -4,12 +4,15 @@ namespace Edith\Admin\Components\Columns;
 use Edith\Admin\Components\EngineRenderer;
 use Illuminate\Support\Collection;
 
+/**
+ * @method $this title(string $title)
+ */
 class GroupColumn extends EngineRenderer
 {
     /**
      * @var string
      */
-    protected string $renderer = 'column-group';
+    public string $renderer = 'column-group';
 
     /**
      * @var string
@@ -25,10 +28,11 @@ class GroupColumn extends EngineRenderer
     /**
      *
      */
-    public function __construct()
+    public function __construct(?string $title = null)
     {
         parent::__construct();
         $this->columns = new Collection();
+        !is_null($title) && $this->set('title', $title);
     }
 
     /**
@@ -39,5 +43,14 @@ class GroupColumn extends EngineRenderer
     {
         $this->columns = new Collection($columns);
         return $this;
+    }
+
+    /**+
+     * @param bool $collapsible
+     * @return self
+     */
+    public function collapsible(bool $collapsible = true): self
+    {
+        return $this->set('collapsible', $collapsible);
     }
 }

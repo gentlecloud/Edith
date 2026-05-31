@@ -155,7 +155,8 @@ class EdithAdminServiceProvider extends ServiceProvider
     /**
      * register Gentle Application Services
      */
-    protected function registerServices() {
+    protected function registerServices()
+    {
         $this->app->singleton('edith.modules', EdithModuleCoreInterface::class);
         $this->app->bind(EdithModuleCoreInterface::class, function ($app) {
             return new Core($app);
@@ -172,7 +173,8 @@ class EdithAdminServiceProvider extends ServiceProvider
      * Force to set https scheme if https enabled.
      * 设置HTTPS
      */
-    protected function setHttps(){
+    protected function setHttps()
+    {
         if (env('WEB_SITE_SSL', false) !== false) {
             url()->forceScheme('https');
             $this->app['request']->server->set('HTTPS', true);

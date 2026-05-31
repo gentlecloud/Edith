@@ -2,7 +2,6 @@
 namespace Edith\Admin\Http\Controllers;
 
 use Edith\Admin\Components\Actions\Action;
-use Edith\Admin\Components\Columns\Column;
 use Edith\Admin\Components\Displays\Avatar;
 use Edith\Admin\Components\Displays\Iconfont;
 use Edith\Admin\Components\Displays\Image;
@@ -12,7 +11,6 @@ use Edith\Admin\Components\Displays\Text;
 use Edith\Admin\Components\Displays\Title;
 use Edith\Admin\Components\Displays\Tpl;
 use Edith\Admin\Components\Fields\DescriptionsItem;
-use Edith\Admin\Components\Fields\Field;
 use Edith\Admin\Components\Layouts\Col;
 use Edith\Admin\Components\Layouts\Flex;
 use Edith\Admin\Components\Layouts\Row;
@@ -32,7 +30,7 @@ use Edith\Admin\Models\EdithAdminLogin;
 use Edith\Admin\Models\EdithAttachment;
 use Illuminate\Support\Facades\DB;
 
-class HomeController extends Controller
+final class HomeController extends Controller
 {
 
     /**
@@ -75,7 +73,7 @@ class HomeController extends Controller
                     ]),
                 ]),
             ),
-            (new StatisticCardGroup())->body([
+            (new StatisticCardGroup())->style(['margin' => '20px auto'])->body([
                 (new StatisticCard())->statistic((new Statistic())->title('管理员数量')->icon((new Iconfont('icon-guanliyuan3'))->style(['fontSize' => '42px']))->value(EdithAdminModel::count())),
                 (new StatisticCard())->statistic((new Statistic())->title('附件数量')->icon((new Iconfont('icon-fujian1'))->style(['fontSize' => '44px']))->value(EdithAttachment::count())),
                 (new StatisticCard())->statistic(function (Statistic $statistic) {

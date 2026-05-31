@@ -16,7 +16,7 @@ class Tag extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'tag';
+    public string $renderer = 'tag';
 
     /**
      * 是否有边框

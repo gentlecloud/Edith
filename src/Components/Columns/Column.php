@@ -19,8 +19,6 @@ use Illuminate\Support\Str;
  * @method $this initialValue($initialValue)                           查询表单/表单项初始值
  * @method $this colSize(int $colSize)                                 一个表单项占用的格子数量, 占比 = colSize*span，colSize 默认为 1 ，span 为 8，span是form = {{span:8}} 全局设置的
  * @method $this order(int $order)                                     查询表单中的权重，权重大排序靠前
- * @method $this quickEditEnabledOn(string $quickEditEnabledOn)        快速编辑启用条件
-
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  * @link https://www.ieda.cc
  */
@@ -77,17 +75,6 @@ class Column extends BaseRenderer
     public function ellipsis(array|bool $ellipsis = true): self
     {
         return $this->set('ellipsis', $ellipsis);
-    }
-
-    /**
-     * 在编辑表格中是否可编辑的，函数的参数和 table 的 render 一样
-     * @param bool|array $editable false | (text: any, record: T,index: number) => boolean
-     * @default true
-     * @return $this
-     */
-    public function editable(bool|array $editable = true): self
-    {
-        return $this->set('editable', $editable);
     }
 
     /**
@@ -169,16 +156,6 @@ class Column extends BaseRenderer
     public function disable(bool|array $disable = true): self
     {
         return $this->set('disable', $disable);
-    }
-
-    /**
-     * 列设置排序
-     * @param bool $sorter boolean
-     * @return $this
-     */
-    public function sorter(bool $sorter = true): self
-    {
-        return $this->set('sorter', $sorter);
     }
 
     /**

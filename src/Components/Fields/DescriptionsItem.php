@@ -18,7 +18,7 @@ class DescriptionsItem extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'descriptions-item';
+    public string $renderer = 'descriptions-item';
 
     /**
      * @param string|null $label

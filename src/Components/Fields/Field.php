@@ -7,8 +7,6 @@ use Illuminate\Support\Collection;
 
 /**
  * @method $this name(string $name)                          Field name
- * @method $this min(int $min)                               最小位数 digit
- * @method $this max(int $max)                               最大位数 digit
  * @method $this valueEnum(array $valueEnum)                 当前列值的枚举 valueEnum (select...等使用)
  * @method $this layout(string $layout)                      配置 checkbox 的样子，支持  vertical | horizontal
  * @method $this radioType(string $radioType)                设置是按钮模式还是 radio 模式   default|button
@@ -58,7 +56,7 @@ class Field extends EngineRenderer
     public string $component = 'text';
 
     /**
-     * 使用引擎，默认使用 Ant Design，若为 Amis 则使用 Amis 规则生成表单校验, Label等..
+     * 使用引擎，默认使用 Ant Design
      * @var string
      */
     protected string $engine = 'ant';
@@ -266,6 +264,15 @@ class Field extends EngineRenderer
         $this->set('multiple', $max > 1);
         $this->component = 'uploader';
         return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function valueType(string $type): self
+    {
+        return $this->set('component', $type);
     }
 
     /**

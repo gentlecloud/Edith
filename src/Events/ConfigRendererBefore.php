@@ -11,9 +11,9 @@ class ConfigRendererBefore
     public Collection $custom;
 
     /**
-     * @var array
+     * @var Collection
      */
-    public array $initialValues = [];
+    public Collection $initialValues;
 
     /**
      * construct
@@ -21,5 +21,6 @@ class ConfigRendererBefore
     public function __construct()
     {
         $this->custom = new Collection();
+        $this->initialValues = new Collection();
     }
 }

@@ -17,7 +17,7 @@ class Anchor extends EngineRenderer
     /**
      * @var string
      */
-    protected string $renderer = 'anchor';
+    public string $renderer = 'anchor';
 
     /**
      * @param array|Collection $items

@@ -3,6 +3,7 @@ namespace Edith\Admin\Http\Controllers;
 
 use Edith\Admin\Components\Actions\Action;
 use Edith\Admin\Components\Columns\Column;
+use Edith\Admin\Components\Columns\Item\HiddenColumn;
 use Edith\Admin\Components\Displays\Each;
 use Edith\Admin\Components\Displays\Text;
 use Edith\Admin\Components\Fields\Field;
@@ -38,6 +39,7 @@ class AttachmentController extends Controller
     /**
      * 自定义渲染页面
      * @return PageContainer
+     * @throws RendererException
      */
     public function render()
     {
@@ -60,13 +62,13 @@ class AttachmentController extends Controller
     public function table(Table $table): Table
     {
 //        $table->column('category_name', '目录')->width(120)->hideInSearch();
-        $table->column('name', '附件名称');
-        $table->column('url', '外链')->copyable()->hideInSearch()->width(300);
-        $table->column('size', '大小')->sorter()->hidden()->hideInSearch();
-        $table->column('ext', '扩展名')->sorter()->hideInSearch();
-        $table->column('preview', '预览')->valueType('image')->hideInSearch();
-        $table->column('created_at', '上传时间')->hideInSearch();
-        $table->column('created_at', '上传时间')->valueType('dateRange')->hideInTable();
+        $table->column('name', '附件名称')->showInSearch();
+        $table->column('url', '外链')->copyable()->width(300);
+        $table->column('size', '大小')->sorter()->hideInSearch();
+        $table->column('ext', '扩展名')->sorter();
+        $table->column('preview', '预览')->valueType('image');
+        $table->column('created_at', '上传时间');
+        $table->column('created_at', '上传时间')->valueType('dateRange')->showOnlyInSearch();
 
         $table->operation()->rowOnlyDestroyAction();
         $table->toolbar([
@@ -113,6 +115,8 @@ class AttachmentController extends Controller
     {
         return [
             (new Column('title', '目录名称'))->required(),
+            (new HiddenColumn('obj_type'))->initialValue('PLATFORM'),
+            (new HiddenColumn('obj_id'))->initialValue(EdithAdmin::auth()->platformId()),
         ];
     }
 
@@ -171,26 +175,16 @@ class AttachmentController extends Controller
             $query->whereBetween('created_at', [$pictureSearchDate[0], $pictureSearchDate[1]]);
         }
 
-        $where = null;
-        if (EdithAdmin::auth()->platformId()){
-            $query->where('platform_id', EdithAdmin::auth()->platformId());
-            $where = array('platform_id', EdithAdmin::auth()->platformId());
-        }
-
-        $pictures = $query->orderByDesc('id')->paginate(12);
+        $pictures = $query->where('platform_id', EdithAdmin::auth()->platformId())
+            ->orderByDesc('id')
+            ->paginate(12);
 
         $pagination = [];
         $data = [];
 
         if ($pictures) {
             $getPictures = $pictures->toArray();
-
             $data = $getPictures['data'];
-
-            foreach ($data as $key => $value) {
-                $value['path'] = get_attachment($value['id']);
-                $data[$key] = $value;
-            }
 
             $pagination['defaultCurrent'] = 1;
             $pagination['current'] = $getPictures['current_page'];
@@ -198,7 +192,7 @@ class AttachmentController extends Controller
             $pagination['total'] = $getPictures['total'];
         }
 
-        $categories = EdithAttachmentCategory::where('obj_type', 'ADMIN')->where($where)->get();
+        $categories = EdithAttachmentCategory::where('obj_type', 'ADMIN')->where('obj_id', EdithAdmin::auth()->platformId())->get();
 
         $attachment['lists'] = $data;
         $attachment['pagination'] = $pagination;

@@ -12,5 +12,5 @@ class AlertErrorBoundary extends EngineRenderer
     /**
      * @var string 
      */
-    protected string $renderer = 'alert-error-boundary';
+    public string $renderer = 'alert-error-boundary';
 }
