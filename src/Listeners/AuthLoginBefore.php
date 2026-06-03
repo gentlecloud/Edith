@@ -14,7 +14,7 @@ class AuthLoginBefore
      */
     public function handle(Events\AuthLoginBefore $event)
     {
-        if (($username = $event->request->get('username'))) {
+        if (($username = $event->request->input('username'))) {
             $maxNum = config('edith.auth.fail_num', 5);
             $errNum = Cache::get("manage_user_fail_{$username}");
             if ($errNum && $errNum >= $maxNum) {

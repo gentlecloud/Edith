@@ -75,6 +75,9 @@ final class EdithController extends Controller
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function logout()
     {
         try {

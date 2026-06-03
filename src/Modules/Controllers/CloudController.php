@@ -29,7 +29,7 @@ final class CloudController extends Controller
      */
     public function dock(Request $request)
     {
-        switch ($request->get('method')) {
+        switch ($request->input('method')) {
             case 'distribute':
                 set_time_limit(0);
                 ini_set('memory_limit', '1024M');
@@ -74,11 +74,13 @@ final class CloudController extends Controller
                 }
                 break;
             case 'verify':
-                if ($request->get('token')) {
-                    modify_config_file('edith-site', 'token', $request->get('token'));
+                if ($request->input('token')) {
+                    modify_config_file('edith-site', 'token', $request->input('token'));
                 }
                 $content = [
-                    'version' => EdithAdmin::version()
+                    'version' => EdithAdmin::version(),
+                    'server_name' => $_SERVER['SERVER_NAME'],
+                    'server_ip' => $_SERVER['SERVER_ADDR'],
                 ];
                 break;
             default:
@@ -168,7 +170,7 @@ final class CloudController extends Controller
                 'version' => EdithAdmin::version(),
                 'core_version' => class_exists(EdithModule::class) ? EdithModule::where('name', 'Core')->where('status', 1)->value('version') : '0',
                 'swoole_version' => extension_loaded('swoole') && function_exists('swoole_version') ? swoole_version() : false,
-                'name' => $request->get('name')
+                'name' => $request->input('name')
             ])->toArray();
         } catch (\Exception $e) {
             return success([
@@ -214,7 +216,7 @@ final class CloudController extends Controller
      */
     public function install(Request $request)
     {
-        $name = $request->get('name');
+        $name = $request->input('name');
         if (empty($name)) {
             return error('参数错误。');
         }
@@ -223,6 +225,8 @@ final class CloudController extends Controller
         try {
             $module = app('edith.modules')->findOrFail($name, true);
             $module->install();
+
+            Cache::forget('edith_modules');
         } catch (\Exception $e) {
             return error($e->getMessage());
         }

@@ -21,7 +21,7 @@ final class Admin
     /**
      * Edith version
      */
-    const version = '2.0.5';
+    const version = '2.0.7';
 
     /**
      * load current Composer

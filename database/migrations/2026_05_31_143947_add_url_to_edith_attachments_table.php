@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::table('edith_attachments', function (Blueprint $table) {
             //
-            $table->string('channel_id')->default(0)->after('id')->comment('附件通道')->index();
-            $table->string('platform_id')->default(0)->after('channel_id')->comment('附件归属平台')->index();
-            $table->string('url')->nullable()->after('path')->comment('附件');
+            $table->bigInteger('channel_id')->default(0)->after('id')->comment('附件通道')->index();
+            $table->bigInteger('platform_id')->default(0)->after('channel_id')->comment('附件归属平台')->index();
+            $table->string('url')->nullable()->after('path')->comment('附件链接');
         });
     }
 

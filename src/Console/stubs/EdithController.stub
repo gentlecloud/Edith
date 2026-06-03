@@ -1,7 +1,7 @@
 <?php
 namespace App\Edith\Controllers;
 
-use Edith\Admin\Http\Controllers\EdithController as BaseController;
+use Illuminate\Routing\Controller as BaseController;
 
 class EdithController extends BaseController
 {

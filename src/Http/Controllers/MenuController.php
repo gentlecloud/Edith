@@ -126,7 +126,11 @@ class MenuController extends Controller
                 (new SwitchColumn('status', '状态'))->checkedChildren('启用')->unCheckedChildren('禁用')->valueEnum([
                     1 => '启用',
                     0 => '禁用'
-                ])->defaultChecked(1)->width('xs')
+                ])->defaultChecked(1)->width('xs'),
+                (new SwitchColumn('hide_menu', '隐藏菜单'))->checkedChildren('隐藏')->unCheckedChildren('显示')->valueEnum([
+                    1 => '隐藏',
+                    0 => '显示'
+                ])->defaultChecked(0)->width('xs')
             ])
         ];
     }

@@ -14,11 +14,6 @@ class MenuDao extends ModelDao
     protected ?string $modelName = 'Edith\Admin\Models\EdithMenu';
 
     /**
-     * @var string
-     */
-    protected string $orderBy = 'asc';
-
-    /**
      * @return array
      * @throws DaoException
      */
@@ -27,13 +22,14 @@ class MenuDao extends ModelDao
         $query = $this->query()
             ->with('children')
             ->where('parent_id', 0)
-            ->orderBy('sort', 'asc')
             ->when(\request()->input('name'), function ($query, $value) {
                 $query->where('name', 'like', "%$value%");
             })
             ->when(\request()->input('path'), function ($query, $value) {
                 $query->where('path', 'like', "%$value%");
-            });
+            })
+            ->orderBy('sort')
+            ->orderBy('id');
         $list = $query->get()->toArray();
         return ['items' => $list, 'total' => count($list)];
     }
@@ -55,6 +51,9 @@ class MenuDao extends ModelDao
             } else {
                 $data['path'] = ltrim($data['path'], '/');
             }
+        }
+        if ($data['type'] == 'engine') {
+            $data['component'] = 'Engine';
         }
         parent::saving($data, $id);
     }

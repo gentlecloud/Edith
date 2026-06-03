@@ -67,7 +67,7 @@ final class EdithCloud
             $content[] = $siteCode;
         }
         foreach ($params as $key => $value) {
-            if (!$value && !is_numeric($value)) {
+            if (!$value && !is_numeric($value) || $value instanceof \CURLFile || is_resource($value)) {
                 continue;
             }
             if (is_array($value)) {

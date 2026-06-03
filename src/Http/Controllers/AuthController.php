@@ -141,7 +141,7 @@ abstract class AuthController extends Controller
             $menus = EdithMenu::where('status', 1)
                 ->whereIn('guard_name', $guards)
                 ->whereIn('id', $ids)
-                ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'sort', 'type', 'module', 'component')
+                ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'status', 'hide_menu', 'sort', 'type', 'module', 'component')
                 ->orderBy('sort', 'asc')
                 ->orderBy('id', 'asc')
                 ->get()
@@ -155,7 +155,7 @@ abstract class AuthController extends Controller
                 ->when(env('EDITH_DEV') == false, function ($query) {
                     $query->where('is_dev', 0);
                 })
-                ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'sort', 'type', 'module', 'component')
+                ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'status', 'hide_menu', 'sort', 'type', 'module', 'component')
                 ->orderBy('sort', 'asc')
                 ->orderBy('id', 'asc')
                 ->get()
@@ -165,7 +165,7 @@ abstract class AuthController extends Controller
                 [
                     'id' => -888,
                     'key' => uniqid(),
-                    'name' => '翼搭云',
+                    'name' => '翼搭云服务',
                     'path' => '/cloud',
                     'icon' => 'icon-yunfuwuqi',
                     'component' => 'qiankun',
@@ -194,7 +194,7 @@ abstract class AuthController extends Controller
                 if (Str::startsWith($item['path'], '/') && $item['component'] == 'Engine') {
                     $item['path'] = ltrim($item['path'], $menu['path'] . '/');
                 }
-                $item['hideInMenu'] = false;
+                $item['hideInMenu'] = $item['hide_menu'] == 1;
                 $item['key'] = md5($menu['path'] . $item['path']);
             }
             $list[] = [
@@ -205,7 +205,7 @@ abstract class AuthController extends Controller
                 'icon' => $menu['icon'] ?? null,
                 'component' => $menu['component'] ?? null,
                 'parent_id' => $menu['parent_id'],
-                'hideInMenu' => false,
+                'hideInMenu' => $menu['hide_menu'] == 1,
                 'routes' => $menu['routes'],
             ];
         }

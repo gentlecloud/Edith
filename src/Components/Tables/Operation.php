@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 
 /**
  * @method $this width(string|int $value)                           行宽度
+ * @method $this fixed(string $value)
  */
 class Operation extends Renderer
 {

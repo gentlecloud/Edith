@@ -27,6 +27,7 @@ final class Cloud extends Http
      */
     public function __construct(?string $privateKey = null)
     {
+        parent::__construct();
         if (is_null($privateKey)) {
             $this->privateKey = Cache::remember("edith_site-private_key", 60 * 60 * 24 * 30, function () {
                 return config('edith-site.private_key', null);
@@ -44,7 +45,7 @@ final class Cloud extends Http
      * @return $this
      * @throws RequestErrorException
      */
-    public function curl(string $url, array|string|null $data = null, string $method = 'GET', $callback = null): Cloud
+    public function request(string $url, array|string|null $data = null, string $method = 'GET', $callback = null): Cloud
     {
         $siteCode = Cache::remember("edith-site_code", 60 * 60 * 24 * 30, function () {
             return config("edith-site.code", null);
@@ -58,19 +59,18 @@ final class Cloud extends Http
         }
         $token = config('edith-site.token');
         if (!empty($token)) {
-            $this->setHeader('Authorization', "Bearer " . $token);
+            $this->addHeader('Authorization', "Bearer " . $token);
         }
-        $this->setHeader("Content-type", "application/json");
-        $this->setHeader("X-Site-Code", $siteCode);
-        $this->setHeader("X-Site-Host", \request()->getHost());
-        $this->setHeader("X-Site-Version", EdithAdmin::version());
-        $this->setHeader("X-Timestamp", strval(time()));
-        $this->setHeader('X-Signature', $signature);
-        $this->setHeader('X-Requested-With', "XMLHttpRequest");
+        $this->addHeader("X-Site-Code", $siteCode);
+        $this->addHeader("X-Site-Host", \request()->getHost());
+        $this->addHeader("X-Site-Version", EdithAdmin::version());
+        $this->addHeader("X-Timestamp", strval(time()));
+        $this->addHeader('X-Signature', $signature);
+        $this->addHeader('X-Requested-With', "XMLHttpRequest");
 
-        $res = parent::curl($this->baseUrl . $url, $data, $method)->toArray();
-        if ($this->httpStatusCode() != 200) {
-            throw new RequestErrorException("请求失败，HttpCode：" . $this->httpStatusCode(), -$this->httpStatusCode());
+        $res = parent::request($this->baseUrl . $url, $data, $method)->toArray();
+        if ($this->getHttpCode() != 200) {
+            throw new RequestErrorException("请求失败，HttpCode：" . $this->getHttpCode(), -$this->getHttpCode());
         }
         if (!isset($res['status']) || $res['status'] != 0) {
             $errMsg = $res['message'] ?? '未知错误.';

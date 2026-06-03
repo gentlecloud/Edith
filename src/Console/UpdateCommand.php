@@ -32,9 +32,6 @@ class UpdateCommand extends Command
     public function handle()
     {
         $this->call('migrate');
-        if (version_compare(ltrim(env('EDITH_VERSION', '1.0.0'), 'v'), '2.0.1', '<=') || empty(config('edith.rsa.public_key'))) {
-            $this->updateAdminRsaKey();
-        }
         $this->deleteHomeController();
         EdithConfig::where('name', 'WEB_SITE_LOGO')->update([
             'type' => 'uploader'
@@ -51,19 +48,6 @@ class UpdateCommand extends Command
         $controller = $this->directory . '/HomeController.php';
         if (file_exists($controller)) {
             $this->laravel['files']->delete($controller);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function updateAdminRsaKey()
-    {
-        try {
-            $rsaInfo = (new Rsa())->generate();
-            modify_config_file('edith.php', 'rsa', $rsaInfo);
-        } catch (\Exception $e) {
-            Log::error("Edith Admin install Failed. Init Rsa ErrMsg:" . $e->getMessage());
         }
     }
 

@@ -299,10 +299,9 @@ if (!function_exists('modify_config_file')) {
             $config[$key] = $value;
         }
         // 写入文件
-        $content = '<?php return ' . var_export($config, true) . ';';
+        $content = "\r\n/**\r\n * Edith-Config \r\n */\r\nreturn \r\n";
 
-        $content = str_replace('array (', '[', $content);
-        $content = preg_replace('/\)(\s*;\s*$)/', ']$1', $content);
+        $content .= var_export($config, true) . ';';
         File::put($path, $content);
     }
 }
