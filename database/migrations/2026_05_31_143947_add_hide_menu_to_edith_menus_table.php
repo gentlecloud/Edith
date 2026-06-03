@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('edith_menus', function (Blueprint $table) {
             //
-            $table->tinyInteger('hide_menu')->default(0)->after('status')->comment('附件归属平台')->index();
+            $table->tinyInteger('hide_menu')->default(0)->after('status')->comment('隐藏菜单')->index();
         });
     }
 
