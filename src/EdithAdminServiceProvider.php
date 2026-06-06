@@ -131,6 +131,12 @@ class EdithAdminServiceProvider extends ServiceProvider
         Route::prefix('api')
             ->middleware(config('edith.route.middleware', ['api', 'edith.admin']))
             ->group(base_path('/routes/edith.php'));
+
+        Route::middleware('web')
+            ->get('/{any?}', function() {
+                return view('edith.index');
+            })
+            ->where('any', '.*');
     }
 
     /**

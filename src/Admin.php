@@ -174,9 +174,5 @@ final class Admin
                 $router->get('account/settings', 'AccountController@index')->name('account.settings');
                 $router->post('account/settings', 'AccountController@store')->name('account.settings.store');
             });
-
-        app('router')->get('/{any?}', function() {
-            return view('edith.index');
-        })->where('any', '.*');
     }
 }
