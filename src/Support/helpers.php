@@ -70,14 +70,14 @@ if (!function_exists('failed')) {
  * @author Gentle Edith <gentle@3ii.cn>
  */
 if (!function_exists('edith_config')) {
-    function edith_config($name, $default = '') {
+    function edith_config($name, $default = null) {
         $value = \Illuminate\Support\Facades\Cache::get($name);
         if (!empty($value) && env('APP_DEBUG') !== true) {
             return $value;
         }
 
         $value = \Edith\Admin\Models\EdithConfig::where('name', $name)->value('value');
-        if (empty($value)) {
+        if ($value === null || $value === '' || $value === []) {
             $value = $default;
         } else {
             \Illuminate\Support\Facades\Cache::put($name, $value, 60 * 60 * 24 * 30);
@@ -303,5 +303,27 @@ if (!function_exists('modify_config_file')) {
 
         $content .= var_export($config, true) . ';';
         File::put($path, $content);
+    }
+}
+
+if (!function_exists('react_asset')) {
+    function react_assets($entryName = 'index') {
+        $manifestPath = public_path('vendor/front/manifest.json');
+
+        if (!file_exists($manifestPath)) {
+            return ['js' => [], 'css' => []];
+        }
+
+        $manifest = json_decode(file_get_contents($manifestPath), true);
+        $initial = $manifest['entries'][$entryName]['initial'] ?? [];
+
+        return [
+            'js' => array_map(function($asset) {
+                return asset('vendor/front/' . ltrim($asset, '/'));
+            }, $initial['js'] ?? []),
+            'css' => array_map(function($asset) {
+                return asset('vendor/front/' . ltrim($asset, '/'));
+            }, $initial['css'] ?? []),
+        ];
     }
 }

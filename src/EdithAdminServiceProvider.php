@@ -100,13 +100,12 @@ class EdithAdminServiceProvider extends ServiceProvider
     protected function registerPublishing()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([__DIR__.'/../config' => config_path()], 'edith-config');
             $this->publishes([__DIR__.'/../database/migrations' => database_path('migrations')], 'edith-migrations');
             if (file_exists(__DIR__.'/../resources/lang')) {
                 $this->publishes([__DIR__.'/../resources/lang' => resource_path('lang')], 'edith-resources-lang');
             }
             if (file_exists(__DIR__.'/../resources/views')) {
-                $this->publishes([__DIR__.'/../resources/views' => resource_path('views/edith')], 'edith-resources-views');
+                $this->publishes([__DIR__.'/../resources/views' => resource_path('views')], 'edith-resources-views');
             }
         }
     }

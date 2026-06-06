@@ -42,28 +42,31 @@ trait FormInitialValues
      */
     protected function extracted($column): void
     {
-        if (!isset($column->dataIndex) && (!isset($column->name) || !is_string($column->name))) {
+        if (!isset($column->dataIndex) && !isset($column->name)) {
             return;
         }
         $dataIndex = $column->dataIndex ?? $column->name;
-        if (!isset($this->initialValues[$dataIndex]) && isset($column->initialValue)) {
-            $this->initialValues[$dataIndex] = $column->initialValue;
+        $initialValue = data_get($this->initialValues, $dataIndex);
+
+        if (is_null($initialValue) && isset($column->initialValue)) {
+            $initialValue = $column->initialValue;
         }
-        if (isset($column->valueType) || isset($column->renderer)) {
+        if ($initialValue && isset($column->valueType) || isset($column->renderer)) {
             $valueType = $column->valueType ?? $column->renderer;
             if (isset($this->initialValues[$dataIndex]) && in_array($valueType, ['radio', 'tree', 'select'])) {
-                $this->initialValues[$dataIndex] = strval($this->initialValues[$dataIndex]);
+                $initialValue = strval($initialValue);
             }
-            if (isset($this->initialValues[$dataIndex]) && $valueType == 'switch') {
-                $this->initialValues[$dataIndex] = $this->initialValues[$dataIndex] == 1 || $this->initialValues[$dataIndex] == 'open';
+            if ($valueType == 'switch') {
+                $initialValue = $initialValue == 1 || $initialValue == 'open';
             }
-            if (!empty($this->initialValues[$dataIndex]) && in_array($valueType, ['upload', 'uploader'])) {
+            if (in_array($valueType, ['upload', 'uploader'])) {
                 $value = [];
-                if (is_string($this->initialValues[$dataIndex]) || is_numeric($this->initialValues[$dataIndex])) {
-                    if ($attachment = get_attachment($this->initialValues[$dataIndex], 'all'))
+                if (is_string($initialValue) || is_numeric($initialValue)) {
+                    if ($attachment = get_attachment($initialValue, 'all')) {
                         $value[] = $attachment;
+                    }
                 } else {
-                    foreach ($this->initialValues[$dataIndex] as $row) {
+                    foreach ($initialValue as $row) {
                         if (!$row) {
                             continue;
                         }
@@ -77,8 +80,9 @@ trait FormInitialValues
                         }
                     }
                 }
-                $this->initialValues[$dataIndex] = $value;
+                $initialValue = $value;
             }
+            data_set($this->initialValues, $dataIndex, $initialValue);
         }
         unset($column->initialValue);
     }

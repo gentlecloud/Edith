@@ -72,9 +72,8 @@ return [
     |
     */
     'route' => [
-        'prefix' => env('EDITH_MANAGE_ROUTE_PREFIX', 'edith'),
         'namespace' => 'App\\Edith\\Controllers',
-        'middleware' => ['api', 'edith.admin'],
+        'middleware' => ['api', 'edith.admin']
     ],
 
     'modules' => [
@@ -82,12 +81,8 @@ return [
         'namespace' => 'Modules\\'
     ],
 
-    'ui' => [
-        'version' => '1.0.0',
-    ],
-
     'rsa' => [
-        'public_key' => "",
-        'private_key' => ''
+        'public_key' => '{{public_key}}',
+        'private_key' => '{{private_key}}'
     ]
 ];

@@ -1,15 +1,20 @@
+@php $assets = react_assets(); @endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="keywords" content="{{ config('admin.description') }}" />
-    <meta name="description" content="{{ config('admin.description') }}" />
+    <meta name="keywords" content="{{ edith_config('WEB_SITE_KEYWORDS') }}" />
+    <meta name="description" content="{{ edith_config('WEB_SITE_DESCRIPTION') }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-    <title>{{ config('admin.name') }}</title>
-    <link rel="icon" href="/admin/favicon.ico" type="image/x-icon" />
-    <script src="/admin/tinymce/tinymce.min.js"></script>
-    <link rel="stylesheet" href="{{$umiCss}}" />
+    <title>{{ edith_config('WEB_SITE_NAME') }}</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
+    @foreach($assets['js'] as $js)
+        <script defer src="{{ $js }}"></script>
+    @endforeach
+    @foreach($assets['css'] as $css)
+        <link rel="stylesheet" href="{{ $css }}">
+    @endforeach
     <script>
         window.routerBase = "/";
     </script>
@@ -188,7 +193,12 @@
         </div>
     </div>
 </div>
-
-<script src="{{$umiJs}}"></script>
+<script>
+    window.Laravel = {
+        csrfToken: '{{ csrf_token() }}',
+        user: @json(auth()->user() ?? null),
+    };
+</script>
+<script src="{{ asset('front/libs/tinymce/tinymce.min.js') }}"></script>
 </body>
 </html>

@@ -21,7 +21,7 @@ final class Admin
     /**
      * Edith version
      */
-    const version = '2.0.7';
+    const version = '2.0.9';
 
     /**
      * load current Composer
@@ -38,7 +38,7 @@ final class Admin
      */
     public function routerPrefix(): string
     {
-        return config('edith.route.prefix', 'edith');
+        return config('edith.route.prefix', '/');
     }
 
     /**
@@ -174,5 +174,9 @@ final class Admin
                 $router->get('account/settings', 'AccountController@index')->name('account.settings');
                 $router->post('account/settings', 'AccountController@store')->name('account.settings.store');
             });
+
+        app('router')->get('/{any?}', function() {
+            return view('edith.index');
+        })->where('any', '.*');
     }
 }

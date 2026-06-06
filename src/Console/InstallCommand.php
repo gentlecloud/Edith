@@ -33,23 +33,22 @@ class InstallCommand extends Command
     /**
      * Execute the console command.
      * @return void
+     * @throws \Exception
      */
     public function handle()
     {
         // 初始化数据库
         $this->initDatabase();
 
+        $this->generateConfig();
         // 初始化Admin目录
         $this->initAdminDirectory();
         $this->initModulesDirectory();
 
-        // 初始化Token相关
-        $this->initAdminRsaKey();
-
         // 创建软连接
         $this->call('storage:link');
 
-        modify_env(['EDITH_INSTALL' => 'true', 'EDITH_VERSION' => EdithAdmin::version()]);
+        modify_env(['EDITH_INSTALL' => 'true', 'EDITH_VERSION' => EdithAdmin::version(), 'EDITH_UI' => '2.0.0']);
         File::writeLog(base_path('install.lock'), 'Gentle_Edith install: ok');
     }
 
@@ -64,13 +63,16 @@ class InstallCommand extends Command
         $this->runDatabaseSeeders();
     }
 
-    public function initAdminRsaKey()
+    /**
+     * @return array|false
+     */
+    public function initAdminRsaKey(): array|bool
     {
         try {
-            $rsaInfo = (new Rsa())->generate();
-            modify_config_file('edith.php', 'rsa', $rsaInfo);
+            return (new Rsa())->generate();
         } catch (\Exception $e) {
             Log::error("Edith Admin install Failed. Init Rsa ErrMsg:" . $e->getMessage());
+            return false;
         }
     }
 
@@ -155,6 +157,42 @@ class InstallCommand extends Command
 
         $this->laravel['files']->put($file, $contents);
         $this->line('<info>Routes file was created:</info> '.str_replace(base_path(), '', $file));
+
+        $routesFile = base_path('/routes/web.php');
+        $content = $this->laravel['files']->get($routesFile);
+
+        if (str_contains($content, "Route::get('/{any}'")) {
+            return;
+        }
+        // 检查默认的 welcome 路由并替换
+        if (str_contains($content, "view('welcome')")) {
+            $content = str_replace("view('welcome')", "view('edith.index')", $content);
+        }
+        $this->laravel['files']->put($routesFile, $content);
+
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    protected function generateConfig()
+    {
+        $content = $this->getStub('edith-config');
+        // 初始化Token相关
+        $rsaInfo = $this->initAdminRsaKey();
+        if (!$rsaInfo) {
+            $this->line('<info>Edith Config file was created failed</info>');
+            throw new \Exception("Edith Config file was created failed!");
+        }
+
+        $content = str_replace('{{public_key}}', $rsaInfo['public_key'], $content);
+        $content = str_replace('{{private_key}}', $rsaInfo['private_key'], $content);
+
+        $file = base_path('/config/edith.php');
+
+        $this->laravel['files']->put($file, $content);
+        $this->line('<info>Edith Config file was created:</info> '.str_replace(base_path(), '', $file));
     }
 
     /**

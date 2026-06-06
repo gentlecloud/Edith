@@ -139,7 +139,8 @@ class ModelDao
         if (!empty($this->attachmentFields)) {
             foreach ($paginate->items() as $item) {
                 foreach ($this->attachmentFields as $field) {
-                    $item[$field] = get_attachment($item[$field]);
+                    $attachment = data_get($item, $field);
+                    data_set($item, $field, get_attachment($attachment));
                 }
             }
         }
@@ -156,7 +157,8 @@ class ModelDao
         $info = $this->getModel()->findOrFail($id ?: \request()->input('id'));
         if (!empty($this->attachmentFields)) {
             foreach ($this->attachmentFields as $field) {
-                $info[$field] = get_attachment($info[$field], \request()->header('x-edith-version') ? 'all' : 'path');
+                $attachment = data_get($info, $field);
+                data_set($info, $field, get_attachment($attachment, \request()->header('x-edith-version') ? 'all' : 'path'));
             }
         }
         return $info;

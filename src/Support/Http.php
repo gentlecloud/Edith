@@ -197,7 +197,10 @@ class Http
 
         // 设置请求体
         if ($data !== null) {
-            $hasFile = $this->hasFile($data);
+            $hasFile = false;
+            if (is_array($data)) {
+                $hasFile = $this->hasFile($data);
+            }
             $options = $this->buildBodyOptions($options, $data, $hasFile);
 
             if ($hasFile) {
@@ -253,13 +256,13 @@ class Http
     /**
      * 发起请求
      * @param string $url
-     * @param array|null $data
+     * @param array|string|null $data
      * @param string $method POST|GET
      * @param callable|null $callback
      * @return $this
      * @throws RequestErrorException
      */
-    public function request(string $url, ?array $data = null, string $method = 'POST', ?callable $callback = null): self
+    public function request(string $url, array|string|null $data = null, string $method = 'POST', ?callable $callback = null): self
     {
         $options = $this->buildOptions($method, $data, $callback);
 
