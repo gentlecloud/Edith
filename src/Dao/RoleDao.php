@@ -39,11 +39,11 @@ class RoleDao extends ModelDao
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @param $model
      * @return void
      */
-    protected function saved($data, $model = null)
+    protected function saved(array $data, $model = null)
     {
         if ($model) {
             $permissions = $data['permission_ids'];
@@ -65,6 +65,6 @@ class RoleDao extends ModelDao
                 }
             }
         }
-
+        parent::saved($data, $model);
     }
 }

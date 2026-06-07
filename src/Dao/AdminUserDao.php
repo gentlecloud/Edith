@@ -57,18 +57,18 @@ class AdminUserDao extends ModelDao
         $items = $paginate->makeVisible(['google_secret']);
         foreach ($items as &$item) {
             $item['roles'] = $item->roles()->pluck('name')->toArray();
-            $item['avatar'] = get_attachment($item['avatar'], 'all');
+            $item['avatar'] = get_attachment($item['avatar']);
         }
         return ['items' => $items, 'total' => $paginate->total(), 'page' => $paginate->lastPage(), 'current' => $paginate->currentPage()];
     }
 
     /**
-     * @param $data
-     * @param null $id
+     * @param array $data
+     * @param $id
      * @return void
      * @throws DaoException
      */
-    protected function saving(&$data, $id = null)
+    protected function saving(array &$data, $id = null)
     {
         if (!empty($id) && isset($data['status']) && (!$data['status'] || $data['status'] == '0') && $id == strval(config('edith.auth.admin_id'))) {
             throw new DaoException('超级管理员无法禁用.');
@@ -87,12 +87,12 @@ class AdminUserDao extends ModelDao
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @param $model
      * @return void
      * @throws DaoException
      */
-    protected function saved($data, $model = null)
+    protected function saved(array $data, $model = null)
     {
         if (isset($data['role_ids']) && $model) {
             EdithRoleUser::where('user_id', $model->id)->delete();
@@ -133,14 +133,14 @@ class AdminUserDao extends ModelDao
 
     /**
      * @param $id
-     * @return mixed
+     * @return void
      * @throws DaoException
      */
-    public function destroy($id)
+    public function deleting($id)
     {
         if (is_array($id) && in_array(strval(config('edith.auth.admin_id')), $id) || $id == strval(config('edith.auth.admin_id'))) {
-            throw new \Exception("超级管理员不允许删除！");
+            throw new DaoException("超级管理员不允许删除！");
         }
-        return parent::destroy($id);
+        parent::deleting($id);
     }
 }

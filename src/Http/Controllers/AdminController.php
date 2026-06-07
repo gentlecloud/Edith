@@ -36,7 +36,7 @@ abstract class AdminController extends Controller
     public function table(Table $table): Table
     {
         $table->column('id', 'ID')->sorter();
-        $table->column('avatar.url', '头像')->valueType('avatar')->size('64');
+        $table->column('avatar', '头像')->valueType('avatar')->size('64');
         $table->column('username', '用户名')->sorter()->copyable()->showInSearch();
         $table->column('nickname', '昵称')->editable();
         $table->column('phone', '手机号')->copyable()->showInSearch();

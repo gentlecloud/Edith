@@ -2,6 +2,7 @@
 namespace Edith\Admin\Dao;
 
 use Edith\Admin\Exceptions\DaoException;
+use Edith\Admin\Traits\ModelDatasourceTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\DB;
  */
 class ModelDao
 {
+    use ModelDatasourceTrait;
+
     /**
      * 当前数据库模型
      * @var Model|null
@@ -166,29 +169,30 @@ class ModelDao
 
     /**
      * 保存
-     * @param $data
+     * @param array $data
      * @return mixed
      * @throws DaoException
      */
-    public function store($data)
+    public function store(array $data)
     {
         $result = null;
         DB::transaction(function () use (&$result, $data) {
             $this->saving($data);
             $result = $this->getModel()->create($this->fillData($data));
             $this->saved($data, $result);
+            $this->saveAttachment($result->getKey());
         }, 3);
         return $result;
     }
 
     /**
      * 默认模型更新
-     * @param $data
+     * @param array $data
      * @param $id
      * @return mixed
      * @throws DaoException
      */
-    public function update($data, $id)
+    public function update(array $data, $id)
     {
         DB::transaction(function () use (&$result, $data, $id) {
             $model = $this->getModel()->findOrFail($id);
@@ -198,6 +202,7 @@ class ModelDao
             }
             $result = $model->save();
             $this->saved($data, $model);
+            $this->saveAttachment($id);
         }, 3);
         return $result;
     }
@@ -239,88 +244,6 @@ class ModelDao
         $result = $this->getModel()->destroy($id);
         $this->deleted($id);
         return $result;
-    }
-
-    public function handleAttachmentAttr(array|string $value, int|string|null $id = null)
-    {
-        if (is_string($value)) {
-            return $value;
-        }
-
-    }
-
-    /**
-     * 保存前置操作 保存钩子 包含新增和更新
-     * @param $data
-     * @param $id
-     * @return void
-     */
-    protected function saving(&$data, $id = null)
-    {
-        if (!empty($this->attachmentFields)) {
-            foreach ($this->attachmentFields as $field) {
-                if (isset($data[$field])) {
-                    $value = is_string($data[$field]) ? json_decode($data[$field], true) : $data[$field];
-                    if (is_numeric($value)) {
-                        $data[$field] = intval($value);
-                    } else if (isset($value['id'])) {
-                        $data[$field] = $value['id'];
-                    } else if (is_array($value)) {
-                        $data[$field] = array_column($data[$field], 'id');
-                    }
-
-                }
-            }
-        }
-    }
-
-    /**
-     * 保存后置操作 保存钩子 包含新增和更新
-     * @param array $data
-     * @param $model
-     * @return void
-     */
-    protected function saved(array $data, $model = null)
-    {
-
-    }
-
-    /**
-     * 删除前置操作 删除钩子
-     * @param $id
-     * @return void
-     */
-    protected function deleting($id)
-    {
-
-    }
-
-    /**
-     * 删除后置操作 删除钩子
-     * @param $id
-     * @return void
-     */
-    protected function deleted($id)
-    {
-
-    }
-
-    /**
-     * 填充模型数据
-     * @param array $data
-     * @return array
-     */
-    protected function fillData(array $data): array
-    {
-        if (count($this->fill) > 0) {
-            $data = \request()->only($this->fill);
-        }
-        if (count($this->guard) > 0) {
-            foreach ($this->guard as $item) {
-                unset($data[$item]);
-            }
-        }
-        return $data;
     }
 
     /**

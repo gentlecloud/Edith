@@ -6,7 +6,7 @@ use Edith\Admin\Components\Traits\Fields\FieldAttribute;
 use Illuminate\Support\Collection;
 
 /**
- * @method $this name(string $name)                          Field name
+ * @method $this name(string|array $name)                          Field name
  * @method $this valueEnum(array $valueEnum)                 当前列值的枚举 valueEnum (select...等使用)
  * @method $this layout(string $layout)                      配置 checkbox 的样子，支持  vertical | horizontal
  * @method $this radioType(string $radioType)                设置是按钮模式还是 radio 模式   default|button
@@ -69,10 +69,10 @@ class Field extends EngineRenderer
 
     /**
      * construct ant fields
-     * @param string|null $name Input name
+     * @param string|array|null $name Input name
      * @param string|null $label Input label
      */
-    public function __construct(?string $name = null, ?string $label = null)
+    public function __construct(string|array|null $name = null, ?string $label = null)
     {
         parent::__construct();
         !is_null($name) && $this->set('name', $name);

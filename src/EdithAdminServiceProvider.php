@@ -5,6 +5,7 @@ use Edith\Admin\Contracts\EdithAuthInterface;
 use Edith\Admin\Contracts\EdithModuleCoreInterface;
 use Edith\Admin\Core\Auth;
 use Edith\Admin\Modules\Core;
+use Edith\Admin\Modules\Middleware\Cloud;
 use Edith\Admin\Providers\ExceptionServiceProvider;
 use Edith\Admin\Support\Context;
 use Edith\Admin\Support\Database\Helper;
@@ -132,11 +133,13 @@ class EdithAdminServiceProvider extends ServiceProvider
             ->middleware(config('edith.route.middleware', ['api', 'edith.admin']))
             ->group(base_path('/routes/edith.php'));
 
-        Route::middleware('web')
-            ->get('/{any?}', function() {
-                return view('edith.index');
-            })
-            ->where('any', '.*');
+        Route::prefix('gwapi')
+            ->middleware(['api', Cloud::class, 'edith.log:翼搭云'])
+            ->group(function ($router) {
+                $router->post('dock', 'Edith\Admin\Modules\Controllers\CloudController@dock')->name('gwapi.dock');
+                $router->post('register', 'Edith\Admin\Modules\Controllers\CloudController@register')->name('gwapi.register');
+                $router->post('modules', 'Edith\Admin\Modules\Controllers\CloudController@modules')->name('gwapi.modules');
+            });
     }
 
     /**

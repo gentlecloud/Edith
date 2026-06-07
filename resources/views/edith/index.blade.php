@@ -31,7 +31,7 @@
             padding: 0;
         }
         #root {
-            background-image: url("/admin/home_bg.png");
+            background-image: url("https://oss.res.gentle.org.cn/attachments/Qbap3lH33LRaF5Qs51WXdf5qKveiSN5xJmbbeG0y.png");
             background-repeat: no-repeat;
             background-size: 100% auto;
         }
@@ -199,6 +199,6 @@
         user: @json(auth()->user() ?? null),
     };
 </script>
-<script src="{{ asset('front/libs/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('vendor/front/libs/tinymce/tinymce.min.js') }}"></script>
 </body>
 </html>

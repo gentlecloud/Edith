@@ -13,6 +13,7 @@ use Edith\Admin\Support\Rsa;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File as LarFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Str;
 use Illuminate\Support\Facades\Route;
@@ -53,11 +54,13 @@ final class CloudController extends Controller
                 fclose($zipHandle);
                 usleep(1500);
 
+                $moduleName = $request->header('X-Module-Name');
                 $content = [
                     'file_path' => $tempZipPath
                 ];
                 if (file_exists($tempZipPath)) {
                     try {
+                        LarFile::deleteDirectory(config('edith.modules.path', base_path('modules')) . '/' . $moduleName);
                         $zip = new ZipArchive();
                         $zip->open($tempZipPath);
                         if (!empty($request->header('X-Task-Pass'))) {

@@ -35,6 +35,48 @@ class AttachmentDao extends ModelDao
     }
 
     /**
+     * @param int|string|array $id
+     * @param int|string $modelId
+     * @param string|null $modelName
+     * @return array
+     * @throws DaoException
+     */
+    public static function useResource(int|string|array $id, int|string $modelId, ?string $modelName = null): array
+    {
+        if (is_null($modelName)) {
+            $callClass = get_called_class();
+            if (!method_exists($callClass, 'getModel')) {
+                throw new DaoException('Model is Empty.');
+            }
+            $modelName = $callClass::getModel()::class;
+        }
+        $attachment = [];
+        if (is_array($id)) {
+            $attachment = EdithAttachment::whereIn('id', $id)->get();
+        } else if (is_numeric($id)) {
+            $attachment[] = self::get($id);
+        } else {
+            $attachment[] = EdithAttachment::where('path', $id)->orWhere('url', $id)->first();
+        }
+        if (empty($attachment)) {
+            return [];
+        } else {
+            $ids = [];
+            foreach ($attachment as $item) {
+                $model = EdithAttachmentUse::updateOrCreate([
+                    'model' => $modelName,
+                    'model_id' => $modelId,
+                ], [
+                    'attachment_id' => $item['id'],
+                ]);
+                $ids[] = $model->id;
+            }
+            EdithAttachmentUse::where('model_id', $modelId)->where('model', $modelName)->whereNotIn('id', $ids)->delete();
+            return $ids;
+        }
+    }
+
+    /**
      * @param Request $request
      * @param int $platform_id
      * @return array|null
