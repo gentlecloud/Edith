@@ -309,4 +309,14 @@ trait FieldAttribute
         $this->formItemProps->put($field, $formItemProps);
         return $this;
     }
+
+    /**
+     * @param bool $forceRender
+     * @return $this
+     */
+    public function forceRender(bool $forceRender = true): static
+    {
+        $this->fieldProp('forceRender', $forceRender);
+        return $this;
+    }
 }

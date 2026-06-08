@@ -7,7 +7,6 @@ use Edith\Admin\Http\Controllers\Controller;
 use Edith\Admin\Modules\Requests\SiteRegisterRequest;
 use Edith\Admin\Modules\Support\Cloud;
 use Edith\Admin\Modules\Support\EdithCloud;
-use Edith\Admin\Support\File;
 use Edith\Admin\Support\Response;
 use Edith\Admin\Support\Rsa;
 use Illuminate\Http\JsonResponse;
@@ -193,9 +192,9 @@ final class CloudController extends Controller
         $permission = $res['data']['permission'];
         foreach ($path as $item) {
             if (!is_dir(base_path(substr($item, 1)))) {
-                File::mkdirs(base_path(substr($item, 1)));
+                LarFile::makeDirectory(base_path(substr($item, 1)));
             }
-            $currentStatus = File::isWritable(base_path(substr($item, 1)));
+            $currentStatus = LarFile::isWritable(base_path(substr($item, 1)));
             $permission[] = [
                 'permission' => $item,
                 'requirement' => 'write',

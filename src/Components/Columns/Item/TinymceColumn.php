@@ -4,17 +4,17 @@ namespace Edith\Admin\Components\Columns\Item;
 use Edith\Admin\Components\Columns\Column;
 use Edith\Admin\Components\Traits\Fields\DigitAttribute;
 
-class MoneyColumn extends Column
+class TinymceColumn extends Column
 {
     use DigitAttribute;
 
     /**
-     * construct Money Column
+     * construct Digit Column
      * @param string|null $dataIndex
      * @param string|null $title
      */
     public function __construct(?string $dataIndex = null, ?string $title = null)
     {
-        parent::__construct($dataIndex, $title, 'money');
+        parent::__construct($dataIndex, $title, 'tinymce');
     }
 }

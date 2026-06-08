@@ -9,14 +9,14 @@ use Edith\Admin\Components\Traits\Fields\DigitAttribute;
  * Antd Input-Number
  * @link https://ant-design.antgroup.com/components/input-number-cn
  */
-class Digit extends Field
+class Money extends Field
 {
     use DigitAttribute;
 
     /**
      * @var string
      */
-    public string $component = 'digit';
+    public string $component = 'money';
 
     /**
      * @param string|null $name

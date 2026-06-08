@@ -4,17 +4,21 @@ namespace Edith\Admin\Components\Columns\Item;
 use Edith\Admin\Components\Columns\Column;
 use Edith\Admin\Components\Traits\Fields\DigitAttribute;
 
-class MoneyColumn extends Column
+/**
+ * Antd Date
+ * @link https://ant-design.antgroup.com/components/input-number-cn
+ */
+class TimeColumn extends Column
 {
     use DigitAttribute;
 
     /**
-     * construct Money Column
+     * construct Digit Column
      * @param string|null $dataIndex
      * @param string|null $title
      */
     public function __construct(?string $dataIndex = null, ?string $title = null)
     {
-        parent::__construct($dataIndex, $title, 'money');
+        parent::__construct($dataIndex, $title, 'time');
     }
 }

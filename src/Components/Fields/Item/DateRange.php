@@ -2,21 +2,14 @@
 namespace Edith\Admin\Components\Fields\Item;
 
 use Edith\Admin\Components\Fields\Field;
-use Edith\Admin\Components\Traits\Fields\DigitAttribute;
 
-
-/**
- * Antd Input-Number
- * @link https://ant-design.antgroup.com/components/input-number-cn
- */
-class Digit extends Field
+class DateRange extends Field
 {
-    use DigitAttribute;
 
     /**
      * @var string
      */
-    public string $component = 'digit';
+    public string $component = 'date-range';
 
     /**
      * @param string|null $name

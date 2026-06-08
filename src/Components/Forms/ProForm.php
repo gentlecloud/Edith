@@ -111,9 +111,6 @@ class ProForm extends EngineRenderer
      */
     public function initialValues(?array $initialValues = null): ProForm
     {
-//        foreach ($this->columns as $column) {
-//            var_dump($column);
-//        }
         return $this->set('initialValues', $initialValues);
     }
 
@@ -336,7 +333,7 @@ class ProForm extends EngineRenderer
         if ($this->renderer == 'tabs-form' && isset($this->tabs)) {
             $this->handleFormFieldValues($this->tabs);
             $this->renderer = 'pro-form';
-            $this->columns->push((new Tabs())->items($this->tabs));
+            $this->columns->push((new Tabs())->items($this->tabs)->destroyInactiveTabPane(false));
             unset($this->tabs);
         } else {
             foreach ($this->columns as $column) {

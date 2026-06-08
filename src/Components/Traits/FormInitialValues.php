@@ -11,27 +11,28 @@ trait FormInitialValues
 {
     /**
      * @param $tabs
+     * @param bool $forceRender
      * @return void
      */
-    protected function handleFormFieldValues($tabs): void
+    protected function handleFormFieldValues($tabs, bool $forceRender = false): void
     {
         if ($tabs instanceof Tabs) {
             foreach ($tabs->items as $tab) {
                 $this->handleFormFieldValues($tab);
             }
         } else if ($tabs instanceof TabPane) {
-            $this->handleFormFieldValues($tabs->children);
+            $this->handleFormFieldValues($tabs->children, true);
         } else if ($tabs instanceof Collection || is_array($tabs)) {
             foreach ($tabs as $tab) {
                 if ($tab instanceof FormList) {
-                    $this->extracted($tab);
+                    $this->extracted($tab, $forceRender);
                     $this->handleFormFieldValues($tab->items);
                 } else if ($tab instanceof TabPane) {
-                    $this->handleFormFieldValues($tab);
+                    $this->handleFormFieldValues($tab, true);
                 } else if ($tab instanceof GroupField) {
                     $this->handleFormFieldValues($tab->body ?? []);
                 } else {
-                    $this->extracted($tab);
+                    $this->extracted($tab, $forceRender);
                 }
             }
         }
@@ -39,9 +40,14 @@ trait FormInitialValues
 
     /**
      * @param $column
+     * @param bool $forceRender
+     * @return void
      */
-    protected function extracted($column): void
+    protected function extracted($column, bool $forceRender = false): void
     {
+        if ($forceRender) {
+            $column->forceRender(true);
+        }
         if (!isset($column->dataIndex) && !isset($column->name)) {
             return;
         }
@@ -53,7 +59,7 @@ trait FormInitialValues
         }
         if ($initialValue && isset($column->valueType) || isset($column->renderer)) {
             $valueType = $column->valueType ?? $column->renderer;
-            if (isset($this->initialValues[$dataIndex]) && in_array($valueType, ['radio', 'tree', 'select'])) {
+            if ($initialValue !== '' && in_array($valueType, ['radio', 'tree', 'select'])) {
                 $initialValue = strval($initialValue);
             }
             if ($valueType == 'switch') {
@@ -82,8 +88,8 @@ trait FormInitialValues
                 }
                 $initialValue = $value;
             }
-            data_set($this->initialValues, $dataIndex, $initialValue);
         }
+        data_set($this->initialValues, $dataIndex, $initialValue);
         unset($column->initialValue);
     }
 }
