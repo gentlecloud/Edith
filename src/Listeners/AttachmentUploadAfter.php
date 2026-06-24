@@ -21,6 +21,9 @@ class AttachmentUploadAfter
                 $data['obj_type'] = 'PLATFORM';
             }
             $data['platform_id'] = app('edith.auth')->platformId();
+            if (isset($data['is_local'])) {
+                unset($data['url'], $data['is_local']);
+            }
             $create = EdithAttachment::create($data);
             $event->fileId = $create->id;
         }

@@ -119,7 +119,7 @@ class AttachmentDao extends ModelDao
     {
         $file = $request->file('file') ?? $request->file('files');
         if (!$file) {
-            throw new DaoException('不');
+            throw new DaoException('文件不存在.');
         }
         $md5 = md5_file($file->getRealPath());
         $name = $file->getClientOriginalName();
@@ -142,10 +142,11 @@ class AttachmentDao extends ModelDao
                 'mime' => $file->getClientMimeType(),
                 'upload_ip' => \request()->ip(),
                 'path' => $path,
-                'url' => env('WEB_SITE_SSL', false) !== false ? secure_asset($path) : asset(Storage::url($path))
+                'url' => env('WEB_SITE_SSL', false) !== false ? secure_asset(Storage::url($path)) : asset(Storage::url($path)),
+                'is_local' => true,
             ];
         } else {
-            if (str_starts_with($hasPicture->path,'http')) {
+            if (str_starts_with($hasPicture->path, 'http')) {
                 $url = $hasPicture->path;
             } else {
                 // 获取文件url，用于外部访问

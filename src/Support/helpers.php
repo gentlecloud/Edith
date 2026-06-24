@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 /**
  * 返回湛拓科技 UI 引擎
- * 
+ *
  * @author Gentle Edith <gentle@3ii.cn>
  */
 if (!function_exists('engine')) {
@@ -162,7 +162,7 @@ if(!function_exists('get_attachment')) {
                 return $json;
             }
         }
-        $picture = \Edith\Admin\Models\EdithAttachment::where('id', $id)->orWhere('path', $id)->select('id', 'name', 'path')->first();
+        $picture = \Edith\Admin\Models\EdithAttachment::where('id', $id)->orWhere('path', $id)->orWhere('url', $id)->select('id', 'name', 'path', 'url')->first();
 
         // 图片存在
         if ($picture) {
@@ -170,6 +170,8 @@ if(!function_exists('get_attachment')) {
                 case 'path':
                     if (url()->isValidUrl($picture['path'])) {
                         $url = $picture['path'];
+                    } else if (url()->isValidUrl($picture['url'])) {
+                        $url = $picture['url'];
                     } else {
                         $path = Storage::url(ltrim($picture['path'], '/'));
                         $url = !intval(edith_config('WEB_SITE_SSL', 0)) ? secure_asset($path) : asset($path);
@@ -182,7 +184,7 @@ if(!function_exists('get_attachment')) {
                 case 'all':
                     if (url()->isValidUrl($picture['path'])) {
                         $picture['url'] = $picture['path'];
-                    } else {
+                    } else if (!url()->isValidUrl($picture['url'])) {
                         $path = Storage::url(ltrim($picture['path'], '/'));
                         $picture['url'] = !intval(edith_config('WEB_SITE_SSL', 0)) ? secure_asset($path) : asset($path);
                     }

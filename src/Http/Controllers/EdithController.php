@@ -42,6 +42,7 @@ final class EdithController extends Controller
             ->authApi("edith/auth/info")
             ->loginApi($loginApi)
             ->style(['height' => '100vh'])
+            ->logo(edith_config('WEB_SITE_LOGO'))
             ->footer([
                 'style' => ['background' => 'unset']
             ]);
