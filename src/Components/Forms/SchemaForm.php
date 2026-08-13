@@ -10,15 +10,16 @@ use Edith\Admin\Exceptions\RendererException;
  * Antd Schema Form - JSON 表单
  * SchemaForm 是根据 JSON Schema 来生成表单的工具。SchemaForm 会根据 valueType 来映射成不同的表单项。
  * 参考文档： https://procomponents.ant.design/components/schema-form#proformlayouttype
- * @method $this steps(array $steps)                                      layoutType=steps中的分步表单配置，需要配置 columns 为数组使用  StepFormProps[]
- * @method $this title(string $title)                                     modal 和 drawer 表单可设置标题
- * @method Column text(string $dataIndex, ?string $title = null)          图片表单 FormItem
- * @method Column password(string $dataIndex, ?string $title = null)      生成表单 FormItem.Password
+ * @method $this steps(array $steps)                                            layoutType=steps中的分步表单配置，需要配置 columns 为数组使用  StepFormProps[]
+ * @method $this title(string $title)                                           modal 和 drawer 表单可设置标题
+ * @method Column text(string $dataIndex, ?string $title = null)                图片表单 FormItem
+ * @method Column password(string $dataIndex, ?string $title = null)            生成表单 FormItem.Password
  * @method UploaderColumn uploader(string $dataIndex, ?string $title = null)    生成表单 FormItem.uploader 图片上传组件
  * @method UploaderColumn file(string $dataIndex, ?string $title = null)        生成表单 FormItem.file 文件上传组件
- * @method Column image(string $dataIndex, ?string $title = null)         生成表单 FormItem.image 图片预览组件
- * @method Column radio(string $dataIndex, ?string $title = null)         生成表单 FormItem.Radio 单选框
- * @method Column switch(string $dataIndex, ?string $title = null)        生成表单 FormItem.Switch 开关
+ * @method Column image(string $dataIndex, ?string $title = null)               生成表单 FormItem.image 图片预览组件
+ * @method Column radio(string $dataIndex, ?string $title = null)               生成表单 FormItem.Radio 单选框
+ * @method Column switch(string $dataIndex, ?string $title = null)              生成表单 FormItem.Switch 开关
+ * @method Column defaultKeyWords(string $defaultKeyWords)                      搜索时的默认关键字
  * @author Chico, Xiamen Gentle Technology Co., Ltd
  * @link https://www.ieda.cc
  */
@@ -102,11 +103,21 @@ class SchemaForm extends ProForm
      * 为function 时根据返回值判断是否重新渲染表单项，等同直接赋值 true 或 false 参考示例
      * @param bool $shouldUpdate
      * @default false
-     * @return SchemaForm
+     * @return self
      */
-    public function shouldUpdate(bool $shouldUpdate = true): SchemaForm
+    public function shouldUpdate(bool $shouldUpdate = true): self
     {
         return $this->set('shouldUpdate', $shouldUpdate);
+    }
+
+    /**
+     * 不包裹 Form.Item，直接渲染组件
+     * @param bool $ignoreFormItem
+     * @return self
+     */
+    public function ignoreFormItem(bool $ignoreFormItem = true): self
+    {
+        return $this->set('ignoreFormItem', $ignoreFormItem);
     }
 
     /**

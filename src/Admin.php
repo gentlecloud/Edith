@@ -21,7 +21,7 @@ final class Admin
     /**
      * Edith version
      */
-    const version = '2.0.9';
+    const version = '2.1.3';
 
     /**
      * load current Composer
@@ -100,7 +100,9 @@ final class Admin
      */
     public function hasTable(string $tableName): bool
     {
-        return Schema::hasTable($tableName);
+        return Cache::remember("edith_admin_has_table_{$tableName}", 60 * 60, function () use ($tableName) {
+            return Schema::hasTable($tableName);
+        });
     }
 
     /**

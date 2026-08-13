@@ -135,15 +135,15 @@ abstract class AuthController extends Controller
         $extra = [];
         if (!$user->isSuperAdministrator()) {
             $ids = $user->menus()->pluck('menu_id')->toArray();
-            $parents = EdithMenu::where('id', $ids)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
-            $parentIds = EdithMenu::where('id', $parents)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
+            $parents = EdithMenu::whereIn('id', $ids)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
+            $parentIds = EdithMenu::whereIn('id', $parents)->where('parent_id', '>', 0)->distinct()->pluck('parent_id')->toArray();
             $ids = array_unique(array_merge($parents, $parentIds, $ids));
             $menus = EdithMenu::where('status', 1)
                 ->whereIn('guard_name', $guards)
                 ->whereIn('id', $ids)
                 ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'status', 'hide_menu', 'sort', 'type', 'module', 'component')
-                ->orderBy('sort', 'asc')
-                ->orderBy('id', 'asc')
+                ->orderBy('sort')
+                ->orderBy('id')
                 ->get()
                 ->toArray();
             $menus = list_to_tree($menus, 'id', 'parent_id', 'routes');
@@ -156,8 +156,8 @@ abstract class AuthController extends Controller
                     $query->where('is_dev', 0);
                 })
                 ->select('id', 'name', 'icon', 'guard_name', 'path', 'entry', 'parent_id', 'status', 'hide_menu', 'sort', 'type', 'module', 'component')
-                ->orderBy('sort', 'asc')
-                ->orderBy('id', 'asc')
+                ->orderBy('sort')
+                ->orderBy('id')
                 ->get()
                 ->toArray();
 

@@ -194,10 +194,12 @@ final class Core implements EdithModuleCoreInterface
                 })
                 ->select('id', 'name', 'title', 'status', 'priority', 'expired_at')
                 ->orderBy('priority')
-                ->get();
+                ->get()
+                ->map(fn ($row) => (array) $row)
+                ->all();
         });
         foreach ($modules as $key => $module) {
-            $name = $module->name ?? str_replace(str_replace('%s', '', $this->getPath()), '', $key);
+            $name = $module['name'] ?? str_replace(str_replace('%s', '', $this->getPath()), '', $key);
             $path = sprintf($this->getPath(), $name);
             if (is_dir($path)) {
                 try {

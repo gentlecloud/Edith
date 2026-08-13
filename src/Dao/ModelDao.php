@@ -117,16 +117,17 @@ class ModelDao
         } else {
             $query->orderBy('id', $this->orderBy ?: 'desc');
         }
-        return $query->when(\request()->input('created_at'), function ($query) {
-            $time = $this->handleSearchTime();
-            $query->whereBetween('created_at', $time);
-        })->when(\request()->input('updated_at'), function ($query) {
-            $time = $this->handleSearchTime('updated_at');
-            $query->whereBetween('updated_at', $time);
-        })->when(\request()->input('deleted_at'), function ($query) {
-            $time = $this->handleSearchTime('deleted_at');
-            $query->whereBetween('deleted_at', $time);
-        });
+        return $query
+            ->when(\request()->input('created_at'), function ($query) {
+                $time = $this->handleSearchTime();
+                $query->whereBetween('created_at', $time);
+            })->when(\request()->input('updated_at'), function ($query) {
+                $time = $this->handleSearchTime('updated_at');
+                $query->whereBetween('updated_at', $time);
+            })->when(\request()->input('deleted_at'), function ($query) {
+                $time = $this->handleSearchTime('deleted_at');
+                $query->whereBetween('deleted_at', $time);
+            });
     }
 
     /**
@@ -253,14 +254,22 @@ class ModelDao
      */
     protected function handleSearchTime(string $field = 'created_at'): ?array
     {
-        $time = explode(",", request()->input($field));
+        $time = request()->input($field);
+        if (is_string($time)) {
+            $time = explode(",", $time);
+        }
         if (!count($time)) {
             return null;
         }
         if (empty($time[1])) {
             $time[1] = time();
         }
-
-        return [date('Y-m-d 00:00:00', $time[0]), date('Y-m-d H:i:s', $time[1])];
+        if (is_numeric($time[0])) {
+            $time[0] = date('Y-m-d 00:00:00', $time[0]);
+        }
+        if (is_numeric($time[1])) {
+            $time[1] = date('Y-m-d H:i:s', $time[1]);
+        }
+        return $time;
     }
 }

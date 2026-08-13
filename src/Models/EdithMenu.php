@@ -32,7 +32,13 @@ class EdithMenu extends Model
      */
     public function routes()
     {
-        return $this->hasMany(self::class, 'parent_id', 'id')->with('routes')->where('status', 1)->select('id', 'parent_id', 'name', 'path', 'entry', 'type', 'status', 'hide_menu', 'sort', 'component')->distinct();
+        return $this->hasMany(self::class, 'parent_id', 'id')
+            ->with('routes')
+            ->where('status', 1)
+            ->select('id', 'parent_id', 'name', 'path', 'entry', 'type', 'status', 'hide_menu', 'sort', 'component')
+            ->orderBy('sort')
+            ->orderBy('id')
+            ->distinct();
     }
 
     /**

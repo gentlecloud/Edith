@@ -52,21 +52,8 @@ class RoleController extends Controller
     {
         $menus = EdithMenu::where('parent_id', 0)->whereIn('guard_name', ['basic', 'admin'])->select('id as key', 'name')->get()->toArray();
         foreach ($menus as $k => $v) {
-            $children = EdithMenu::where('parent_id', $v['key'])->whereIn('guard_name', ['basic', 'admin'])->select('id as key', 'name')->get()->toArray();
-            foreach ($children as $key => $value) {
-                $permission = EdithPermission::where('menu_id', $value['key'])->select('id as key', 'name')->get()->toArray();
-                foreach ($permission as $kk => $vv) {
-                    $permission[$kk]['key'] = "permission{{$vv['key']}}";
-                }
-                $children[$key]['key'] = strval($value['key']);
-                $children[$key]['children'] = $permission;
-            }
-            $parentPermission = EdithPermission::where('menu_id', $v['key'])->select('id as key', 'name')->get()->toArray();
-            foreach ($parentPermission as $key => $value) {
-                $parentPermission[$key]['key'] = "permission{{$value['key']}}";
-            }
             $menus[$k]['key'] = strval($v['key']);
-            $menus[$k]['children'] = array_merge($children, $parentPermission);
+            $menus[$k]['children'] = $this->getMenuTree($v);
         }
         return [
             (new Column('id', 'ID'))->hidden(),
@@ -77,5 +64,25 @@ class RoleController extends Controller
                 ->fieldNames(['key' => 'key', 'title' => 'name', 'children' => 'children'])
                 ->valueEnum($menus),
         ];
+    }
+
+    /**
+     * Build a menu-permission tree for a role, including all descendant menus.
+     *
+     * @param array{key: int|string, name: string} $menu
+     * @return array<int, array{key: string, name: string, children?: array}>
+     */
+    private function getMenuTree(array $menu): array
+    {
+        $children = EdithMenu::where('parent_id', $menu['key'])->whereIn('guard_name', ['basic', 'admin'])->select('id as key', 'name')->get()->toArray();
+        foreach ($children as $key => $value) {
+            $children[$key]['key'] = strval($value['key']);
+            $children[$key]['children'] = $this->getMenuTree($value);
+        }
+        $parentPermission = EdithPermission::where('menu_id', $menu['key'])->select('id as key', 'name')->get()->toArray();
+        foreach ($parentPermission as $key => $value) {
+            $parentPermission[$key]['key'] = "permission{{$value['key']}}";
+        }
+        return array_merge($children, $parentPermission);
     }
 }

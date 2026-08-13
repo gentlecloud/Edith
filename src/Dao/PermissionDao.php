@@ -5,6 +5,7 @@ use Edith\Admin\Exceptions\DaoException;
 use Edith\Admin\Models\EdithPermission;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class PermissionDao extends ModelDao
@@ -63,12 +64,23 @@ class PermissionDao extends ModelDao
      * @param string|null $menuName
      * @return string
      */
-    public function parseName($route, $url, ?string $menuName = ''): string
+    public function parseName($route, $url, ?string $menuName = '', ?string $moduleName = null): string
     {
         if (isset($route->action['as'])) {
             $as = $route->action['as'];
         } else {
             $as = $url[count($url) - 1];
+        }
+        if (!in_array($moduleName, ['default', 'system', 'edith'])) {
+            $moduleExtraFile = Cache::remember('edith_permission_custom_path:' . $moduleName, 60 * 60 * 24, function () use ($moduleName) {
+                return app('edith.modules')->findOrFail($moduleName)->getExtraPath('config/permission.php');
+            });
+            if (is_file($moduleExtraFile)) {
+                $content = (array) include $moduleExtraFile;
+                if (isset($content[$as])) {
+                    return $content[$as];
+                }
+            }
         }
         $menuName = str_replace(['列表'], '', $menuName);
         switch ($as) {
@@ -131,7 +143,7 @@ class PermissionDao extends ModelDao
                 break;
             default:
                 if (in_array('POST', $route->methods) || str_contains($as, 'store')) {
-                    $name = '新增创建' . $menuName;
+                    $name = '新增' . $menuName;
                 } else if (in_array('PUT', $route->methods) || in_array('PATCH', $route->methods) || str_contains($as, 'update')) {
                     $name = "更新" . $menuName;
                 } else if (in_array('DELETE', $route->methods) || str_contains($as, 'destroy')) {

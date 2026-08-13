@@ -14,7 +14,7 @@ trait HasEdithToken
      */
     public function createToken(int $platform_id = 0): string
     {
-        $util = new Rsa(config('edith.rsa.public_key', env("RSA_PUBLIC_KEY")), config('edith.rsa.private_key', env("RSA_PRIVATE_KEY")));
+        $util = new Rsa(config('edith.rsa.public_key'), config('edith.rsa.private_key'));
         $token = $util->encrypt(json_encode(['id' => $this->id, 'platform_id' => $platform_id, 'username' => $this->username, 'nickname' => $this->nickname, 'create_time' => time()]));
         try {
             if (intval(edith_config('WEB_LOGIN_SSO', '1')) == 1) {

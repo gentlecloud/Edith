@@ -42,10 +42,12 @@ final class Cloud
                 }
             }
         } else {
-            $postData = $request->input();
+            $postData = $request->except(['_token', '_method', 's']);
         }
         if (!$rsaUtil->verify(EdithCloud::buildSignContent($postData), $request->header('X-Signature'))) {
-            abort(403, 'Signature verification failed.');
+            return response()->json([
+                'message' => 'Signature verification failed.',
+            ], 403);
         }
         return $next($request);
     }

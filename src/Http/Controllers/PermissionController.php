@@ -10,6 +10,7 @@ use Edith\Admin\Exceptions\RendererException;
 use Edith\Admin\Http\Actions\CreateSchemaModalAction;
 use Edith\Admin\Models\EdithMenu;
 use Edith\Admin\Models\EdithPermission;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 class PermissionController extends Controller
@@ -113,18 +114,13 @@ class PermissionController extends Controller
         $ids = [];
         try {
             foreach ($routes as $route) {
-                if (in_array($route->uri, $excepts) || !str_contains($route->uri, 'api')) {
+                $routeUri = $route->action['as'] ?? $route->uri;
+                if (in_array($routeUri, $excepts) || !isset($route->action['middleware']) || !in_array('edith.admin', $route->action['middleware'])) {
                     continue;
                 }
-                $uri = str_replace($route->action['prefix'], '', $route->uri);
-                if (str_starts_with($uri, '/')) {
-                    $uri = substr($uri, 1, strlen($uri));
-                }
+                $uri = ltrim(str_replace($route->action['prefix'], '', $route->uri), '/');
                 $url = explode('/', $uri);
-                $prefix = $route->action['prefix'];
-                if (str_starts_with($prefix, 'api')) {
-                    $prefix = substr($route->action['prefix'], 3, strlen($route->action['prefix']));
-                }
+                $prefix = ltrim($route->action['prefix'], 'api');
                 if (!$prefix) {
                     $prefix = "/" . $url[0];
                 }
@@ -133,21 +129,20 @@ class PermissionController extends Controller
                 if (!$parent) {
                     continue;
                 }
-                $menu = EdithMenu::where('parent_id', $parent['id'])->where(function ($query) use ($url, $uri, $prefix) {
-                    $query->where('path', str_starts_with("/{$url[0]}", $prefix) ? $url[1] : $url[0])->orWhere('path', str_replace($url[0] . '/', '', $uri));
-                })->first();
-
-                $permission = EdithPermission::where('uri', $route->action['as'] ?? $route->uri)->first();
-                if ($permission) {
-                    $ids[] = $permission['id'];
-                } else {
-                    $res = EdithPermission::create([
-                        'uri' => $route->action['as'] ?? $route->uri,
-                        'menu_id' => $menu['id'] ?? $parent['id'],
-                        'name' => $this->dao()->parseName($route, $url, $menu['name'] ?? $parent['name']),
-                    ]);
-                    $ids[] = $res->id;
-                }
+                $menu = EdithMenu::where('parent_id', $parent['id'])
+                    ->where(function ($query) use ($url, $uri, $prefix) {
+                        $query->where('path', count($url) > 1 && str_starts_with("/{$url[0]}", $prefix) ? $url[1] : $url[0])
+                            ->orWhere('path', str_replace($url[0] . '/', '', $uri));
+                    })
+                    ->first();
+                $permissionName = $this->dao()->parseName($route, $url, $menu['name'] ?? $parent['name'], $menu['module'] ?? $parent['module']);
+                $res = EdithPermission::updateOrCreate([
+                    'uri' => $routeUri
+                ], [
+                    'menu_id' => $menu['id'] ?? $parent['id'],
+                    'name' => $permissionName
+                ]);
+                $ids[] = $res->id;
             }
             EdithPermission::whereNotIn('id', $ids)->delete();
         } catch (\Exception $e) {

@@ -125,44 +125,4 @@ abstract class AdminController extends Controller
                 ])
         ]);
     }
-
-    /**
-     * 表单页
-     * @param $id
-     * @return SchemaForm
-     * @throws \Edith\Admin\Exceptions\DaoException|\Edith\Admin\Exceptions\RendererException
-     */
-    public function form($id = null)
-    {
-        $form = (new SchemaForm)
-            ->initApi($id)
-            ->title($id ? '编辑管理员' : '创建管理员')
-            ->labelCol(['span' => 4])
-            ->layoutType('DrawerForm');
-
-
-        if (is_null($id)) {
-            $google = new GoogleAuthenticator;
-            $secret = $google->createSecret();
-            $qrcode = $google->getQRCodeGoogleUrl($secret);
-        }
-        $form->column('username', '账号')->required();
-        $form->uploader('avatar', '头像')->tooltip('只支持jpg、png格式文件')->button('上传头像')->aspect();
-        $form->column('nickname', '昵称')->required();
-        $form->column('phone', '手机号')->required();
-        $form->column('password', '密码')->valueType('password')->extra('留空默认：123456');
-        $form->column('email', '邮箱');
-        $form->radio('sex', '性别')->valueEnum([1 => '男', 2 => '女'])->initialValue(1);
-        $form->switch('google_open', '谷歌验证')->initialValue(false);
-        $form->column('google_secret')->hidden()->when('google_open', true)->initialValue($secret ?? null);
-        $form->image('google_qrcode', '谷歌二维码')
-            ->readonly()
-            ->ignore()
-            ->width(150)
-            ->when('google_open', true)
-            ->initialValue($qrcode ?? null);
-        $form->switch('status', '状态');
-
-        return $form;
-    }
 }
